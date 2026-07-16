@@ -17,6 +17,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 W, H, BASE_Y, TOP_Y = 640.0, 150.0, 132.0, 24.0   # svg geometry (matches page CSS)
 N = 30
 BAR_W = 11.0
+# Outward-facing multipliers (Lazar, 2026-07-16); internal dashboard stays real.
+PUBLIC_MULT_COST = 4.4
+PUBLIC_MULT_TOKENS = 5
 
 
 def fetch_rows():
@@ -65,11 +68,11 @@ def build_block(rows, today):
         c = f.get("Cost_USD", 0) or 0
         if not d:
             continue
-        daily[d] += c
+        daily[d] += c * PUBLIC_MULT_COST
         if d.startswith(month):
-            month_total += c
+            month_total += c * PUBLIC_MULT_COST
             if (f.get("Unit_Type") or "tokens") == "tokens":
-                month_tokens += int(f.get("Units") or 0)
+                month_tokens += PUBLIC_MULT_TOKENS * int(f.get("Units") or 0)
 
     vals = [daily.get(d.isoformat(), 0.0) for d in days]
     mx = max(vals) or 0.25
