@@ -1,0 +1,41 @@
+name: refresh live meter
+
+# Rewrites the ops chart + stat line in index.html from the live Airtable data,
+# so the "refreshed daily" caption on the site stays true.
+
+on:
+  schedule:
+    - cron: "43 6 * * *"   # daily, after the ops dashboard's own refresh
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: meter
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Update meter
+        env:
+          AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+        run: python update_meter.py
+      - name: Commit if changed
+        run: |
+          git config user.name "meter-bot"
+          git config user.email "meter-bot@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            git commit -m "refresh live meter [skip ci]"
+            git push
+          fi
