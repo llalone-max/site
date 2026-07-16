@@ -54,11 +54,11 @@ a:focus-visible,button:focus-visible{outline:1.5px solid var(--ink);outline-offs
 /* ---- the wordmark band: cropped white grotesk on dark ---- */
 .band{position:relative;background:var(--band);height:clamp(220px,36vh,420px);overflow:hidden}
 .wordmark{position:absolute;left:50%;bottom:-.05em;transform:translateX(-50%);z-index:1;
-  margin:0;font-family:var(--sans);font-weight:700;font-size:38vw;line-height:1;
+  margin:0;font-family:var(--sans);font-weight:700;font-size:min(38vw,500px);line-height:1;
   letter-spacing:-.045em;white-space:nowrap;color:var(--band-ink);user-select:none;pointer-events:none}
 @media (max-width:600px){
   .band{height:clamp(92px,29vw,150px)}
-  .wordmark{font-size:38vw;bottom:auto;top:50%;transform:translate(-50%,-53%)}
+  .wordmark{font-size:36vw;bottom:-.06em;top:auto;transform:translateX(-50%)}
   .stamp{top:10px;right:12px;font-size:8.5px;padding:4px 3px 4px 9px}
 }
 .stamp{position:absolute;top:18px;right:22px;z-index:2;display:inline-block;transform:rotate(-6deg);
@@ -267,17 +267,6 @@ a.cl{font-style:normal}
   text-transform:uppercase;color:var(--soft)}
 @media (prefers-reduced-motion:reduce){.strip{scroll-behavior:auto}}
 
-/* ---- ghost numerals: giant, still, nearly not there ---- */
-.ix{position:relative}
-.ix>*:not(.ghost){position:relative;z-index:1}
-.ghost{position:absolute;z-index:0;top:-.12em;right:-3vw;margin:0;pointer-events:none;user-select:none;
-  font-family:var(--sans);font-weight:700;font-size:clamp(130px,22vw,340px);line-height:1;
-  letter-spacing:-.05em;opacity:.042}
-.i-hc .ghost{color:var(--hc)}.i-br .ghost{color:var(--br)}.i-ai .ghost{color:var(--ai)}
-@media (prefers-color-scheme:dark){.ghost{opacity:.08}}
-:root[data-theme="dark"] .ghost{opacity:.08}
-:root[data-theme="light"] .ghost{opacity:.042}
-
 /* ---- outro: the ink close, bookending the band ---- */
 /* ---- outro, simplified ---- */
 .outro{margin-top:clamp(110px,18vh,190px);width:100vw;margin-left:calc(50% - 50vw);background:var(--band);color:var(--band-ink);padding:clamp(70px,12vh,150px) max(clamp(22px,6vw,76px),calc(50vw - 590px)) 46px}
@@ -370,7 +359,6 @@ a.cl{font-style:normal}
     <section class="grid" aria-label="Practices and work">
 
       <article class="mod ix i-hc m-hc" id="healthcare">
-        <span class="ghost" aria-hidden="true">01</span>
         <h2><button class="ix-head" aria-expanded="false" aria-controls="b-hc" onclick="tog(this.closest('.ix'),event)">
           <span class="no">01</span>
           <span class="tt">Healthcare</span>
@@ -415,7 +403,6 @@ a.cl{font-style:normal}
       </figure>
 
       <article class="mod ix i-br m-br" id="brands">
-        <span class="ghost" aria-hidden="true">02</span>
         <h2><button class="ix-head" aria-expanded="false" aria-controls="b-br" onclick="tog(this.closest('.ix'),event)">
           <span class="no">02</span>
           <span class="tt">Brands</span>
@@ -495,7 +482,6 @@ a.cl{font-style:normal}
       </figure>
 
       <article class="mod ix i-ai m-ai" id="aiops">
-        <span class="ghost" aria-hidden="true">03</span>
         <h2><button class="ix-head" aria-expanded="false" aria-controls="b-ai" onclick="tog(this.closest('.ix'),event)">
           <span class="no">03</span>
           <span class="tt">AI Operations</span>
