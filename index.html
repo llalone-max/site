@@ -8,7 +8,7 @@
   --hair:rgba(29,28,28,.16); --rulestrong:rgba(29,28,28,.38);
   --hc:#3E7CB1; --br:#C84B31; --ai:#D99010;
   --band:#191817; --band-ink:#F6F4F0; --stamp:#D14A3D;
-  --bar:rgba(29,28,28,.20); --gridln:rgba(29,28,28,.07);
+  --bar:rgba(29,28,28,.20); --gridln:rgba(29,28,28,.07); --ghosto:.04;
   --serif:"Stix Two","Times New Roman",Times,Georgia,serif;
   --sans:"Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif;
 }
@@ -24,7 +24,7 @@
   --hair:rgba(29,28,28,.16); --rulestrong:rgba(29,28,28,.38);
   --hc:#3E7CB1; --br:#C84B31; --ai:#D99010;
   --band:#191817; --band-ink:#F6F4F0; --stamp:#D14A3D;
-  --bar:rgba(29,28,28,.20); --gridln:rgba(29,28,28,.07);
+  --bar:rgba(29,28,28,.20); --gridln:rgba(29,28,28,.07); --ghosto:.04;
 }
 :root[data-theme="dark"]{
   --paper:#161514; --ink:#EBE8E2; --soft:#A39F96; --dim:#6E6B64;
@@ -94,40 +94,47 @@ a:focus-visible,button:focus-visible{outline:1.5px solid var(--ink);outline-offs
 .nw-hc:hover,.nw-hc:focus-visible{color:var(--hc)}
 .nw-br:hover,.nw-br:focus-visible{color:var(--br)}
 .nw-ai:hover,.nw-ai:focus-visible{color:var(--ai)}
-/* the fairy-tale I: band-grotesk drop cap, alive inside the letterform */
+/* the fairy-tale I: band-grotesk drop cap; solid ink until it performs */
 .hero h1::after{content:"";display:block;clear:both}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .dc{float:left;font-family:var(--sans);font-weight:700;font-size:3.1em;line-height:.76;
-  padding:.03em .13em 0 0;position:relative;user-select:none;
-  color:transparent;-webkit-background-clip:text;background-clip:text;
-  background-image:
-    linear-gradient(180deg,transparent 34%,var(--hc) 50%,transparent 66%),
-    linear-gradient(180deg,transparent 34%,var(--br) 50%,transparent 66%),
-    linear-gradient(180deg,transparent 34%,var(--ai) 50%,transparent 66%),
-    linear-gradient(var(--ink),var(--ink));
-  background-size:100% 340%,100% 340%,100% 340%,100% 100%;
-  background-repeat:no-repeat;
-  animation:dcsweep 24s linear infinite}
-@keyframes dcsweep{
-  0%,4%   {background-position:0 0%,  0 0%,  0 0%,  0 0}
-  28%     {background-position:0 100%,0 0%,  0 0%,  0 0}
-  37%     {background-position:0 100%,0 0%,  0 0%,  0 0}
-  61%     {background-position:0 100%,0 100%,0 0%,  0 0}
-  70%     {background-position:0 100%,0 100%,0 0%,  0 0}
-  94%,100%{background-position:0 100%,0 100%,0 100%,0 0}
+  padding:.03em .13em 0 0;position:relative;user-select:none;color:var(--ink);cursor:pointer}
+.dc b{font-weight:inherit}
+.dc .g{position:absolute;top:.03em;left:0;font-style:normal;line-height:inherit;
+  opacity:0;pointer-events:none;will-change:transform}
+.dc .g1{color:var(--hc);clip-path:inset(4% -6px 82% -6px)}
+.dc .g2{color:var(--ink);clip-path:inset(22% -6px 62% -6px)}
+.dc .g3{color:var(--br);clip-path:inset(42% -6px 44% -6px)}
+.dc .g4{color:var(--ink);clip-path:inset(60% -6px 26% -6px)}
+.dc .g5{color:var(--ai);clip-path:inset(78% -6px 4% -6px)}
+@media (prefers-reduced-motion:no-preference){
+  .dc.burst b{animation:dcbase .45s steps(1,end) both}
+  .dc.burst .g{animation:dcslice .45s steps(1,end) both}
+  .dc.burst .g1{--gx:-.16em}
+  .dc.burst .g2{--gx:.12em;animation-delay:.02s}
+  .dc.burst .g3{--gx:-.11em;animation-delay:.04s}
+  .dc.burst .g4{--gx:.15em;animation-delay:.03s}
+  .dc.burst .g5{--gx:-.13em;animation-delay:.05s}
 }
-.dc::before,.dc::after{content:"I";position:absolute;top:.03em;left:0;
-  line-height:inherit;opacity:0;pointer-events:none}
-.dc::before{color:var(--ink);clip-path:inset(26% -3px 58% -3px);animation:dcg1 7.4s linear infinite}
-.dc::after{color:var(--br);clip-path:inset(60% -3px 24% -3px);animation:dcg2 9.7s linear infinite}
-@keyframes dcg1{0%,95.8%{opacity:0;transform:none}
-  96.2%,97.6%{opacity:1;transform:translateX(-.07em)}98%,100%{opacity:0}}
-@keyframes dcg2{0%,52%{opacity:0;transform:none}
-  52.4%,53.6%{opacity:1;transform:translateX(.06em)}54%,100%{opacity:0}}
+@keyframes dcslice{
+  0%{opacity:1;transform:translateX(var(--gx))}
+  28%{transform:translateX(calc(var(--gx)*-.6))}
+  55%{transform:translateX(calc(var(--gx)*.35))}
+  80%{opacity:1;transform:translateX(calc(var(--gx)*-.12))}
+  100%{opacity:0;transform:none}
+}
+@keyframes dcbase{
+  0%{color:var(--ink);transform:translateX(.015em)}
+  26%{transform:translateX(-.02em)}
+  46%{color:var(--hc)}
+  58%{color:var(--ink);transform:translateX(.012em)}
+  80%{transform:none}
+  100%{color:var(--ink);transform:none}
+}
 @media (prefers-reduced-motion:reduce){
-  .dc{animation:none;background:none;-webkit-background-clip:border-box;background-clip:border-box;
-    color:var(--ink)}
-  .dc::before,.dc::after{display:none;animation:none}
+  .dc{cursor:default}
+  .dc.burst b,.dc.burst .g{animation:none}
+  .dc .g{display:none}
 }
 
 /* ---- the modular grid: asymmetric blocks, text as first-class citizen ---- */
@@ -150,23 +157,12 @@ a:focus-visible,button:focus-visible{outline:1.5px solid var(--ink);outline-offs
   .m-words{order:6}
 }
 
-/* ---- the beach balls: huge faint practice doodles behind the sheet ---- */
-.ix{position:relative}
-.bigdoodle{position:absolute;z-index:-1;pointer-events:none;opacity:.09;will-change:transform}
-.bigdoodle svg{display:block;width:100%;height:auto}
-.bigdoodle path,.bigdoodle circle,.bigdoodle rect{fill:none;stroke:currentColor;stroke-width:1.3;
-  stroke-linecap:round;stroke-linejoin:round}
-.bd-hc{color:var(--hc);width:min(400px,72vw);top:-70px;left:max(-130px,-12vw)}
-.bd-br{color:var(--br);width:min(460px,74vw);top:-110px;right:max(-150px,-10vw)}
-.bd-ai{color:var(--ai);width:min(320px,64vw);bottom:-80px;right:max(-90px,-8vw)}
-@media (prefers-color-scheme:dark){.bigdoodle{opacity:.13}}
-:root[data-theme="light"] .bigdoodle{opacity:.09}
-:root[data-theme="dark"] .bigdoodle{opacity:.13}
-@media (max-width:880px){
-  .bd-hc{width:70vw;top:-30px}
-  .bd-br{width:72vw;top:-40px}
-  .bd-ai{width:62vw;bottom:-40px}
-}
+/* ---- click confetti: practice doodles pop from the click point ---- */
+.cf{position:fixed;left:0;top:0;z-index:90;pointer-events:none;will-change:transform,opacity}
+.cf svg{display:block}
+.cf path,.cf circle,.cf rect{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cf .fill{fill:currentColor;stroke:none}
+.cf-hc{color:var(--hc)} .cf-br{color:var(--br)} .cf-ai{color:var(--ai)}
 
 /* module pop-in on scroll */
 .js .mod{opacity:0;transform:translateY(18px);transition:opacity .75s ease,transform .75s ease}
@@ -271,8 +267,24 @@ a.cl{font-style:normal}
   text-transform:uppercase;color:var(--soft)}
 @media (prefers-reduced-motion:reduce){.strip{scroll-behavior:auto}}
 
+/* ---- ghost numerals: giant, still, nearly not there ---- */
+.ix{position:relative}
+.ix>*:not(.ghost){position:relative;z-index:1}
+.ghost{position:absolute;z-index:0;top:-.12em;right:-3vw;margin:0;pointer-events:none;user-select:none;
+  font-family:var(--sans);font-weight:700;font-size:clamp(130px,22vw,340px);line-height:1;
+  letter-spacing:-.05em;opacity:.042}
+.i-hc .ghost{color:var(--hc)}.i-br .ghost{color:var(--br)}.i-ai .ghost{color:var(--ai)}
+@media (prefers-color-scheme:dark){.ghost{opacity:.08}}
+:root[data-theme="dark"] .ghost{opacity:.08}
+:root[data-theme="light"] .ghost{opacity:.042}
+
+/* ---- outro: the ink close, bookending the band ---- */
 /* ---- outro, simplified ---- */
-.outro{margin-top:clamp(110px,18vh,190px)}
+.outro{margin-top:clamp(110px,18vh,190px);width:100vw;margin-left:calc(50% - 50vw);background:var(--band);color:var(--band-ink);padding:clamp(70px,12vh,150px) max(clamp(22px,6vw,76px),calc(50vw - 590px)) 46px}
+.outro h2 a{color:var(--band-ink)}
+.outro .email{color:var(--band-ink);opacity:.85}
+.outro .foot{border-top-color:rgba(246,244,240,.22);color:rgba(246,244,240,.6)}
+.outro .foot a{color:inherit}
 .outro h2{margin:0;font-weight:600;font-size:clamp(52px,10vw,140px);line-height:1;letter-spacing:-.03em}
 .outro h2 a{text-decoration:underline;text-decoration-thickness:.028em;text-underline-offset:.13em;
   text-decoration-color:var(--hair);transition:text-decoration-color .35s}
@@ -304,7 +316,6 @@ a.cl{font-style:normal}
   letter-spacing:.18em;text-transform:uppercase;color:var(--soft);text-decoration:none;
   border-bottom:1px solid var(--hair);padding-bottom:2px;transition:color .25s,border-color .25s}
 .git-li:hover{color:var(--ink);border-color:var(--rulestrong)}
-.git-fn{margin:14px 0 0;font-size:12px;font-style:italic;color:var(--dim)}
 .git-sl{margin:12px 0 0;font-size:12.5px}
 .git-sl a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 #gitx{position:absolute;top:8px;right:10px;appearance:none;background:none;border:0;cursor:pointer;
@@ -338,7 +349,7 @@ a.cl{font-style:normal}
 
 <!-- the wordmark band: the name moment, cropped by the band edges -->
 <header class="band" aria-label="Lazar LaLone">
-  <p class="wordmark" aria-hidden="true">laLone</p>
+  <p class="wordmark" aria-hidden="true">lalone</p>
   <span class="stamp" aria-label="Draft stamp">Draft</span>
 </header>
 
@@ -351,17 +362,17 @@ a.cl{font-style:normal}
 
   <main>
     <section class="hero">
-      <h1><span class="dc" aria-hidden="true">I</span><span class="sr">I</span> build products, brands, and pipelines with AI, an opinion, and an eye.
-        The practice ranges from <button class="nw nw-hc" onclick="go('healthcare')">Healthcare</button>,
-        <button class="nw nw-br" onclick="go('brands')">B2C and B2B Brands</button>,
-        and <button class="nw nw-ai" onclick="go('aiops')">AI Operations</button>.</h1>
+      <h1><span class="dc" aria-hidden="true"><b>I</b><i class="g g1">I</i><i class="g g2">I</i><i class="g g3">I</i><i class="g g4">I</i><i class="g g5">I</i></span><span class="sr">I</span> build products, brands, and pipelines with AI, an opinion, and an eye.
+        The practice ranges from <button class="nw nw-hc" onclick="go('healthcare',event)">Healthcare</button>,
+        <button class="nw nw-br" onclick="go('brands',event)">B2C and B2B Brands</button>,
+        and <button class="nw nw-ai" onclick="go('aiops',event)">AI Operations</button>.</h1>
     </section>
 
     <section class="grid" aria-label="Practices and work">
 
       <article class="mod ix i-hc m-hc" id="healthcare">
-        <div class="bigdoodle bd-hc" aria-hidden="true"><svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="10"/><path d="M13 8v10M8 13h10"/></svg></div>
-        <h2><button class="ix-head" aria-expanded="false" aria-controls="b-hc" onclick="tog(this.closest('.ix'))">
+        <span class="ghost" aria-hidden="true">01</span>
+        <h2><button class="ix-head" aria-expanded="false" aria-controls="b-hc" onclick="tog(this.closest('.ix'),event)">
           <span class="no">01</span>
           <span class="tt">Healthcare</span>
           <span class="mark" aria-hidden="true">+</span>
@@ -405,8 +416,8 @@ a.cl{font-style:normal}
       </figure>
 
       <article class="mod ix i-br m-br" id="brands">
-        <div class="bigdoodle bd-br" aria-hidden="true"><svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="10"/><path d="M13 8l4.8 3.5-1.8 5.6h-6l-1.8-5.6zM13 3v5M22.5 10.1l-4.7 1.4M18.7 22l-2.9-4.8M7.3 22l2.9-4.8M3.5 10.1l4.7 1.4"/></svg></div>
-        <h2><button class="ix-head" aria-expanded="false" aria-controls="b-br" onclick="tog(this.closest('.ix'))">
+        <span class="ghost" aria-hidden="true">02</span>
+        <h2><button class="ix-head" aria-expanded="false" aria-controls="b-br" onclick="tog(this.closest('.ix'),event)">
           <span class="no">02</span>
           <span class="tt">Brands</span>
           <span class="mark" aria-hidden="true">+</span>
@@ -485,8 +496,8 @@ a.cl{font-style:normal}
       </figure>
 
       <article class="mod ix i-ai m-ai" id="aiops">
-        <div class="bigdoodle bd-ai" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M4 23h18M8 23v-9M13 23V7M18 23v-6"/></svg></div>
-        <h2><button class="ix-head" aria-expanded="false" aria-controls="b-ai" onclick="tog(this.closest('.ix'))">
+        <span class="ghost" aria-hidden="true">03</span>
+        <h2><button class="ix-head" aria-expanded="false" aria-controls="b-ai" onclick="tog(this.closest('.ix'),event)">
           <span class="no">03</span>
           <span class="tt">AI Operations</span>
           <span class="mark" aria-hidden="true">+</span>
@@ -549,17 +560,19 @@ a.cl{font-style:normal}
   <a class="git-btn" href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">Email me</a><a class="git-li" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
   <!-- Slack: interim mailto until Lazar supplies his Slack Connect DM invite link; then swap the href. -->
   <p class="git-sl"><a href="mailto:lazarlalone@gmail.com?subject=Slack%20me">Met in person or through a mutual? Slack me &#8599;</a></p>
-  <p class="git-fn">Read by Lazar LaLone himself, usually the same day.</p>
 </aside>
 
 <script>
-function tog(ix){
+function tog(ix, ev){
   var open = ix.classList.toggle('open');
   ix.querySelector('.ix-head').setAttribute('aria-expanded', open ? 'true' : 'false');
+  if(open && ev) confetti(pr(ix.id), ev.clientX, ev.clientY);
 }
-function go(id){
+function pr(id){ return id === 'healthcare' ? 'hc' : id === 'brands' ? 'br' : 'ai'; }
+function go(id, ev){
   var ix = document.getElementById(id);
   if(!ix.classList.contains('open')) tog(ix);
+  if(ev) confetti(pr(id), ev.clientX, ev.clientY);
   ix.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
@@ -631,43 +644,86 @@ function gitShow(force){
   sync();
 })();
 
-/* the beach balls: extremely slow drift, slight scroll parallax, a shy few-pixel
-   cursor push that springs back. They live behind the text and never fight it. */
-(function(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var els = [].slice.call(document.querySelectorAll('.bigdoodle'));
-  if(!els.length) return;
-  var st = els.map(function(el, i){
-    return { el:el, px:0, py:0, drift:0, ph:Math.random()*6.28, sp:.00012 + i*.00004 };
-  });
-  var mx = -1e4, my = -1e4;
-  addEventListener('mousemove', function(e){ mx = e.clientX; my = e.clientY; }, {passive:true});
-  function tick(now){
-    var vh = innerHeight;
-    for(var i=0;i<st.length;i++){
-      var s = st[i];
-      var r = s.el.getBoundingClientRect();
-      var cx = r.left + r.width/2 - s.px;
-      var cy = r.top + r.height/2 - s.py;
-      /* slight parallax against the viewport center */
-      var par = Math.max(-26, Math.min(26, (cy - vh/2) * -0.035));
-      /* extremely slow ambient drift */
-      var dx = Math.sin(now*s.sp + s.ph) * 8;
-      var dy = Math.cos(now*s.sp*.8 + s.ph) * 6;
-      /* the shy cursor push */
-      var qx = mx - cx, qy = my - cy, d = Math.hypot(qx,qy);
-      var pushx = 0, pushy = 0;
-      var reach = Math.max(160, r.width*.55);
-      if(d < reach && d > .1){
-        var f = (reach - d)/reach * 12;
-        pushx = -qx/d*f; pushy = -qy/d*f;
-      }
-      var tx = dx + pushx, ty = par + dy + pushy;
-      s.px += (tx - s.px)*.055; s.py += (ty - s.py)*.055;
-      s.el.style.transform = 'translate(' + s.px.toFixed(2) + 'px,' + s.py.toFixed(2) + 'px)';
+/* click confetti: doodles of the opened practice burst from the click point,
+   fly out, fall, fade, and clean themselves up */
+var confetti = (function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SH = {
+    cross:'<circle cx="13" cy="13" r="10"/><path d="M13 8v10M8 13h10"/>',
+    tube:'<path d="M11 3v13a3 3 0 0 0 6 0V3M9 3h10M11 11h6"/>',
+    ball:'<circle cx="13" cy="13" r="10"/><path d="M13 8l4.8 3.5-1.8 5.6h-6l-1.8-5.6zM13 3v5M22.5 10.1l-4.7 1.4M18.7 22l-2.9-4.8M7.3 22l2.9-4.8M3.5 10.1l4.7 1.4"/>',
+    tennis:'<circle cx="13" cy="13" r="10"/><path d="M4 8c6 3 6 7 0 10M22 8c-6 3-6 7 0 10"/>',
+    flag:'<path d="M6 3v20M6 4h14l-2 4 2 4H6"/><path class="fill" d="M9 5h3v3H9zM15 5h3v3h-3zM12 8h3v3h-3z"/>',
+    syringe:'<path d="M4 22l4-4M8 18l8-8 4 4-8 8zM16 10l2-2M20 6l2-2M18 8l4 4"/>',
+    mic:'<rect x="9.5" y="3" width="7" height="11" rx="3.5"/><path d="M7 11a6 6 0 0 0 12 0M13 17v4M10 21h6"/>',
+    bars:'<path d="M4 23h18M8 23v-9M13 23V7M18 23v-6"/>'
+  };
+  var KINDS = {
+    hc:[['cross','cf-hc'],['tube','cf-hc']],
+    br:[['ball','cf-br'],['tennis','cf-br'],['flag','cf-br'],['syringe','cf-br'],['mic','cf-br']],
+    ai:[['bars','cf-ai']]
+  };
+  KINDS.mix = KINDS.hc.concat(KINDS.br, KINDS.ai);
+  var live = 0, lastAt = 0;
+  function R(a,b){ return a + Math.random()*(b-a); }
+  return function(kind, x, y){
+    if(reduce || x == null) return;
+    var now = performance.now();
+    if(now - lastAt < 180 || live > 48) return;
+    lastAt = now;
+    var set = KINDS[kind] || KINDS.mix;
+    var n = 10 + Math.floor(Math.random()*7);
+    var ps = [];
+    for(var i=0;i<n;i++){
+      var pick = set[Math.floor(Math.random()*set.length)];
+      var el = document.createElement('div');
+      el.className = 'cf ' + pick[1];
+      var s = Math.round(R(14,24));
+      el.innerHTML = '<svg width="'+s+'" height="'+s+'" viewBox="0 0 26 26">' + SH[pick[0]] + '</svg>';
+      document.body.appendChild(el);
+      var a = R(0, Math.PI*2), sp = R(120, 330);
+      ps.push({el:el, x:x, y:y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 190,
+               rot:R(-40,40), vr:R(-260,260)});
+      live++;
     }
-    requestAnimationFrame(tick);
+    var t0 = now, last = now;
+    function step(t){
+      var dt = Math.min((t - last)/1000, .05); last = t;
+      var k = (t - t0)/1400;
+      if(k >= 1){
+        for(var j=0;j<ps.length;j++){ ps[j].el.remove(); live--; }
+        return;
+      }
+      for(var j=0;j<ps.length;j++){
+        var p = ps[j];
+        p.vy += 900*dt;
+        p.x += p.vx*dt; p.y += p.vy*dt; p.rot += p.vr*dt;
+        p.el.style.opacity = k < .55 ? 1 : (1 - (k-.55)/.45);
+        p.el.style.transform = 'translate('+p.x+'px,'+p.y+'px) rotate('+p.rot+'deg)';
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  };
+})();
+
+/* the portrait easter egg + the I performing on a schedule (and on demand) */
+(function(){
+  var spin = document.querySelector('.m-portrait .spinny');
+  if(spin){
+    spin.style.cursor = 'pointer';
+    spin.addEventListener('click', function(e){ confetti('mix', e.clientX, e.clientY); });
   }
-  requestAnimationFrame(tick);
+  var dc = document.querySelector('.dc');
+  if(!dc || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var busy = false;
+  function burst(){
+    if(busy) return; busy = true;
+    dc.classList.add('burst');
+    setTimeout(function(){ dc.classList.remove('burst'); busy = false; }, 500);
+  }
+  (function loop(){ setTimeout(function(){ burst(); loop(); }, 7000 + Math.random()*2000); })();
+  dc.addEventListener('pointerenter', burst);
+  dc.addEventListener('click', burst);
 })();
 </script>
