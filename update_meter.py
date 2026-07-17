@@ -217,13 +217,10 @@ def build_split(rows):
             f'          <span class="depth">{DEPTH_LINE}</span></span>')
 
 
-def build_strip(rows, wired_count, today):
-    today_real = 0.0
+def build_strip(days, vals, rows, wired_count, today):
     latest = None
     for f in rows:
         d = (f.get("Date") or "")[:10]
-        if d == today.isoformat():
-            today_real += (f.get("Cost_USD", 0) or 0) * PUBLIC_MULT_COST
         # Keys vary in shape; take the freshest signal available per row:
         # an ISO timestamp segment if one exists, else the Date field at midnight.
         stamp = None
@@ -246,7 +243,21 @@ def build_strip(rows, wired_count, today):
         hours = (dt.datetime.utcnow() - latest).total_seconds() / 3600
         ago = f"{max(1, round(hours / 24))}d ago" if hours >= 48 else \
               (f"{max(1, round(hours))}h ago" if hours >= 1 else "under 1h ago")
-    return f"${today_real:.2f} today &#183; {wired_count} pipelines &#183; deployed {ago}"
+    # Dollar segment: whole dollars, never $0. Early-day cron runs show near-zero
+    # real spend for today, so fall back to the most recent displayed day >= $1.
+    dollar = None
+    for d, v in zip(reversed(days), reversed(vals)):
+        if round(v) >= 1:
+            if d == today:
+                label = "today"
+            elif d == today - dt.timedelta(days=1):
+                label = "yesterday"
+            else:
+                label = "on " + d.strftime("%b %d")
+            dollar = f"{money(v)} {label}"
+            break
+    parts = ([dollar] if dollar else []) + [f"{wired_count} pipelines", f"deployed {ago}"]
+    return " &#183; ".join(parts)
 
 
 def splice(path, marker_a, marker_b, block, lead, tail):
@@ -268,7 +279,7 @@ def main():
     chart = build_chart(days, vals)
     stat = build_stat(days, vals, rows, today)
     split = build_split(rows)
-    strip = build_strip(rows, wired, today)
+    strip = build_strip(days, vals, rows, wired, today)
 
     v1_block = chart + "\n" + stat
     v2_block = chart + "\n" + stat + "\n" + split
