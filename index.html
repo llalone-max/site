@@ -52,13 +52,13 @@ a:focus-visible,button:focus-visible{outline:1.5px solid var(--ink);outline-offs
 }
 
 /* ---- the wordmark band: cropped white grotesk on dark ---- */
-.band{position:relative;background:var(--band);height:clamp(220px,36vh,420px);overflow:hidden}
-.wordmark{position:absolute;left:50%;bottom:-.05em;transform:translateX(-50%);z-index:1;
-  margin:0;font-family:var(--sans);font-weight:700;font-size:min(38vw,calc(clamp(220px,36vh,420px)*1.18));line-height:1;
+.band{position:relative;background:var(--band);height:clamp(150px,19vw,360px);overflow:hidden}
+.wordmark{position:absolute;left:50%;bottom:-.03em;transform:translateX(-50%);z-index:1;
+  margin:0;font-family:var(--sans);font-weight:700;font-size:calc(clamp(150px,19vw,360px)*2.05);line-height:1;
   letter-spacing:-.045em;white-space:nowrap;color:var(--band-ink);user-select:none;pointer-events:none}
 @media (max-width:600px){
-  .band{height:clamp(92px,29vw,150px)}
-  .wordmark{font-size:min(36vw,calc(clamp(92px,29vw,150px)*1.18));bottom:-.06em;top:auto;transform:translateX(-50%)}
+  .band{height:clamp(92px,26vw,150px)}
+  .wordmark{font-size:calc(clamp(92px,26vw,150px)*2.05);bottom:-.03em;top:auto;transform:translateX(-50%)}
   .stamp{top:10px;right:12px;font-size:8.5px;padding:4px 3px 4px 9px}
 }
 .stamp{position:absolute;top:18px;right:22px;z-index:2;display:inline-block;transform:rotate(-6deg);
