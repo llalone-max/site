@@ -38,19 +38,19 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bandlink:hover .wm{color:var(--lc)}
 .bandlink:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:-3px}
 .tracker .pos{color:rgba(244,242,234,.62);font-variant-numeric:tabular-nums}
-.trk-r{display:flex;align-items:center;gap:18px;min-width:0}
-.rec{flex:none;color:#E08A6A;border:1px solid rgba(224,138,106,.55);padding:5px 10px;
-  text-decoration:none;text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;
-  white-space:nowrap;transition:background-color .25s,color .25s,border-color .25s}
-.rec:hover{background:#E08A6A;color:#191814;border-color:#E08A6A}
-.rec:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:2px}
+/* the record: a quiet corner link, low and off to the side */
+.reclow{position:fixed;left:clamp(14px,3vw,24px);bottom:clamp(12px,2.5vh,20px);z-index:35;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--dim);
+  text-decoration:none;opacity:.62;border-bottom:1px solid transparent;padding-bottom:2px;
+  transition:color .25s,opacity .25s,border-color .25s}
+.reclow:hover{color:var(--lc);opacity:1;border-color:currentColor}
+.reclow:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px;opacity:1}
 @media (max-width:600px){
   .tracker{height:40px}
   .bandlink{width:230px}
   .bandlink .wm{left:10px;font-size:82px}
   .tracker .pos{font-size:10px;letter-spacing:.08em}
-  .trk-r{flex-direction:column;align-items:flex-end;justify-content:center;gap:3px}
-  .rec{font-size:9px;letter-spacing:.1em;padding:3px 7px}
+  .reclow{font-size:9px;letter-spacing:.1em}
 }
 
 /* horizontal walk */
@@ -149,11 +149,10 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <div class="trk-r">
-    <a class="rec" href="record-brands.pdf" target="_blank" rel="noopener">The record (PDF)</a>
-    <span class="pos num" id="pos">01 / 05 &#183; hello</span>
-  </div>
+  <span class="pos num" id="pos">01 / 05 &#183; hello</span>
 </div>
+
+<a class="reclow" href="record-brands.pdf" target="_blank" rel="noopener">The record (PDF)</a>
 
 <main class="track" id="track" aria-label="Brands, a walk in five panels">
 
@@ -271,14 +270,18 @@ document.documentElement.classList.add('js');
     if(i !== cur && i >= 0 && i < panels.length) setPos(i);
   }, {passive:true});
 
-  /* wheel: vertical intent pages horizontally; zoom and back gestures stay native */
+  /* wheel: scroll down or right advances the walk, up or left steps back.
+     The dominant axis drives horizontal movement; zoom and back gestures stay native. */
   var acc = 0, lockUntil = 0, lastWheel = 0;
   track.addEventListener('wheel', function(e){
-    if(e.ctrlKey || e.metaKey) return;
-    if(Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    if(e.ctrlKey || e.metaKey) return;                       /* pinch zoom */
+    var dx = e.deltaX, dy = e.deltaY;
+    var vertical = Math.abs(dy) >= Math.abs(dx);
+    var delta = vertical ? dy : dx;                          /* dominant axis */
+    if(!delta) return;
     var p = panels[cur];
-    if(p.scrollHeight > p.clientHeight + 4){
-      var up = e.deltaY < 0;
+    if(vertical && p.scrollHeight > p.clientHeight + 4){     /* tall panel scrolls itself first */
+      var up = dy < 0;
       var atTop = p.scrollTop <= 0;
       var atBot = p.scrollTop + p.clientHeight >= p.scrollHeight - 1;
       if(!((up && atTop) || (!up && atBot))) return;
@@ -288,7 +291,7 @@ document.documentElement.classList.add('js');
     if(now - lastWheel > 260) acc = 0;
     lastWheel = now;
     if(now < lockUntil) return;
-    acc += e.deltaY;
+    acc += delta;
     if(Math.abs(acc) > 60){
       lockUntil = now + 620;
       goTo(cur + (acc > 0 ? 1 : -1));
