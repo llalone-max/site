@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Brands &#183; Lazar LaLone</title>
+<title>Brands (B2C) &#183; Lazar LaLone</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="The brands practice of Lazar LaLone.">
 <style>
@@ -38,11 +38,19 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bandlink:hover .wm{color:var(--lc)}
 .bandlink:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:-3px}
 .tracker .pos{color:rgba(244,242,234,.62);font-variant-numeric:tabular-nums}
+.trk-r{display:flex;align-items:center;gap:18px;min-width:0}
+.rec{flex:none;color:#E08A6A;border:1px solid rgba(224,138,106,.55);padding:5px 10px;
+  text-decoration:none;text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;
+  white-space:nowrap;transition:background-color .25s,color .25s,border-color .25s}
+.rec:hover{background:#E08A6A;color:#191814;border-color:#E08A6A}
+.rec:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:2px}
 @media (max-width:600px){
   .tracker{height:40px}
   .bandlink{width:230px}
   .bandlink .wm{left:10px;font-size:82px}
   .tracker .pos{font-size:10px;letter-spacing:.08em}
+  .trk-r{flex-direction:column;align-items:flex-end;justify-content:center;gap:3px}
+  .rec{font-size:9px;letter-spacing:.1em;padding:3px 7px}
 }
 
 /* horizontal walk */
@@ -56,6 +64,7 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .plab{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
   color:var(--lc);margin:0 0 clamp(18px,3.6vh,32px);font-variant-numeric:tabular-nums;
   border-top:1px solid var(--hair);padding-top:10px;max-width:340px}
+.plq{color:var(--dim);letter-spacing:.18em}
 .panel h1,.panel h2{margin:0 0 clamp(16px,3vh,26px);font-weight:700;letter-spacing:-.026em;line-height:1.02}
 .panel h1{font-size:clamp(46px,8.4vw,116px)}
 .panel h2{font-size:clamp(30px,4.6vw,58px)}
@@ -85,9 +94,12 @@ a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px
   transition:color .25s}
 a.link:hover{color:var(--ink)}
 .quiet{color:var(--soft)}
-.pdf{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);font-family:var(--mono);
-  font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
-  border-bottom:1px dashed var(--hair);padding-bottom:3px;cursor:default;user-select:none}
+a.pdfgo{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+  background:var(--lc);color:#2A1713;padding:13px 22px;text-decoration:none;
+  transition:background-color .25s}
+a.pdfgo:hover{background:#E08A6A}
+a.pdfgo:focus-visible{outline-offset:3px}
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap}
 
 /* title block, miniature */
@@ -137,18 +149,21 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <span class="pos num" id="pos">01 / 05 &#183; hello</span>
+  <div class="trk-r">
+    <a class="rec" href="record-brands.pdf" target="_blank" rel="noopener">The record (PDF)</a>
+    <span class="pos num" id="pos">01 / 05 &#183; hello</span>
+  </div>
 </div>
 
 <main class="track" id="track" aria-label="Brands, a walk in five panels">
 
   <section class="panel" data-name="hello" aria-label="Hello">
     <div class="pin">
-      <p class="plab">01 &#183; Brands</p>
+      <p class="plab">01 &#183; Brands <span class="plq">(B2C)</span></p>
       <h1>On tonight's bill.</h1>
       <p>My interests outside of work, brought to life through my own lens and whatever the
         newest AI tooling makes possible. Each brand runs on its own content and automation
-        pipeline. Running them all at once is part of the point.</p>
+        pipeline. Running them both at once is part of the point.</p>
       <p class="hint" aria-hidden="true">scroll &#8594;</p>
     </div>
   </section>
@@ -156,7 +171,7 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="the work" aria-label="The work">
     <div class="pin">
       <p class="plab">02 &#183; The work</p>
-      <h2>Three acts.</h2>
+      <h2>Two acts.</h2>
       <div class="bill">
         <a class="act" href="https://fanish.app" target="_blank" rel="noopener">
           <span class="hd"><span class="nm">FANISH</span><span class="ar" aria-hidden="true">&#8599;</span></span>
@@ -165,10 +180,6 @@ document.documentElement.classList.add('js');
         <div class="encore">
           <a href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">&#63743; Download on the App Store &#8599;</a>
         </div>
-        <a class="act" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener">
-          <span class="hd"><span class="nm">FRACTIONAL AESTHETICS</span><span class="ar" aria-hidden="true">&#8599;</span></span>
-          <span class="ds">Marketing strategy for aesthetic practices.</span>
-        </a>
         <a class="act" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener">
           <span class="hd"><span class="nm">LAZARVISION</span><span class="ar" aria-hidden="true">&#8599;</span></span>
           <span class="ds">A cultural commentary operation.</span>
@@ -191,7 +202,8 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">04 &#183; The record</p>
       <h2>The record.</h2>
-      <span class="pdf" aria-disabled="true">PDF coming</span>
+      <p>The formal version, one document, ready to keep or forward.</p>
+      <a class="pdfgo" href="record-brands.pdf" target="_blank" rel="noopener">The record (PDF) &#8599;</a>
     </div>
   </section>
 

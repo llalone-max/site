@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Healthcare &#183; Lazar LaLone</title>
+<title>Healthcare (B2B) &#183; Lazar LaLone</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="The healthcare practice of Lazar LaLone.">
 <style>
@@ -35,11 +35,19 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bandlink:hover .wm{color:var(--lc)}
 .bandlink:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:-3px}
 .tracker .pos{color:rgba(244,242,234,.62);font-variant-numeric:tabular-nums}
+.trk-r{display:flex;align-items:center;gap:18px;min-width:0}
+.rec{flex:none;color:#7FB4DE;border:1px solid rgba(127,180,222,.55);padding:5px 10px;
+  text-decoration:none;text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;
+  white-space:nowrap;transition:background-color .25s,color .25s,border-color .25s}
+.rec:hover{background:#7FB4DE;color:#191814;border-color:#7FB4DE}
+.rec:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:2px}
 @media (max-width:600px){
   .tracker{height:40px}
   .bandlink{width:230px}
   .bandlink .wm{left:10px;font-size:82px}
   .tracker .pos{font-size:10px;letter-spacing:.08em}
+  .trk-r{flex-direction:column;align-items:flex-end;justify-content:center;gap:3px}
+  .rec{font-size:9px;letter-spacing:.1em;padding:3px 7px}
 }
 
 /* horizontal walk */
@@ -52,6 +60,7 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .pin{max-width:720px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
 .plab{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
   color:var(--lc);margin:0 0 6px;font-variant-numeric:tabular-nums}
+.plq{color:var(--dim);letter-spacing:.18em}
 .ekgrule{display:block;width:100%;max-width:340px;height:16px;margin:0 0 clamp(20px,4vh,38px);color:var(--lc)}
 .ekgrule path{stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
 .panel h1,.panel h2{margin:0 0 clamp(16px,3vh,26px);font-weight:600;letter-spacing:-.024em;line-height:1.05}
@@ -76,9 +85,12 @@ a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px
   transition:color .25s}
 a.link:hover{color:var(--ink)}
 .quiet{color:var(--soft);font-style:normal}
-.pdf{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);font-family:var(--mono);
-  font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
-  border-bottom:1px dashed var(--hair);padding-bottom:3px;cursor:default;user-select:none}
+a.pdfgo{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+  background:var(--lc);color:#F7F9FB;padding:13px 22px;text-decoration:none;
+  transition:background-color .25s}
+a.pdfgo:hover{background:#2E5F8C}
+a.pdfgo:focus-visible{outline-offset:3px}
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap;margin-top:clamp(6px,1vh,10px)}
 .tlinks a{margin-top:clamp(16px,3vh,24px)}
 
@@ -121,14 +133,17 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <span class="pos num" id="pos">01 / 05 &#183; hello</span>
+  <div class="trk-r">
+    <a class="rec" href="record-healthcare.pdf" target="_blank" rel="noopener">The record (PDF)</a>
+    <span class="pos num" id="pos">01 / 06 &#183; hello</span>
+  </div>
 </div>
 
-<main class="track" id="track" aria-label="Healthcare, a walk in five panels">
+<main class="track" id="track" aria-label="Healthcare, a walk in six panels">
 
   <section class="panel" data-name="hello" aria-label="Hello">
     <div class="pin">
-      <p class="plab">01 &#183; Healthcare</p>
+      <p class="plab">01 &#183; Healthcare <span class="plq">(B2B)</span></p>
       <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 8 H120 l8 0 5 -6 6 11 7 -13 8 14 6 -8 4 2 H340"/></svg>
       <h1>The career.</h1>
@@ -156,9 +171,22 @@ document.documentElement.classList.add('js');
     </div>
   </section>
 
+  <section class="panel" data-name="the venture" aria-label="Fractional Aesthetics">
+    <div class="pin">
+      <p class="plab">03 &#183; The venture</p>
+      <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 8 H120 l8 0 5 -6 6 11 7 -13 8 14 6 -8 4 2 H340"/></svg>
+      <h2>Fractional Aesthetics.</h2>
+      <p>The current venture, and the B2B side of the practice: audits and advisory for
+        aesthetic-medicine practices. A clinic gets a clear read on its marketing, then a
+        plan it can actually run.</p>
+      <a class="link" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener">fractionalaesthetics.com &#8599;</a>
+    </div>
+  </section>
+
   <section class="panel" data-name="kind words" aria-label="Kind words">
     <div class="pin">
-      <p class="plab">03 &#183; Kind words</p>
+      <p class="plab">04 &#183; Kind words</p>
       <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 8 H120 l8 0 5 -6 6 11 7 -13 8 14 6 -8 4 2 H340"/></svg>
       <p class="quiet">Kind words are being collected.</p>
@@ -167,17 +195,18 @@ document.documentElement.classList.add('js');
 
   <section class="panel" data-name="the record" aria-label="The record">
     <div class="pin">
-      <p class="plab">04 &#183; The record</p>
+      <p class="plab">05 &#183; The record</p>
       <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 8 H120 l8 0 5 -6 6 11 7 -13 8 14 6 -8 4 2 H340"/></svg>
       <h2>The record.</h2>
-      <span class="pdf" aria-disabled="true">PDF coming</span>
+      <p>The formal version, one document, ready to keep or forward.</p>
+      <a class="pdfgo" href="record-healthcare.pdf" target="_blank" rel="noopener">The record (PDF) &#8599;</a>
     </div>
   </section>
 
   <section class="panel" data-name="talk" aria-label="Talk">
     <div class="pin">
-      <p class="plab">05 &#183; Talk</p>
+      <p class="plab">06 &#183; Talk</p>
       <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 8 H120 l8 0 5 -6 6 11 7 -13 8 14 6 -8 4 2 H340"/></svg>
       <h2>Let&#8217;s talk.</h2>
