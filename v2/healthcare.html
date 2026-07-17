@@ -82,6 +82,14 @@ a.link:hover{color:var(--ink)}
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap;margin-top:clamp(6px,1vh,10px)}
 .tlinks a{margin-top:clamp(16px,3vh,24px)}
 
+/* title block, miniature */
+.tb{display:flex;flex-wrap:wrap;align-self:flex-start;margin-top:clamp(34px,7vh,60px);
+  border:1px solid var(--strong);font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.14em;color:var(--soft)}
+.tb span{padding:6px 10px;border-left:1px solid var(--hair);white-space:nowrap}
+.tb span:first-child{border-left:0}
+.tb b{font-weight:400;color:var(--ink)}
+
 /* welcome: the EKG draws itself, then settles into the header rule */
 .wel{display:none}
 html.js:not(.nowel) .wel{position:fixed;inset:0;z-index:60;background:var(--bg);
@@ -172,10 +180,16 @@ document.documentElement.classList.add('js');
       <p class="plab">05 &#183; Talk</p>
       <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 8 H120 l8 0 5 -6 6 11 7 -13 8 14 6 -8 4 2 H340"/></svg>
-      <h2>Talk to me.</h2>
+      <h2>Let&#8217;s talk.</h2>
       <div class="tlinks">
-        <a class="link" href="mailto:lazarlalone@gmail.com?subject=Healthcare">lazarlalone@gmail.com</a>
+        <a class="link" href="mailto:lazarlalone@gmail.com?subject=Slack%20Connect%20invite">Slack &#183; email me for the invite</a>
         <a class="link" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+        <a class="link" href="mailto:lazarlalone@gmail.com?subject=Healthcare">lazarlalone@gmail.com</a>
+      </div>
+      <div class="tb" aria-label="Title block">
+        <span>lazarlalone.com</span>
+        <span>DRAWN BY <b>L. LaLone</b></span>
+        <span>SHEET <b>2 OF 4</b></span>
       </div>
     </div>
   </section>

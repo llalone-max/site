@@ -11,7 +11,7 @@
 :root{
   --bg:#0E100D; --ink:#8FDE9C; --soft:#5F9B6C; --dim:#3E6448;
   --hair:rgba(143,222,156,.16); --strong:rgba(143,222,156,.4);
-  --lc:#E8963F;
+  --lc:#57E389;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
 }
 *{box-sizing:border-box}
@@ -77,6 +77,13 @@ a.link:hover{color:var(--ink)}
   letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
   border-bottom:1px dashed var(--hair);padding-bottom:3px;cursor:default;user-select:none}
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap}
+
+/* title block, miniature */
+.tb{display:flex;flex-wrap:wrap;align-self:flex-start;margin-top:clamp(34px,7vh,60px);
+  border:1px solid var(--strong);font-size:9.5px;letter-spacing:.14em;color:var(--soft)}
+.tb span{padding:6px 10px;border-left:1px solid var(--hair);white-space:nowrap}
+.tb span:first-child{border-left:0}
+.tb b{font-weight:400;color:var(--ink)}
 
 /* welcome: three lines of boot log type themselves, then yield */
 .wel{display:none}
@@ -154,10 +161,16 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="talk" aria-label="Talk">
     <div class="pin">
       <p class="plab">05 &#183; talk</p>
-      <h2>Talk to me.</h2>
+      <h2>Let&#8217;s talk.</h2>
       <div class="tlinks">
-        <a class="link" href="mailto:lazarlalone@gmail.com?subject=AI%20operations">lazarlalone@gmail.com</a>
+        <a class="link" href="mailto:lazarlalone@gmail.com?subject=Slack%20Connect%20invite">Slack &#183; email me for the invite</a>
         <a class="link" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+        <a class="link" href="mailto:lazarlalone@gmail.com?subject=AI%20operations">lazarlalone@gmail.com</a>
+      </div>
+      <div class="tb" aria-label="Title block">
+        <span>lazarlalone.com</span>
+        <span>DRAWN BY <b>L. LaLone</b></span>
+        <span>SHEET <b>4 OF 4</b></span>
       </div>
     </div>
   </section>

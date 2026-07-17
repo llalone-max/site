@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>404 &#183; Lazar LaLone</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<style>
+:root{
+  --paper:#F2F1EA; --ink:#191814; --soft:#605C50; --dim:#98937F;
+  --hair:rgba(25,24,20,.16); --strong:rgba(25,24,20,.42);
+  --hc:#3E7CB1; --band:#191814; --band-ink:#F4F2EA;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --grot:"Helvetica Neue",Helvetica,-apple-system,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100dvh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);
+  font-family:var(--grot);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden}
+a{color:inherit}
+
+/* the band, cropped */
+.band{position:relative;flex:none;background:var(--band);height:clamp(92px,12vw,170px);overflow:hidden}
+.wordmark{position:absolute;left:50%;bottom:-.03em;transform:translateX(-50%);margin:0;
+  font-weight:700;font-size:calc(clamp(92px,12vw,170px)*2.05);line-height:1;
+  letter-spacing:-.045em;white-space:nowrap;color:var(--band-ink);
+  user-select:none;pointer-events:none}
+.band a{position:absolute;inset:0}
+
+main{flex:1;width:100%;max-width:1180px;margin:0 auto;display:flex;flex-direction:column;
+  justify-content:center;padding:clamp(40px,8vh,90px) clamp(22px,6vw,76px) clamp(60px,10vh,120px)}
+.figlab{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;color:var(--dim);
+  text-transform:uppercase;border-top:1px solid var(--hair);padding-top:10px;margin:0 0 clamp(26px,5vh,44px)}
+
+/* the monitor */
+.ekg{display:block;width:100%;height:clamp(70px,14vh,110px);color:var(--ink)}
+.ekg path{stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ekg .beat{stroke:var(--hc);visibility:hidden}
+.ekg.live .flat{opacity:0;transition:opacity .25s ease .2s}
+.ekg.live .beat{visibility:visible;stroke-dasharray:1120;stroke-dashoffset:1120;
+  animation:sweep .85s linear forwards}
+@keyframes sweep{to{stroke-dashoffset:0}}
+
+.msg{margin:clamp(22px,4vh,36px) 0 0;font-family:var(--mono);font-size:12px;
+  letter-spacing:.1em;color:var(--soft)}
+.msg b{font-weight:400;color:var(--ink)}
+
+/* the paddle */
+.defib{appearance:none;align-self:flex-start;margin-top:clamp(26px,5vh,42px);cursor:pointer;
+  font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:var(--ink);
+  background:var(--paper);border:1.5px solid var(--ink);padding:12px 26px;
+  box-shadow:3px 3px 0 var(--hair);transform:rotate(-.5deg)}
+.defib:hover{background:var(--ink);color:var(--paper);box-shadow:3px 3px 0 var(--strong)}
+.defib:active{transform:rotate(-.5deg) translate(2px,2px);box-shadow:1px 1px 0 var(--strong)}
+.defib:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
+.defib[disabled]{cursor:default}
+
+.err{margin-top:auto;padding-top:clamp(40px,8vh,70px);font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.08em;color:var(--dim)}
+.err a{color:inherit;text-decoration:none;border-bottom:1px solid var(--hair)}
+.err a:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header class="band" aria-label="Lazar LaLone">
+  <p class="wordmark" aria-hidden="true">lalone</p>
+  <a href="/v2/" aria-label="lalone, home"></a>
+</header>
+
+<main>
+  <p class="figlab">Fig. 404 &#183; no signal</p>
+
+  <svg class="ekg" id="ekg" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
+    <path class="flat" d="M0 60 H1000"/>
+    <path class="beat" pathLength="1120"
+      d="M0 60 H250 l10 0 8 -12 8 20 10 -42 12 50 10 -24 8 10 H560 l8 -10 8 16 10 -38 12 46 10 -22 8 8 H1000"/>
+  </svg>
+
+  <p class="msg" id="msg"><b>Flatline.</b> This page does not exist.</p>
+
+  <button class="defib" id="defib" type="button">REVIVE</button>
+
+  <p class="err">ERR 404 &#183; or walk back to <a href="/v2/">the lobby</a> yourself</p>
+</main>
+
+<script>
+(function(){
+  var btn = document.getElementById('defib');
+  var ekg = document.getElementById('ekg');
+  var msg = document.getElementById('msg');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fired = false;
+  btn.addEventListener('click', function(){
+    if(reduce){ location.href = '/v2/'; return; }
+    if(fired) return;
+    fired = true;
+    btn.setAttribute('disabled','');
+    ekg.classList.add('live');
+    msg.innerHTML = '<b>Rhythm restored.</b> Taking you to the lobby.';
+    setTimeout(function(){ location.href = '/v2/'; }, 1050);
+  });
+})();
+</script>
+</body>
+</html>

@@ -3,8 +3,7 @@
 
 Runs on a daily GitHub Action. Rewrites:
   - index.html      : everything between <!--METER--> and <!--/METER-->  (v1 chart + stat line)
-  - v2/index.html   : the same METER block plus the process-group split and depth
-                      line, and the <!--STRIP--> ... <!--/STRIP--> live-strip values
+  - v2/index.html   : the same METER block plus the process-group split and depth line
 
 Series: daily bars starting July 1, 2026 (capped to the trailing 30 days once the
 series outgrows that). Days without Airtable rows are backfilled synthetically per
@@ -217,49 +216,6 @@ def build_split(rows):
             f'          <span class="depth">{DEPTH_LINE}</span></span>')
 
 
-def build_strip(days, vals, rows, wired_count, today):
-    latest = None
-    for f in rows:
-        d = (f.get("Date") or "")[:10]
-        # Keys vary in shape; take the freshest signal available per row:
-        # an ISO timestamp segment if one exists, else the Date field at midnight.
-        stamp = None
-        for seg in (f.get("Key") or "").split("|"):
-            try:
-                stamp = dt.datetime.strptime(seg, "%Y-%m-%dT%H:%M:%SZ")
-                break
-            except ValueError:
-                pass
-        if stamp is None and d:
-            try:
-                stamp = dt.datetime.strptime(d, "%Y-%m-%d")
-            except ValueError:
-                pass
-        if stamp is not None and (latest is None or stamp > latest):
-            latest = stamp
-    if latest is None:
-        ago = "recently"
-    else:
-        hours = (dt.datetime.utcnow() - latest).total_seconds() / 3600
-        ago = f"{max(1, round(hours / 24))}d ago" if hours >= 48 else \
-              (f"{max(1, round(hours))}h ago" if hours >= 1 else "under 1h ago")
-    # Dollar segment: whole dollars, never $0. Early-day cron runs show near-zero
-    # real spend for today, so fall back to the most recent displayed day >= $1.
-    dollar = None
-    for d, v in zip(reversed(days), reversed(vals)):
-        if round(v) >= 1:
-            if d == today:
-                label = "today"
-            elif d == today - dt.timedelta(days=1):
-                label = "yesterday"
-            else:
-                label = "on " + d.strftime("%b %d")
-            dollar = f"{money(v)} {label}"
-            break
-    parts = ([dollar] if dollar else []) + [f"{wired_count} pipelines", f"deployed {ago}"]
-    return " &#183; ".join(parts)
-
-
 def splice(path, marker_a, marker_b, block, lead, tail):
     s = open(path).read()
     i1, i2 = s.index(marker_a) + len(marker_a), s.index(marker_b)
@@ -273,13 +229,11 @@ def splice(path, marker_a, marker_b, block, lead, tail):
 def main():
     today = dt.date.today()
     rows = fetch_table("Spend_Variable")
-    wired = sum(1 for f in fetch_table("Processes") if f.get("Wired"))
 
     days, vals = build_series(rows, today)
     chart = build_chart(days, vals)
     stat = build_stat(days, vals, rows, today)
     split = build_split(rows)
-    strip = build_strip(days, vals, rows, wired, today)
 
     v1_block = chart + "\n" + stat
     v2_block = chart + "\n" + stat + "\n" + split
@@ -289,8 +243,6 @@ def main():
                       "<!--METER-->", "<!--/METER-->", v1_block, "\n          ", "\n        ")
     changed |= splice(os.path.join(HERE, "v2", "index.html"),
                       "<!--METER-->", "<!--/METER-->", v2_block, "\n          ", "\n        ")
-    changed |= splice(os.path.join(HERE, "v2", "index.html"),
-                      "<!--STRIP-->", "<!--/STRIP-->", strip, "", "")
     print("meter updated" if changed else "no change")
 
 

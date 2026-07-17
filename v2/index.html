@@ -11,7 +11,7 @@
 :root{
   --paper:#F2F1EA; --ink:#191814; --soft:#605C50; --dim:#98937F;
   --hair:rgba(25,24,20,.16); --strong:rgba(25,24,20,.42);
-  --hc:#3E7CB1; --br:#C84B31; --ai:#B87700;
+  --hc:#3E7CB1; --br:#C84B31; --ai:#3E6448;
   --band:#191814; --band-ink:#F4F2EA;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
   --grot:"Helvetica Neue",Helvetica,-apple-system,"Segoe UI",Arial,sans-serif;
@@ -40,16 +40,6 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .band{height:clamp(92px,26vw,150px)}
   .wordmark{font-size:calc(clamp(92px,26vw,150px)*2.05)}
 }
-
-/* 2 · live strip */
-.strip{border-bottom:1px solid var(--hair);font-family:var(--mono);font-size:11px;
-  letter-spacing:.09em;color:var(--soft);font-variant-numeric:tabular-nums}
-.strip .wrap{display:flex;justify-content:space-between;gap:16px;align-items:baseline;
-  padding-top:11px;padding-bottom:11px;flex-wrap:wrap}
-.strip a{color:var(--ai);text-decoration:none;border-bottom:1px solid currentColor;
-  padding-bottom:1px;white-space:nowrap;transition:color .2s}
-.strip a:hover{color:var(--ink)}
-.strip a:focus-visible{outline-color:var(--ai)}
 
 /* 3 · hero; the I draws itself once, one confident pen stroke */
 .hero{margin-top:clamp(56px,9vh,110px)}
@@ -98,20 +88,28 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .instr{display:grid;grid-template-columns:minmax(200px,260px) 1fr;
   gap:clamp(34px,6vw,84px);align-items:end}
 @media (max-width:820px){.instr{grid-template-columns:1fr;align-items:start}}
-/* the portrait swaps to the doc-ock version on hover or tap */
+/* the portrait: framed at rest; on hover or tap the frame dissolves
+   and the whole operator stands on the page, arms and all */
 .pswap{appearance:none;display:block;position:relative;padding:0;margin:0;
   border:1px solid var(--hair);background:#fff;cursor:pointer;
-  width:100%;max-width:260px;aspect-ratio:1/1;overflow:hidden}
-.pswap img{display:block;position:absolute;inset:0;width:100%;height:100%}
-.pswap .p1{opacity:0;transform:scale(1.135);transform-origin:50% 44%}
+  width:100%;max-width:260px;aspect-ratio:1/1}
+.pswap .p0{display:block;position:absolute;inset:0;width:100%;height:100%}
+.pswap .p1{display:block;position:absolute;left:50%;bottom:-1px;height:185%;width:auto;
+  translate:-50% 14px;mix-blend-mode:multiply;pointer-events:none;opacity:0}
 .pswap:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (prefers-reduced-motion:no-preference){
-  .pswap .p1{transition:opacity .45s ease,transform .6s cubic-bezier(.3,0,.25,1)}
+  .pswap{transition:border-color .4s ease,background-color .4s ease}
+  .pswap .p0{transition:opacity .35s ease}
+  .pswap .p1{transition:opacity .45s ease,translate .6s cubic-bezier(.3,0,.25,1)}
 }
 @media (hover:hover){
-  .pswap:hover .p1{opacity:1;transform:scale(1)}
+  .pswap:hover{border-color:transparent;background:transparent}
+  .pswap:hover .p0{opacity:0}
+  .pswap:hover .p1{opacity:1;translate:-50% 0}
 }
-.pswap.arms .p1,.pswap:focus-visible .p1{opacity:1;transform:scale(1)}
+.pswap.arms,.pswap:focus-visible{border-color:transparent;background:transparent}
+.pswap.arms .p0,.pswap:focus-visible .p0{opacity:0}
+.pswap.arms .p1,.pswap:focus-visible .p1{opacity:1;translate:-50% 0}
 .capswap{display:grid}
 .capswap span{grid-area:1/1;transition:opacity .35s ease}
 .capswap .c1{opacity:0}
@@ -164,29 +162,30 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .talk h2 a{text-decoration:underline;text-decoration-thickness:.03em;text-underline-offset:.14em;
   text-decoration-color:var(--hair);transition:text-decoration-color .3s}
 .talk h2 a:hover{text-decoration-color:var(--ai)}
+.talknote{margin:clamp(14px,2.2vw,22px) 0 0;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:54ch}
 .talklinks{margin-top:clamp(20px,3vw,30px);display:flex;gap:clamp(22px,4vw,44px);flex-wrap:wrap;
   font-family:var(--mono);font-size:12px;letter-spacing:.12em}
 .talklinks a{color:var(--soft);text-decoration:none;border-bottom:1px solid var(--hair);
   padding-bottom:3px;transition:color .25s,border-color .25s}
 .talklinks a:hover{color:var(--ink);border-color:var(--strong)}
 
-/* 7.5 · the fortune cookie */
-.cookiemod{margin-top:clamp(60px,9vh,110px);display:flex;align-items:flex-end;
+/* 7.5 · the fortune cookie: ink and watercolor, cracks on tap */
+.cookiemod{margin-top:clamp(60px,9vh,110px);display:flex;align-items:center;
   gap:clamp(18px,3vw,30px);flex-wrap:wrap}
-.cookie{appearance:none;background:none;border:0;padding:6px;margin:-6px;cursor:pointer;
-  color:var(--ink);flex:none}
-.cookie svg{display:block;width:96px;height:66px;overflow:visible}
-.cookie path{stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.cookie .half{transform-box:fill-box;transform-origin:50% 88%}
+.cookie{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;flex:none;
+  position:relative;width:clamp(170px,24vw,224px)}
+.cookie img{display:block;width:100%;height:auto;mix-blend-mode:multiply;pointer-events:none}
+.cookie .ck1{position:absolute;inset:0;opacity:0}
 .cookie:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (prefers-reduced-motion:no-preference){
-  .cookie .half{transition:transform .45s cubic-bezier(.32,1.35,.42,1)}
-  .cookie:hover:not(.open) svg{animation:cwiggle .5s ease}
+  .cookie img{transition:opacity .3s ease}
+  .cookie:hover:not(.open) .ck0{animation:cwiggle .5s ease}
 }
-@keyframes cwiggle{30%{transform:rotate(-2.5deg)}65%{transform:rotate(2deg)}}
+@keyframes cwiggle{30%{transform:rotate(-2deg)}65%{transform:rotate(1.6deg)}}
 .cookie.open{cursor:default}
-.cookie.open .hl{transform:rotate(-11deg) translate(-9px,3px)}
-.cookie.open .hr{transform:rotate(9deg) translate(9px,2px)}
+.cookie.open .ck0{opacity:0}
+.cookie.open .ck1{opacity:1}
 .slip{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;line-height:1.6;
   color:var(--ink);background:#FBFAF4;border:1px solid var(--hair);
   padding:9px 14px;max-width:34ch;transform:rotate(-1.2deg);
@@ -198,12 +197,26 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .cookienote{flex-basis:100%;margin:2px 0 0;font-family:var(--mono);font-size:10.5px;
   letter-spacing:.08em;color:var(--dim)}
 
-/* 8 · colophon */
-.colophon{margin-top:clamp(70px,11vh,130px);border-top:1px solid var(--hair);
-  padding:16px 0 44px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
-  line-height:2;color:var(--dim)}
-.colophon a{color:inherit;text-decoration:none;border-bottom:1px solid var(--hair);transition:color .25s}
-.colophon a:hover{color:var(--ink)}
+/* 8 · colophon: the sheet's title block */
+.colophon{margin-top:clamp(70px,11vh,130px);padding:0 0 44px}
+.tblock{border:1px solid var(--strong);font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.06em;color:var(--soft)}
+.tbrow{display:flex;flex-wrap:wrap}
+.tbcell{flex:1 1 auto;display:flex;flex-direction:column;gap:3px;padding:8px 12px 9px;
+  border-left:1px solid var(--hair);min-width:0}
+.tbcell:first-child{border-left:0;flex-grow:1.8}
+.tbk{font-size:8.5px;letter-spacing:.2em;color:var(--dim)}
+.tbv{color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.tbnotes{margin:0;border-top:1px solid var(--strong);padding:8px 12px 9px;
+  line-height:1.9;color:var(--dim);letter-spacing:.07em;font-size:10px}
+.tbnotes a{color:inherit;text-decoration:none;border-bottom:1px solid var(--hair);transition:color .25s}
+.tbnotes a:hover{color:var(--ink)}
+@media (max-width:600px){
+  .tbrow{display:grid;grid-template-columns:1fr 1fr}
+  .tbcell{border-left:0;border-top:1px solid var(--hair)}
+  .tbcell:first-child{grid-column:1/-1;border-top:0}
+  .tbcell:nth-child(odd):not(:first-child){border-left:1px solid var(--hair)}
+}
 
 /* lane-color flood on choose */
 .flood{position:fixed;left:0;top:0;z-index:99;border-radius:50%;pointer-events:none;
@@ -220,14 +233,6 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 <header class="band" aria-label="Lazar LaLone">
   <p class="wordmark" aria-hidden="true">lalone</p>
 </header>
-
-<!-- 2 · live strip -->
-<div class="strip num">
-  <div class="wrap">
-    <span><!--STRIP-->$2 yesterday &#183; 6 pipelines &#183; deployed 3d ago<!--/STRIP--></span>
-    <a href="https://ops.lazarlalone.com" target="_blank" rel="noopener">ops &#8599;</a>
-  </div>
-</div>
 
 <div class="wrap">
 <main>
@@ -257,9 +262,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     <div class="instr">
       <figure class="portrait">
         <button class="pswap" id="pswap" type="button" aria-pressed="false"
-                aria-label="Portrait of Lazar LaLone, ink and watercolor. Activate to unfold the AI arms.">
+                aria-label="Portrait of Lazar LaLone, ink and watercolor. Activate to see the whole operator, mechanical arms and all.">
           <img class="p0" src="portrait.jpg" width="640" height="640" alt="">
-          <img class="p1" src="portrait-arms.jpg" width="640" height="640" alt="" loading="lazy">
+          <img class="p1" src="portrait-full.webp" width="720" height="1290" alt="" loading="lazy">
         </button>
         <figcaption class="cap capswap">
           <span class="c0">The operator. Ink and watercolor, from life.</span>
@@ -314,43 +319,41 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 
   <!-- 7 · get in touch -->
   <section class="talk" id="talk">
-    <h2><a href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">Talk to me.</a></h2>
+    <h2><a href="mailto:lazarlalone@gmail.com?subject=Slack%20Connect%20invite">Let&#8217;s talk.</a></h2>
+    <p class="talknote">Chances are we can help each other. Slack is fastest, LinkedIn works, email always lands.</p>
     <div class="talklinks">
-      <a href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">lazarlalone@gmail.com</a>
+      <a href="mailto:lazarlalone@gmail.com?subject=Slack%20Connect%20invite">Slack &#183; email me for the invite</a>
       <a href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+      <a href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">lazarlalone@gmail.com</a>
     </div>
   </section>
 
   <!-- 7.5 · the fortune cookie -->
   <section class="cookiemod" id="cookiemod" aria-label="Fortune cookie">
     <button class="cookie" id="cookie" type="button" aria-expanded="false" aria-label="A fortune cookie. Crack it open.">
-      <svg viewBox="0 0 104 72" focusable="false" aria-hidden="true">
-        <g class="half hl">
-          <path d="M50 12 C34 12 20 26 14 49 C22 55 34 59 44 56 C47 55 49 56 50 58"/>
-          <path d="M50 12 L47 24 L52 34 L47 46 L50 58"/>
-          <path d="M33 28 C29 34 27 40 28 46"/>
-        </g>
-        <g class="half hr">
-          <path d="M54 12 C70 12 84 26 90 49 C82 55 70 59 60 56 C57 55 55 56 54 58"/>
-          <path d="M54 12 L57 24 L52 34 L57 46 L54 58"/>
-          <path d="M71 28 C75 34 77 40 76 46"/>
-        </g>
-        <g class="crumbs" fill="currentColor" stroke="none">
-          <circle cx="26" cy="66" r="1"/><circle cx="54" cy="68" r="1"/><circle cx="80" cy="65" r="1"/>
-        </g>
-      </svg>
+      <img class="ck0" src="cookie-closed.webp" width="560" height="413" alt="">
+      <img class="ck1" src="cookie-cracked.webp" width="560" height="413" alt="" loading="lazy">
     </button>
     <p class="slip" id="slip" aria-live="polite"></p>
     <p class="cookienote">This site uses no cookies. Have one anyway.</p>
   </section>
 
-  <!-- 8 · colophon -->
+  <!-- 8 · colophon: the title block -->
   <footer class="colophon">
-    lazarlalone.com &#183; set in system grotesk and mono &#183;
-    interaction language inspired by <a href="https://rauno.me" target="_blank" rel="noopener">rauno.me</a> &#183;
-    portrait drawn from life by machine &#183; data live from my own pipelines &#183;
-    fortune cookie, after <a href="https://wholefestival.com" target="_blank" rel="noopener">wholefestival.com</a> &#183;
-    &#169; 2026 Lazar LaLone
+    <div class="tblock" aria-label="Title block">
+      <div class="tbrow">
+        <span class="tbcell"><span class="tbk">PROJECT</span><span class="tbv">lazarlalone.com</span></span>
+        <span class="tbcell"><span class="tbk">DRAWN BY</span><span class="tbv">L. LaLone</span></span>
+        <span class="tbcell"><span class="tbk">REV</span><span class="tbv">2</span></span>
+        <span class="tbcell"><span class="tbk">DATE</span><span class="tbv">JUL 2026</span></span>
+        <span class="tbcell"><span class="tbk">SHEET</span><span class="tbv">1 OF 4</span></span>
+      </div>
+      <p class="tbnotes">NOTES &#183; set in system grotesk and mono &#183;
+        interaction language after <a href="https://rauno.me" target="_blank" rel="noopener">rauno.me</a> &#183;
+        portrait drawn from life by machine &#183; data live from my own pipelines &#183;
+        fortune cookie, after <a href="https://wholefestival.com" target="_blank" rel="noopener">wholefestival.com</a> &#183;
+        &#169; 2026 Lazar LaLone</p>
+    </div>
   </footer>
 
 </main>
@@ -359,7 +362,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 <script>
 /* lane-color flood: motion belongs to the chosen thing */
 (function(){
-  var colors = {hc:'#3E7CB1', br:'#C84B31', ai:'#B87700'};
+  var colors = {hc:'#3E7CB1', br:'#C84B31', ai:'#3E6448'};
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var leaving = false;
   document.querySelectorAll('[data-lane]').forEach(function(a){
