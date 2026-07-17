@@ -217,7 +217,7 @@ a.cl{font-style:normal}
 @media (max-width:600px){.rd{font-size:13px}}
 
 /* portrait module */
-.spinny{display:block;width:clamp(150px,15vw,210px);height:auto;margin:0 auto;
+.spinny{display:block;width:clamp(150px,15vw,210px);height:auto;margin:0 auto;color:var(--ink);
   animation:turn 46s linear infinite}
 @keyframes turn{to{transform:rotate(360deg)}}
 .spinny path,.spinny circle{stroke:var(--ink);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -381,23 +381,38 @@ a.cl{font-style:normal}
       </article>
 
       <figure class="mod m-portrait">
-        <svg class="spinny" viewBox="0 0 120 132" aria-label="A doodle of Lazar LaLone, spinning slowly">
-          <path d="M40 40 C36 53 37 68 42 79 C47 91 54 98 60 98 C67 98 75 90 80 79 C84 69 85 53 82 41"/>
-          <path d="M35 46 C28 26 40 10 59 9 C79 8 91 24 86 44"/>
-          <path d="M40 26 C48 16 60 13 70 17 M46 20 C56 24 66 21 76 27 M38 34 C44 28 52 30 56 25"/>
-          <path d="M46 48 L60 46 M68 46 L82 48" stroke-width="3"/>
-          <path d="M49 56 C52 54 56 54 59 56 M68 56 C71 54 75 54 78 56"/>
-          <circle class="dotf" cx="54" cy="56.5" r="1.5"/><circle class="dotf" cx="73" cy="56.5" r="1.5"/>
-          <path d="M63 56 C63 63 62 66 60 69 C62 71 65 71 67 70"/>
-          <path d="M53 81 C58 84 66 84 71 80"/>
-          <path d="M37 58 C34 57 33 62 36 66 M85 58 C88 57 89 62 86 66"/>
-          <circle class="dotf" cx="49" cy="86" r=".8"/><circle class="dotf" cx="55" cy="90" r=".8"/>
-          <circle class="dotf" cx="61" cy="91.5" r=".8"/><circle class="dotf" cx="67" cy="89" r=".8"/><circle class="dotf" cx="72" cy="85" r=".8"/>
-          <path d="M52 98 L51 108 M69 98 L70 108"/>
-          <path d="M38 118 L60 106 L83 118 M30 128 C36 120 46 113 52 111 M91 128 C85 120 75 113 69 111"/>
-          <path class="amberline" d="M56 111 L60 107 L65 111 L60 116 Z M58 116 L60 129 L63 116"/>
-        </svg>
-        <figcaption class="mcap">The operator. Self-portrait, pencil, pending a better likeness.
+        <svg class="spinny" viewBox="0 0 120 148" xmlns="http://www.w3.org/2000/svg" aria-label="A doodle of Lazar LaLone">
+  <g stroke="currentColor" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M38 42 C36 53 37 64 41 73 C45 82 52 89 60 89 C68 89 75 82 79 73 C83 64 84 53 82 42"/>
+    <path d="M34 46 C29 24 42 9 60 8 C80 7 91 24 86 44"/>
+    <path d="M37 24 C46 12 60 7 72 13 M43 18 C54 24 67 21 78 28 M84 32 C78 25 69 23 63 26 M35 34 C40 27 47 29 52 25"/>
+    <path d="M36 54 C33 53 32 59 35 63 M84 54 C87 53 88 59 85 63"/>
+    <path d="M44 47 C48 45 54 45 58 47 M63 47 C67 45 73 45 77 47" stroke-width="3.1"/>
+    <path d="M46 54 C49 52 54 52 57 54 M46 54 C49 56 54 56 57 54 M64 54 C67 52 72 52 75 54 M64 54 C67 56 72 56 75 54"/>
+    <path d="M60.5 54 C60.5 61 60 64 58 68 C60 70 63 70 65 69"/>
+    <path d="M52 76 C56 74 60 75 60.5 75 C61 75 65 74 69 76 M52 76 C56 79 65 79 69 76 M55 81 C58 83 63 83 66 81"/>
+    <g fill="currentColor" stroke="none" opacity=".5">
+      <circle cx="46" cy="76" r=".7"/><circle cx="49" cy="81" r=".7"/><circle cx="54" cy="85" r=".7"/>
+      <circle cx="60" cy="86.5" r=".7"/><circle cx="66" cy="85" r=".7"/><circle cx="71" cy="81" r=".7"/>
+      <circle cx="74" cy="76" r=".7"/><circle cx="57" cy="83.5" r=".6"/><circle cx="63" cy="84" r=".6"/>
+    </g>
+    <path d="M52 89 L51 101 M68 89 L69 101"/>
+    <path d="M40 114 L60 102 L80 114 M60 102 L60 108"/>
+    <path d="M24 146 C30 127 42 114 51 110 M96 146 C90 127 78 114 69 110"/>
+    <path d="M40 114 L30 146 M80 114 L90 146"/>
+  </g>
+  <g fill="currentColor" stroke="none">
+    <circle cx="51.5" cy="54" r="1.5"/><circle cx="69.5" cy="54" r="1.5"/>
+  </g>
+  <g stroke="#C8722B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M55 108 L60 103 L65 108 L60 114 Z" fill="#E8963F" fill-opacity=".55"/>
+    <path d="M57 114 L54 137 L60 145 L66 137 L63 114" fill="#E8963F" fill-opacity=".55"/>
+  </g>
+  <g fill="#7A9BC8" stroke="none" opacity=".8">
+    <circle cx="58" cy="120" r="1"/><circle cx="62.5" cy="126" r="1"/><circle cx="58.5" cy="132" r="1"/><circle cx="61.5" cy="138" r="1"/>
+  </g>
+</svg>
+        <figcaption class="mcap">The operator. Self-portrait, suit and tie included.
           <span class="ct">(1/1)</span>
           &nbsp;<button type="button" class="cl" onclick="gitShow(true)">Talk to me &#8599;</button></figcaption>
       </figure>
