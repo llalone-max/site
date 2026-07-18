@@ -53,7 +53,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   user-select:none;pointer-events:none}
 @media (max-width:600px){
   .band{height:clamp(92px,26vw,150px)}
-  .wordmark{font-size:calc(clamp(92px,26vw,150px)*2.05)}
+  /* on phones the whole name must read: size it to the viewport, not to the band,
+     so it stays a bold monument without throwing the outer letters off both edges */
+  .wordmark{font-size:min(31vw,150px)}
 }
 
 /* 3 · hero; the I draws itself once, one confident pen stroke */
