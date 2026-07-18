@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Fanish brand guidelines · Lazar LaLone</title>
+<style>
+  :root { --mono: "SF Mono", ui-monospace, Menlo, monospace; }
+  body { margin:0; background:#111; color:#eee;
+        font-family:"Helvetica Neue",Helvetica,-apple-system,"Segoe UI",Arial,sans-serif; }
+  .wrap { max-width:960px; margin:0 auto; padding:38px 20px 90px; }
+  .plab { font-family:var(--mono); font-size:11px; letter-spacing:.14em;
+          text-transform:uppercase; color:#999; margin:0 0 6px; }
+  h1 { font-size:26px; font-weight:600; margin:0 0 4px; letter-spacing:-.01em; }
+  .note { color:#999; font-size:13.5px; margin:0 0 26px; max-width:62ch; }
+  .pg { width:100%; display:block; margin:0 0 14px; }
+  .gate { border-top:1px solid #333; margin-top:34px; padding-top:26px; }
+  .gate p { color:#999; font-size:13.5px; max-width:62ch; }
+  input { background:#1a1a1a; border:1px solid #333; color:#eee; padding:10px 13px;
+          font:inherit; font-size:14px; width:220px; }
+  button { background:#eee; color:#111; border:0; padding:10px 20px; font:inherit;
+           font-size:14px; font-weight:600; cursor:pointer; }
+  .msg { font-family:var(--mono); font-size:12px; color:#c98; min-height:18px; }
+  a.back { color:#999; font-size:13px; text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="plab">Brand guidelines</p>
+  <h1>Fanish.</h1>
+  <p class="note">The full book, viewable here. The print-quality PDF is available with an
+  access code. If we know each other, just ask me for it.</p>
+  <img class="pg" src="b/pages/fanish-01.jpg" loading="lazy" alt="Fanish brand guidelines, page 1">
+  <img class="pg" src="b/pages/fanish-02.jpg" loading="lazy" alt="Fanish brand guidelines, page 2">
+  <img class="pg" src="b/pages/fanish-03.jpg" loading="lazy" alt="Fanish brand guidelines, page 3">
+  <img class="pg" src="b/pages/fanish-04.jpg" loading="lazy" alt="Fanish brand guidelines, page 4">
+  <img class="pg" src="b/pages/fanish-05.jpg" loading="lazy" alt="Fanish brand guidelines, page 5">
+  <img class="pg" src="b/pages/fanish-06.jpg" loading="lazy" alt="Fanish brand guidelines, page 6">
+  <img class="pg" src="b/pages/fanish-07.jpg" loading="lazy" alt="Fanish brand guidelines, page 7">
+  <img class="pg" src="b/pages/fanish-08.jpg" loading="lazy" alt="Fanish brand guidelines, page 8">
+  <img class="pg" src="b/pages/fanish-09.jpg" loading="lazy" alt="Fanish brand guidelines, page 9">
+  <img class="pg" src="b/pages/fanish-10.jpg" loading="lazy" alt="Fanish brand guidelines, page 10">
+  <img class="pg" src="b/pages/fanish-11.jpg" loading="lazy" alt="Fanish brand guidelines, page 11">
+  <img class="pg" src="b/pages/fanish-12.jpg" loading="lazy" alt="Fanish brand guidelines, page 12">
+  <img class="pg" src="b/pages/fanish-13.jpg" loading="lazy" alt="Fanish brand guidelines, page 13">
+  <img class="pg" src="b/pages/fanish-14.jpg" loading="lazy" alt="Fanish brand guidelines, page 14">
+  <div class="gate">
+    <p class="plab">The PDF</p>
+    <p>Enter the access code to download the full-resolution book.</p>
+    <form onsubmit="unlock(event)">
+      <input id="code" placeholder="Access code" autocomplete="off">
+      <button>Download</button>
+    </form>
+    <p class="msg" id="msg"></p>
+    <p style="margin-top:22px"><a class="back" href="brands.html">&#8592; Back</a></p>
+  </div>
+</div>
+<script>
+async function unlock(e) {
+  e.preventDefault();
+  const code = document.getElementById("code").value.trim();
+  if (!code) return;
+  const data = new TextEncoder().encode("fanish:" + code);
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  const url = "b/" + hex.slice(0, 20) + ".pdf";
+  const head = await fetch(url, { method: "HEAD" });
+  if (head.ok) { location.href = url; document.getElementById("msg").textContent = ""; }
+  else { document.getElementById("msg").textContent = "That code did not open it. Ask Lazar for the current one."; }
+}
+</script>
+</body>
+</html>
