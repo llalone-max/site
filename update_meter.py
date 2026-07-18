@@ -2,8 +2,16 @@
 """Regenerate the live-meter block on lazarlalone.com from the Ops Airtable base.
 
 Runs on a daily GitHub Action. Rewrites:
-  - index.html : everything between <!--METER--> and <!--/METER--> on the live
-    homepage (chart + stat line + the process-group split and depth line)
+  - ai.html : everything between <!--METER--> and <!--/METER--> on the AI
+    operations lane (chart + stat line + the process-group split and depth line).
+    The meter is the centerpiece of that dark terminal lane.
+
+Layout notes:
+  - The dollar labels ($9/$17/$25) sit in a clean right gutter; the plot is inset
+    to its left so no bar, end dot, or end label overlaps them.
+  - The process split renders only genuinely non-zero buckets. A category that
+    rounds to 0 percent is never drawn. PROCESS_GROUPS below is the editable map
+    from Airtable Process to outward bucket; breadth comes from real data.
 
 Series: daily bars starting July 1, 2026 (capped to the trailing 30 days once the
 series outgrows that). Days without Airtable rows are backfilled synthetically per
@@ -28,6 +36,8 @@ from collections import defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 W, H, BASE_Y, TOP_Y = 640.0, 150.0, 132.0, 24.0   # svg geometry (matches page CSS)
+GUTTER_R = 42.0                                    # right gutter reserved for $ labels
+PLOT_W = W - GUTTER_R                              # bars/grid/dots stay left of the gutter
 PAD_X = 5.2
 SERIES_START = dt.date(2026, 7, 1)
 MAX_DAYS = 30
@@ -134,21 +144,22 @@ def y_of(v):
 
 def build_chart(days, vals):
     n = len(days)
-    bar_w = round((W - 2 * PAD_X) / n * 0.62, 1)
-    step = (W - 2 * PAD_X - bar_w) / (n - 1) if n > 1 else 0.0
+    avail = PLOT_W - PAD_X                          # plot ends before the right gutter
+    bar_w = round(avail / n * 0.62, 1)
+    step = (avail - bar_w) / (n - 1) if n > 1 else 0.0
     spike_i = vals.index(max(vals))
 
     svg = ['<svg class="chart" viewBox="0 0 640 150" role="img"',
            f'               aria-label="Daily bars of metered AI spend since {days[0].strftime("%B")} {days[0].day}; peak {money(max(vals))}">']
     for gd in GRID_DOLLARS:
         y = y_of(gd)
-        svg.append(f'            <line class="g" x1="0" y1="{y:.0f}" x2="640" y2="{y:.0f}"/>')
-    svg.append(f'            <line class="base" x1="0" y1="{BASE_Y:.0f}" x2="640" y2="{BASE_Y:.0f}"/>')
-    for gd in GRID_DOLLARS:
+        svg.append(f'            <line class="g" x1="0" y1="{y:.0f}" x2="{PLOT_W:.0f}" y2="{y:.0f}"/>')
+    svg.append(f'            <line class="base" x1="0" y1="{BASE_Y:.0f}" x2="{PLOT_W:.0f}" y2="{BASE_Y:.0f}"/>')
+    for gd in GRID_DOLLARS:                         # $ labels live in the right gutter
         y = y_of(gd) - 4
         svg.append(f'            <text x="640" y="{y:.0f}" text-anchor="end">${gd}</text>')
     svg.append(f'            <text x="0" y="146">{days[0].strftime("%b %d").upper()}</text>')
-    svg.append(f'            <text x="640" y="146" text-anchor="end">{days[-1].strftime("%b %d").upper()}</text>')
+    svg.append(f'            <text x="{PLOT_W:.0f}" y="146" text-anchor="end">{days[-1].strftime("%b %d").upper()}</text>')
 
     for i, v in enumerate(vals):
         h = max(1.0, BASE_Y - y_of(v))
@@ -192,7 +203,7 @@ def build_stat(days, vals, rows, today):
 
 
 def build_split(rows):
-    by_group = {g: 0.0 for g in GROUP_ORDER}
+    by_group = defaultdict(float)
     for f in rows:
         c = f.get("Cost_USD", 0) or 0
         p = f.get("Process") or ""
@@ -200,17 +211,29 @@ def build_split(rows):
             p = p[0] if p else ""
         by_group[PROCESS_GROUPS.get(p, DEFAULT_GROUP)] += c
     total = sum(by_group.values())
-    if total <= 0:
-        pct = {g: 0 for g in GROUP_ORDER}
-    else:
-        raw = {g: by_group[g] / total * 100 for g in GROUP_ORDER}
-        pct = {g: int(raw[g]) for g in GROUP_ORDER}
-        rest = 100 - sum(pct.values())
-        for g in sorted(GROUP_ORDER, key=lambda g: raw[g] - pct[g], reverse=True)[:rest]:
-            pct[g] += 1
-    segs = "".join(f'<i class="s{i+1}" style="flex-grow:{pct[g]}"></i>' for i, g in enumerate(GROUP_ORDER))
+
+    # Only buckets with real spend; known groups keep their editorial order,
+    # any unmapped group that still carries spend comes after.
+    present = [g for g in GROUP_ORDER if by_group.get(g, 0) > 0]
+    present += [g for g in by_group if g not in GROUP_ORDER and by_group[g] > 0]
+    if total <= 0 or not present:
+        return ('          <span class="split"><span class="segbar" aria-hidden="true"></span>\n'
+                '          <span class="splitrow"></span>\n'
+                f'          <span class="depth">{DEPTH_LINE}</span></span>')
+
+    raw = {g: by_group[g] / total * 100 for g in present}
+    pct = {g: int(raw[g]) for g in present}
+    rest = 100 - sum(pct.values())
+    for g in sorted(present, key=lambda g: raw[g] - pct[g], reverse=True)[:rest]:
+        pct[g] += 1
+    # never render a category that rounds to 0 percent
+    present = [g for g in present if pct[g] > 0]
+    # biggest share first, so the darkest swatch leads
+    present.sort(key=lambda g: pct[g], reverse=True)
+
+    segs = "".join(f'<i class="s{i+1}" style="flex-grow:{pct[g]}"></i>' for i, g in enumerate(present))
     labels = " ".join(f'<span class="sl"><i class="sw s{i+1}"></i>{g} {pct[g]}%</span>'
-                      for i, g in enumerate(GROUP_ORDER))
+                      for i, g in enumerate(present))
     return ('          <span class="split"><span class="segbar" aria-hidden="true">' + segs + '</span>\n'
             '          <span class="splitrow">' + labels + '</span>\n'
             f'          <span class="depth">{DEPTH_LINE}</span></span>')
@@ -226,9 +249,30 @@ def splice(path, marker_a, marker_b, block, lead, tail):
     return False
 
 
+def log_processes(rows):
+    """Log the actual Airtable Process names and their share, to guide PROCESS_GROUPS."""
+    by_proc, by_group = defaultdict(float), defaultdict(float)
+    for f in rows:
+        c = f.get("Cost_USD", 0) or 0
+        p = f.get("Process") or ""
+        if isinstance(p, list):
+            p = p[0] if p else ""
+        by_proc[p] += c
+        by_group[PROCESS_GROUPS.get(p, DEFAULT_GROUP)] += c
+    tot = sum(by_proc.values()) or 1.0
+    print("process names present (real cost, share):")
+    for p, v in sorted(by_proc.items(), key=lambda x: -x[1]):
+        grp = PROCESS_GROUPS.get(p, DEFAULT_GROUP)
+        print(f"  {p or '(blank)':28} ${v:8.4f}  {100*v/tot:5.1f}%  -> {grp}")
+    print("bucket rollup:")
+    for g, v in sorted(by_group.items(), key=lambda x: -x[1]):
+        print(f"  {g:28} ${v:8.4f}  {100*v/tot:5.1f}%")
+
+
 def main():
     today = dt.date.today()
     rows = fetch_table("Spend_Variable")
+    log_processes(rows)
 
     days, vals = build_series(rows, today)
     chart = build_chart(days, vals)
@@ -237,7 +281,7 @@ def main():
 
     block = chart + "\n" + stat + "\n" + split
 
-    changed = splice(os.path.join(HERE, "index.html"),
+    changed = splice(os.path.join(HERE, "ai.html"),
                      "<!--METER-->", "<!--/METER-->", block, "\n          ", "\n        ")
     print("meter updated" if changed else "no change")
 

@@ -52,19 +52,11 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bandlink:hover .wm{color:var(--lc)}
 .bandlink:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:-3px}
 .tracker .pos{color:rgba(244,242,234,.62);font-variant-numeric:tabular-nums}
-/* the record: a quiet corner link, low and off to the side */
-.reclow{position:fixed;left:clamp(14px,3vw,24px);bottom:clamp(12px,2.5vh,20px);z-index:35;
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--dim);
-  text-decoration:none;opacity:.62;border-bottom:1px solid transparent;padding-bottom:2px;
-  transition:color .25s,opacity .25s,border-color .25s}
-.reclow:hover{color:var(--lc);opacity:1;border-color:currentColor}
-.reclow:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px;opacity:1}
 @media (max-width:600px){
   .tracker{height:40px}
   .bandlink{width:230px}
   .bandlink .wm{left:10px;font-size:82px}
   .tracker .pos{font-size:10px;letter-spacing:.08em}
-  .reclow{font-size:9px;letter-spacing:.1em}
 }
 
 /* horizontal walk */
@@ -102,22 +94,54 @@ a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px
   transition:color .25s}
 a.link:hover{color:var(--ink)}
 .quiet{color:var(--soft);font-style:normal}
-a.pdfgo{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);
-  font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
-  background:var(--lc);color:#F7F9FB;padding:13px 22px;text-decoration:none;
-  transition:background-color .25s}
-a.pdfgo:hover{background:#2E5F8C}
-a.pdfgo:focus-visible{outline-offset:3px}
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap;margin-top:clamp(6px,1vh,10px)}
 .tlinks a{margin-top:clamp(16px,3vh,24px)}
+.panel p.deep{color:var(--soft)}
+.panel p a.inlink{color:var(--lc);text-decoration:underline;text-underline-offset:.12em;
+  text-decoration-thickness:.06em;transition:color .25s}
+.panel p a.inlink:hover{color:var(--ink)}
 
-/* title block, miniature */
-.tb{display:flex;flex-wrap:wrap;align-self:flex-start;margin-top:clamp(34px,7vh,60px);
-  border:1px solid var(--strong);font-family:var(--mono);font-size:9.5px;
-  letter-spacing:.14em;color:var(--soft)}
-.tb span{padding:6px 10px;border-left:1px solid var(--hair);white-space:nowrap}
-.tb span:first-child{border-left:0}
-.tb b{font-weight:400;color:var(--ink)}
+/* let's talk: a trigger expands to the three ways to reach me */
+.talktrigger{appearance:none;background:none;border:0;padding:0;margin:0;
+  cursor:pointer;font-family:inherit;font-weight:600;letter-spacing:-.024em;line-height:1.05;
+  font-size:clamp(30px,4.6vw,58px);color:var(--ink);text-align:left;
+  text-decoration:underline;text-decoration-thickness:.03em;text-underline-offset:.1em;
+  text-decoration-color:var(--hair);transition:text-decoration-color .3s}
+.talktrigger:hover{text-decoration-color:var(--lc)}
+.talktrigger:focus-visible{outline:1.5px solid var(--lc);outline-offset:5px}
+.talkreveal{overflow:hidden;max-height:0;opacity:0;visibility:hidden;
+  transition:max-height .42s cubic-bezier(.3,.7,.3,1),opacity .3s ease,visibility 0s .42s}
+.talkreveal.open{max-height:220px;opacity:1;visibility:visible;
+  transition:max-height .42s cubic-bezier(.3,.7,.3,1),opacity .3s ease .06s}
+.talknote{margin:clamp(16px,3vh,24px) 0 0;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:52ch}
+@media (prefers-reduced-motion:reduce){.talkreveal,.talkreveal.open{transition:none}}
+
+/* the client wall: a quiet type grid of the health systems */
+.walllab{margin:clamp(22px,4vh,34px) 0 12px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;
+  background:var(--hair);border:1px solid var(--hair);max-width:560px}
+.wall span{background:var(--bg);padding:12px 14px;font-family:var(--mono);
+  font-size:12px;letter-spacing:.04em;color:var(--ink)}
+
+/* a forward step into the next panel */
+.nextpanel{appearance:none;background:none;border:0;cursor:pointer;align-self:flex-start;
+  margin-top:clamp(22px,4vh,34px);font-family:var(--mono);font-size:12px;letter-spacing:.16em;
+  color:var(--lc);border-bottom:1px solid currentColor;padding:0 0 3px;transition:color .25s}
+.nextpanel:hover{color:var(--ink)}
+.nextpanel:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
+
+/* the record: a real preview of the PDF, click to open */
+.recview{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
+  max-width:520px;max-height:58vh;overflow:auto;border:1px solid var(--hair);background:#fff;
+  text-decoration:none;transition:border-color .25s;-webkit-overflow-scrolling:touch}
+.recview img{display:block;width:100%;height:auto}
+.recview:hover{border-color:var(--lc)}
+.recview:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+.reccap{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--lc)}
+.reccap a{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
 
 /* welcome: the EKG draws itself, then settles into the header rule */
 .wel{display:none}
@@ -153,8 +177,6 @@ document.documentElement.classList.add('js');
   <span class="pos num" id="pos">01 / 06 &#183; hello</span>
 </div>
 
-<a class="reclow" href="record-healthcare.pdf" target="_blank" rel="noopener">The record (PDF)</a>
-
 <main class="track" id="track" aria-label="Healthcare, a walk in six panels">
 
   <section class="panel" data-name="hello" aria-label="Hello">
@@ -162,11 +184,13 @@ document.documentElement.classList.add('js');
       <p class="plab">01 &#183; Healthcare <span class="plq">(B2B)</span></p>
       <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 8 H120 l8 0 5 -6 6 11 7 -13 8 14 6 -8 4 2 H340"/></svg>
-      <h1>The career.</h1>
-      <p>Most of my career lives here, naturally. I don't own the work product directly, so I
-        can't share most of it, but the span covers product strategy, clinical and consumer
-        experiences, health data, and go-to-market at scale. The detailed version lives on my
-        LinkedIn. Happy to talk about it anytime.</p>
+      <h1>My Career.</h1>
+      <p>Most of my career has lived in healthcare. Much of the work I've done isn't mine to
+        share, but my work covers product strategy, clinical and consumer experiences, health
+        data and analytics, and go-to-market at scale.</p>
+      <p class="deep">My deepest understanding is in capacity management across the inpatient
+        and outpatient spaces, front-to-mid revenue cycle, and clinical AI tooling at the point
+        of care and after.</p>
       <p class="hint" aria-hidden="true">scroll &#8594;</p>
     </div>
   </section>
@@ -174,14 +198,20 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="the work" aria-label="The work">
     <div class="pin">
       <p class="plab">02 &#183; The work</p>
-      <h2>The span.</h2>
-      <div class="rows">
-        <div class="row"><span class="n">A</span><span class="w">Product strategy</span></div>
-        <div class="row"><span class="n">B</span><span class="w">Clinical and consumer experiences</span></div>
-        <div class="row"><span class="n">C</span><span class="w">Health data</span></div>
-        <div class="row"><span class="n">D</span><span class="w">Go-to-market at scale</span></div>
+      <h2>The work.</h2>
+      <p>More information on <a class="inlink" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">my LinkedIn</a> about my time at Epic and Ambience.</p>
+      <p class="walllab">Systems I have worked with</p>
+      <div class="wall" aria-label="Health systems I have worked with">
+        <span>Kaiser Permanente</span>
+        <span>Texas Health Resources</span>
+        <span>Ardent Health Services</span>
+        <span>Highmark</span>
+        <span>MultiCare Health System</span>
+        <span>Trinity Health</span>
+        <span>Centura Health</span>
+        <span>Allegheny Health Network</span>
       </div>
-      <a class="link" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn, the formal record &#8599;</a>
+      <button class="nextpanel" type="button" data-next>The venture &#8594;</button>
     </div>
   </section>
 
@@ -189,9 +219,9 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">03 &#183; The venture</p>
       <h2>Fractional Aesthetics.</h2>
-      <p>The current venture, and the B2B side of the practice: audits and advisory for
-        aesthetic-medicine practices. A clinic gets a clear read on its marketing, then a
-        plan it can actually run.</p>
+      <p>My newest venture in healthcare B2B: audits and embedded advisory for aesthetic
+        medical practices. I help them get a clear read on their visibility and build a plan
+        they can run. I am available to work as closely with them as they want.</p>
       <div class="tlinks">
         <a class="link" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener">fractionalaesthetics.com &#8599;</a>
         <a class="link" href="fractional-aesthetics-brand.pdf" target="_blank" rel="noopener">Brand guidelines (PDF) &#8599;</a>
@@ -210,24 +240,25 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">05 &#183; The record</p>
       <h2>The record.</h2>
-      <p>The formal version, one document, ready to keep or forward.</p>
-      <a class="pdfgo" href="record-healthcare.pdf" target="_blank" rel="noopener">The record (PDF) &#8599;</a>
+      <a class="recview" href="record-healthcare.pdf" target="_blank" rel="noopener" aria-label="Open the record as a PDF">
+        <img src="record-healthcare-p1.webp" width="1000" height="1294" alt="First page of the record" loading="lazy">
+      </a>
+      <p class="reccap"><a href="record-healthcare.pdf" target="_blank" rel="noopener">Open the PDF &#8599;</a></p>
     </div>
   </section>
 
   <section class="panel" data-name="talk" aria-label="Talk">
     <div class="pin">
       <p class="plab">06 &#183; Talk</p>
-      <h2>Let&#8217;s talk.</h2>
-      <div class="tlinks">
-        <a class="link" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
-        <a class="link" href="mailto:lazarlalone@gmail.com?subject=Healthcare">lazarlalone@gmail.com</a>
-        <a class="link" href="sms:+14129445506">Text me</a>
-      </div>
-      <div class="tb" aria-label="Title block">
-        <span>lazarlalone.com</span>
-        <span>DRAWN BY <b>L. LaLone</b></span>
-        <span>SHEET <b>2 OF 4</b></span>
+      <h2><button class="talktrigger" id="talktrigger" type="button"
+          aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
+      <div class="talkreveal" id="talkpanel">
+        <div class="tlinks">
+          <a class="link" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+          <a class="link" href="mailto:lazarlalone@gmail.com?subject=Healthcare">Email</a>
+          <a class="link" href="sms:+14129445506">Text me</a>
+        </div>
+        <p class="talknote">LinkedIn and email work. A text reaches me quickest.</p>
       </div>
     </div>
   </section>
@@ -264,9 +295,22 @@ document.documentElement.classList.add('js');
     cur = i;
     pos.textContent = pad(i+1) + ' / ' + pad(panels.length) + ' · ' + panels[i].getAttribute('data-name');
   }
+  function animateTo(target){
+    var start = track.scrollLeft, dist = target - start;
+    if(reduce || Math.abs(dist) < 1){ track.scrollLeft = target; return; }
+    track.style.scrollSnapType = 'none';
+    var t0 = performance.now(), dur = 560, s = 0.75;
+    function ease(p){ return 1 + (s + 1) * Math.pow(p - 1, 3) + s * Math.pow(p - 1, 2); }
+    (function frame(now){
+      var p = Math.min(1, (now - t0) / dur);
+      track.scrollLeft = start + dist * ease(p);
+      if(p < 1){ requestAnimationFrame(frame); }
+      else { track.scrollLeft = target; track.style.scrollSnapType = ''; }
+    })(performance.now());
+  }
   function goTo(i){
     i = Math.max(0, Math.min(panels.length - 1, i));
-    panels[i].scrollIntoView({behavior: reduce ? 'auto' : 'smooth', inline:'start', block:'nearest'});
+    animateTo(i * track.clientWidth);
   }
   setPos(0);
 
@@ -281,9 +325,11 @@ document.documentElement.classList.add('js');
     if(i !== cur && i >= 0 && i < panels.length) setPos(i);
   }, {passive:true});
 
-  /* wheel: scroll down or right advances the walk, up or left steps back.
-     The dominant axis drives horizontal movement; zoom and back gestures stay native. */
-  var acc = 0, lockUntil = 0, lastWheel = 0;
+  /* wheel: one gesture advances exactly one panel. Scroll down or right goes
+     forward, up or left steps back. A fast flick cannot chain into a second
+     advance: the settle time absorbs trailing inertia, and a fresh gesture only
+     arms once the wheel goes quiet. Zoom and back gestures stay native. */
+  var acc = 0, lockUntil = 0, lastWheel = 0, armed = true;
   track.addEventListener('wheel', function(e){
     if(e.ctrlKey || e.metaKey) return;                       /* pinch zoom */
     var dx = e.deltaX, dy = e.deltaY;
@@ -299,16 +345,36 @@ document.documentElement.classList.add('js');
     }
     e.preventDefault();
     var now = performance.now();
-    if(now - lastWheel > 260) acc = 0;
+    var gap = now - lastWheel;
     lastWheel = now;
-    if(now < lockUntil) return;
+    if(gap > 200){ acc = 0; armed = true; }                  /* a quiet gap starts a new gesture */
+    if(now < lockUntil){ acc = 0; return; }                  /* absorb inertia while it settles */
+    if(!armed) return;                                       /* wait for the wheel to rest */
     acc += delta;
-    if(Math.abs(acc) > 60){
-      lockUntil = now + 620;
+    if(Math.abs(acc) > 90){
+      armed = false;
+      lockUntil = now + 760;
       goTo(cur + (acc > 0 ? 1 : -1));
       acc = 0;
     }
   }, {passive:false});
+
+  /* let's talk: a single trigger expands to the three ways to reach me */
+  var talkT = document.getElementById('talktrigger');
+  var talkP = document.getElementById('talkpanel');
+  if(talkT && talkP){
+    talkP.setAttribute('inert','');
+    talkT.addEventListener('click', function(){
+      var open = talkP.classList.toggle('open');
+      talkT.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if(open) talkP.removeAttribute('inert'); else talkP.setAttribute('inert','');
+    });
+  }
+
+  /* a forward step to the next panel */
+  [].forEach.call(document.querySelectorAll('[data-next]'), function(b){
+    b.addEventListener('click', function(){ goTo(cur + 1); });
+  });
 
   addEventListener('keydown', function(e){
     if(e.altKey || e.metaKey || e.ctrlKey) return;
