@@ -315,6 +315,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
       setTimeout(function(){ location.href = a.getAttribute('href'); }, 360);
     });
   });
+  // Clear any leftover flood when this page is shown, including restores from the
+  // back-forward cache (otherwise the expanded flood stays and covers the page).
+  window.addEventListener('pageshow', function(){
+    leaving = false;
+    document.querySelectorAll('.flood').forEach(function(f){ f.remove(); });
+  });
 })();
 
 /* the portrait unfolds its arms on tap (hover is pure CSS) */
