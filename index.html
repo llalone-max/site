@@ -97,6 +97,14 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .door:hover .dno,.door:focus-visible .dno{color:var(--lc)}
 .door:focus-visible{outline:1.5px solid var(--lc);outline-offset:-1.5px}
 .d-hc{--lc:var(--hc)} .d-br{--lc:var(--br)} .d-ai{--lc:var(--ai)}
+/* touch devices have no real hover: cancel the hover states so a tapped door
+   does not stick as "pre-pressed and red" after you navigate back to it */
+@media (hover:none){
+  .lane:hover{background:none;color:var(--ink)}
+  .door:hover{background:none;color:inherit}
+  .door:hover .dq,.door:hover .dno,.door:hover .dar{color:var(--dim)}
+  .door:hover .dar{transform:none}
+}
 
 /* section furniture */
 .fig{margin-top:clamp(70px,11vh,140px)}
@@ -322,6 +330,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   window.addEventListener('pageshow', function(){
     leaving = false;
     document.querySelectorAll('.flood').forEach(function(f){ f.remove(); });
+    if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   });
 })();
 
