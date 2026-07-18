@@ -81,8 +81,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .lane{color:var(--ink);text-decoration:none;padding:.02em .09em;margin:-.02em -.09em}
 .lane:hover,.lane:focus-visible{background:var(--ink);color:var(--paper)}
 .lane:focus-visible{outline:none}
-.lq{font-family:var(--mono);font-size:.44em;font-weight:400;letter-spacing:.1em;
-  color:var(--dim);vertical-align:.12em}
+.lq{font-family:var(--mono);font-size:.4em;font-weight:400;letter-spacing:.06em;
+  color:var(--dim);vertical-align:super;margin-left:.1em}
 
 /* 4 · three doors */
 .doors{margin-top:clamp(60px,9vh,120px);border-bottom:1px solid var(--strong)}
@@ -239,17 +239,17 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   <section class="hero">
     <h1><span class="dcap" aria-hidden="true"><svg viewBox="0 0 28 72" focusable="false"><path d="M14 0 V72"/></svg></span><span class="sr">I</span> build products, brands, and pipelines with AI, an opinion, and an eye.</h1>
     <p class="practice">The practice:
-      <a class="lane" href="healthcare.html" data-lane="hc">healthcare</a> <span class="lq">(B2B)</span>,
-      <a class="lane" href="brands.html" data-lane="br">brands</a> <span class="lq">(B2C)</span>,
+      <a class="lane" href="healthcare.html" data-lane="hc">healthcare</a><sup class="lq">B2B</sup>,
+      <a class="lane" href="brands.html" data-lane="br">brands</a><sup class="lq">B2C</sup>,
       <a class="lane" href="ai.html" data-lane="ai">ai operations</a>.</p>
   </section>
 
   <!-- 4 · three doors -->
   <nav class="doors" aria-label="The practice, in full">
     <a class="door d-hc" href="healthcare.html" data-lane="hc">
-      <span class="dno">01</span><span class="dna">HEALTHCARE <span class="dq">(B2B)</span></span><span class="dar" aria-hidden="true">&#8594;</span></a>
+      <span class="dno">01</span><span class="dna">HEALTHCARE</span><span class="dar" aria-hidden="true">&#8594;</span></a>
     <a class="door d-br" href="brands.html" data-lane="br">
-      <span class="dno">02</span><span class="dna">BRANDS <span class="dq">(B2C)</span></span><span class="dar" aria-hidden="true">&#8594;</span></a>
+      <span class="dno">02</span><span class="dna">BRANDS</span><span class="dar" aria-hidden="true">&#8594;</span></a>
     <a class="door d-ai" href="ai.html" data-lane="ai">
       <span class="dno">03</span><span class="dna">AI OPERATIONS</span><span class="dar" aria-hidden="true">&#8594;</span></a>
   </nav>

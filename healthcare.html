@@ -357,6 +357,26 @@ document.documentElement.classList.add('js');
     }
   }, {passive:false});
 
+  /* touch: a vertical swipe advances the walk when the panel has nothing left to
+     scroll, so "scrolling down" on a phone moves to the next panel like the wheel does */
+  var txs = 0, tys = 0;
+  track.addEventListener('touchstart', function(e){
+    if(e.touches.length === 1){ txs = e.touches[0].clientX; tys = e.touches[0].clientY; }
+  }, {passive:true});
+  track.addEventListener('touchend', function(e){
+    if(!e.changedTouches.length) return;
+    var dx = e.changedTouches[0].clientX - txs;
+    var dy = e.changedTouches[0].clientY - tys;
+    if(Math.abs(dy) < 55 || Math.abs(dy) < Math.abs(dx) * 1.25) return;  /* need a clear vertical swipe */
+    var p = panels[cur];
+    var fwd = dy < 0;                          /* finger up = scroll-down intent = go right */
+    if(p.scrollHeight > p.clientHeight + 4){   /* tall panel: only hand off at its scroll edge */
+      if(fwd && p.scrollTop + p.clientHeight < p.scrollHeight - 2) return;
+      if(!fwd && p.scrollTop > 2) return;
+    }
+    goTo(cur + (fwd ? 1 : -1));
+  }, {passive:true});
+
   /* let's talk: a single trigger expands to the three ways to reach me */
   var talkT = document.getElementById('talktrigger');
   var talkP = document.getElementById('talkpanel');
