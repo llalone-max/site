@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Regenerate the live-meter blocks on lazarlalone.com from the Ops Airtable base.
+"""Regenerate the live-meter block on lazarlalone.com from the Ops Airtable base.
 
 Runs on a daily GitHub Action. Rewrites:
-  - index.html      : everything between <!--METER--> and <!--/METER-->  (v1 chart + stat line)
-  - v2/index.html   : the same METER block plus the process-group split and depth line
+  - index.html : everything between <!--METER--> and <!--/METER--> on the live
+    homepage (chart + stat line + the process-group split and depth line)
 
 Series: daily bars starting July 1, 2026 (capped to the trailing 30 days once the
 series outgrows that). Days without Airtable rows are backfilled synthetically per
@@ -235,14 +235,10 @@ def main():
     stat = build_stat(days, vals, rows, today)
     split = build_split(rows)
 
-    v1_block = chart + "\n" + stat
-    v2_block = chart + "\n" + stat + "\n" + split
+    block = chart + "\n" + stat + "\n" + split
 
-    changed = False
-    changed |= splice(os.path.join(HERE, "index.html"),
-                      "<!--METER-->", "<!--/METER-->", v1_block, "\n          ", "\n        ")
-    changed |= splice(os.path.join(HERE, "v2", "index.html"),
-                      "<!--METER-->", "<!--/METER-->", v2_block, "\n          ", "\n        ")
+    changed = splice(os.path.join(HERE, "index.html"),
+                     "<!--METER-->", "<!--/METER-->", block, "\n          ", "\n        ")
     print("meter updated" if changed else "no change")
 
 

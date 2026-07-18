@@ -5,23 +5,23 @@
 <title>404 &#183; Lazar LaLone</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<link rel="icon" href="/v2/favicon-32.png" sizes="32x32">
-<link rel="icon" href="/v2/favicon-16.png" sizes="16x16">
-<link rel="icon" href="/v2/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/v2/apple-touch-icon.png">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="icon" href="/favicon-16.png" sizes="16x16">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lazar LaLone">
 <meta property="og:title" content="Page not found - Lazar LaLone">
 <meta property="og:description" content="This page does not exist. Walk back to the lobby.">
 <meta property="og:url" content="https://lazarlalone.com/404.html">
-<meta property="og:image" content="https://lazarlalone.com/v2/og-image.jpg">
+<meta property="og:image" content="https://lazarlalone.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Caricature of Lazar LaLone">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Page not found - Lazar LaLone">
 <meta name="twitter:description" content="This page does not exist. Walk back to the lobby.">
-<meta name="twitter:image" content="https://lazarlalone.com/v2/og-image.jpg">
+<meta name="twitter:image" content="https://lazarlalone.com/og-image.jpg">
 <style>
 :root{
   --paper:#F2F1EA; --ink:#191814; --soft:#605C50; --dim:#98937F;
@@ -83,7 +83,7 @@ main{flex:1;width:100%;max-width:1180px;margin:0 auto;display:flex;flex-directio
 
 <header class="band" aria-label="Lazar LaLone">
   <p class="wordmark" aria-hidden="true">lalone</p>
-  <a href="/v2/" aria-label="lalone, home"></a>
+  <a href="/" aria-label="lalone, home"></a>
 </header>
 
 <main>
@@ -99,7 +99,7 @@ main{flex:1;width:100%;max-width:1180px;margin:0 auto;display:flex;flex-directio
 
   <button class="defib" id="defib" type="button">REVIVE</button>
 
-  <p class="err">ERR 404 &#183; or walk back to <a href="/v2/">the lobby</a> yourself</p>
+  <p class="err">ERR 404 &#183; or walk back to <a href="/">the lobby</a> yourself</p>
 </main>
 
 <script>
@@ -110,13 +110,13 @@ main{flex:1;width:100%;max-width:1180px;margin:0 auto;display:flex;flex-directio
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fired = false;
   btn.addEventListener('click', function(){
-    if(reduce){ location.href = '/v2/'; return; }
+    if(reduce){ location.href = '/'; return; }
     if(fired) return;
     fired = true;
     btn.setAttribute('disabled','');
     ekg.classList.add('live');
     msg.innerHTML = '<b>Rhythm restored.</b> Taking you to the lobby.';
-    setTimeout(function(){ location.href = '/v2/'; }, 1050);
+    setTimeout(function(){ location.href = '/'; }, 1050);
   });
 })();
 </script>
