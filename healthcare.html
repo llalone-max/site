@@ -325,11 +325,12 @@ document.documentElement.classList.add('js');
     if(i !== cur && i >= 0 && i < panels.length) setPos(i);
   }, {passive:true});
 
-  /* wheel: one gesture advances exactly one panel. Scroll down or right goes
-     forward, up or left steps back. A fast flick cannot chain into a second
-     advance: the settle time absorbs trailing inertia, and a fresh gesture only
-     arms once the wheel goes quiet. Zoom and back gestures stay native. */
-  var acc = 0, lockUntil = 0, lastWheel = 0, armed = true;
+  /* wheel: one gesture advances exactly one panel, and you can scroll again right
+     after with no pause or mouse movement. A short cooldown after each advance
+     absorbs a fast flick's momentum tail so it only moves one panel; once the
+     cooldown passes the next gesture advances immediately. Down/right goes forward,
+     up/left steps back. Zoom and back gestures stay native. */
+  var acc = 0, coolUntil = 0, lastWheel = 0;
   track.addEventListener('wheel', function(e){
     if(e.ctrlKey || e.metaKey) return;                       /* pinch zoom */
     var dx = e.deltaX, dy = e.deltaY;
@@ -345,17 +346,14 @@ document.documentElement.classList.add('js');
     }
     e.preventDefault();
     var now = performance.now();
-    var gap = now - lastWheel;
+    if(now - lastWheel > 140) acc = 0;                       /* a pause starts a fresh gesture */
     lastWheel = now;
-    if(gap > 200){ acc = 0; armed = true; }                  /* a quiet gap starts a new gesture */
-    if(now < lockUntil){ acc = 0; return; }                  /* absorb inertia while it settles */
-    if(!armed) return;                                       /* wait for the wheel to rest */
+    if(now < coolUntil) return;                              /* pacing window: absorb the flick tail */
     acc += delta;
     if(Math.abs(acc) > 90){
-      armed = false;
-      lockUntil = now + 760;
       goTo(cur + (acc > 0 ? 1 : -1));
       acc = 0;
+      coolUntil = now + 680;                                 /* re-armed automatically after this */
     }
   }, {passive:false});
 
