@@ -36,7 +36,7 @@
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--grot);overflow:hidden;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-/* the house spotlight, resting */
+/* warm ambient light, resting */
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(58% 52% at 32% 18%,rgba(208,106,74,.13),transparent 72%)}
 a{color:inherit}
@@ -89,22 +89,35 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .panel .hint{margin-top:clamp(26px,5vh,46px);font-family:var(--mono);font-size:11px;
   letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
 
-/* the bill: three brands */
-.bill{margin-top:clamp(6px,1.5vh,14px);border-bottom:1px solid var(--hair);max-width:640px}
-.act{display:block;padding:16px 2px 14px;border-top:1px solid var(--hair);text-decoration:none;
-  transition:background-color .25s}
-.act:hover{background:rgba(208,106,74,.08)}
-.act .hd{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
-.act .nm{font-family:var(--mono);font-size:13px;letter-spacing:.22em;transition:color .25s}
-.act:hover .nm{color:var(--lc)}
-.act .ar{color:var(--lc);font-family:var(--mono);font-size:13px;display:inline-block;
-  transition:transform .3s cubic-bezier(.22,.8,.2,1)}
-.act:hover .ar{transform:translate(4px,-3px)}
-.act .ds{margin-top:5px;font-size:14.5px;color:var(--soft)}
-.encore{display:flex;gap:26px;flex-wrap:wrap;padding:0 2px 14px}
-.encore a{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--soft);text-decoration:none;transition:color .25s}
-.encore a:hover{color:var(--lc)}
+/* the titles: brands lead with their own wordmark, a contents-page feel */
+.titles{margin-top:clamp(6px,1.5vh,14px);max-width:680px}
+.entry{padding:clamp(16px,2.8vh,28px) 0;border-top:1px solid var(--hair)}
+.entry:first-child{border-top:0}
+.wmlink{display:inline-block;text-decoration:none;color:var(--ink);transition:color .25s}
+.wmlink:hover{color:var(--lc)}
+.entry .wm2{margin:0;font-family:var(--grot);font-weight:700;
+  font-size:clamp(42px,7.4vw,88px);letter-spacing:-.032em;line-height:.98}
+.entry .ar{color:var(--lc);font-family:var(--mono);font-size:15px;display:inline-block;
+  vertical-align:top;margin-left:.16em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
+.wmlink:hover .ar{transform:translate(4px,-3px)}
+.entry .desc{margin:10px 0 0;font-size:clamp(15px,1.45vw,18.5px);color:var(--soft);max-width:48ch}
+.glinks{display:flex;flex-direction:column;align-items:flex-start;gap:9px;margin-top:16px}
+.glinks a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--soft);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;
+  transition:color .25s,border-color .25s}
+.glinks a:hover{color:var(--lc);border-color:currentColor}
+
+/* reviews: App Store notices as editorial social proof */
+.revhead{margin:0 0 clamp(14px,2.4vh,22px);font-family:var(--mono);font-size:11px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--soft)}
+.revhead .stars{color:var(--lc);letter-spacing:.18em;margin:0 .35em}
+.reviews{max-width:680px;margin:0;padding:0;list-style:none}
+.rev{padding:clamp(13px,2.3vh,19px) 0;border-top:1px solid var(--hair)}
+.rev:first-child{border-top:0}
+.rev .q{margin:0;font-size:clamp(15.5px,1.55vw,19px);line-height:1.5;color:var(--ink);text-wrap:pretty}
+.rev .by{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:9px 0 0;
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--soft)}
+.rev .by .stars{color:var(--lc);letter-spacing:.16em}
 a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);font-family:var(--mono);
   font-size:12px;letter-spacing:.16em;color:var(--lc);
   text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;
@@ -135,7 +148,7 @@ a.pdfgo:focus-visible{outline-offset:3px}
   letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:52ch}
 @media (prefers-reduced-motion:reduce){.talkreveal,.talkreveal.open{transition:none}}
 
-/* welcome: the show opens; spotlight sweeps once, title card snaps in */
+/* welcome: warm light sweeps once, the nameplate snaps in */
 .wel{display:none}
 html.js:not(.nowel) .wel{position:fixed;inset:0;z-index:60;background:var(--bg);
   display:grid;place-items:center;overflow:hidden}
@@ -184,42 +197,68 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="hello" aria-label="Hello">
     <div class="pin">
       <p class="plab">01 &#183; Brands <span class="plq">(B2C)</span></p>
-      <h1>On tonight's bill.</h1>
-      <p>My interests outside of work, brought to life through my own lens and whatever the
-        newest AI tooling makes possible. Each brand runs on its own content and automation
-        pipeline. Running them both at once is where it gets interesting.</p>
+      <h1>Under one masthead.</h1>
+      <p>I run more than one brand at a time. Each has its own voice, its own audience,
+        and its own content and automation pipeline behind it.</p>
       <p class="hint" aria-hidden="true">scroll &#8594;</p>
     </div>
   </section>
 
-  <section class="panel" data-name="the work" aria-label="The work">
+  <section class="panel" data-name="the brands" aria-label="The brands">
     <div class="pin">
-      <p class="plab">02 &#183; The work</p>
-      <h2>Two acts.</h2>
-      <div class="bill">
-        <a class="act" href="https://fanish.app" target="_blank" rel="noopener">
-          <span class="hd"><span class="nm">FANISH</span><span class="ar" aria-hidden="true">&#8599;</span></span>
-          <span class="ds">Sports, for the half-invested fan.</span>
-        </a>
-        <div class="encore">
-          <a href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">&#63743; Download on the App Store &#8599;</a>
-          <a href="fanish-brand.html">Brand guidelines &#8599;</a>
+      <p class="plab">02 &#183; In this issue</p>
+      <div class="titles">
+        <div class="entry">
+          <a class="wmlink" href="https://fanish.app" target="_blank" rel="noopener">
+            <p class="wm2">Fanish<span class="ar" aria-hidden="true">&#8599;</span></p>
+          </a>
+          <p class="desc">Sports culture for people who don&#8217;t love sports.</p>
+          <div class="glinks">
+            <a href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">&#63743; Download on the App Store &#8599;</a>
+            <a href="fanish-brand.html">Brand guidelines (PDF) &#8599;</a>
+          </div>
         </div>
-        <a class="act" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener">
-          <span class="hd"><span class="nm">LAZARVISION</span><span class="ar" aria-hidden="true">&#8599;</span></span>
-          <span class="ds">A cultural commentary operation.</span>
-        </a>
-        <div class="encore">
-          <a href="lazarvision-brand.html">Brand guidelines &#8599;</a>
+        <div class="entry">
+          <a class="wmlink" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener">
+            <p class="wm2">LazarVision<span class="ar" aria-hidden="true">&#8599;</span></p>
+          </a>
+          <p class="desc">Cultural commentary.</p>
+          <div class="glinks">
+            <a href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener">YouTube channel &#8599;</a>
+            <a href="lazarvision-brand.html">Brand guidelines (PDF) &#8599;</a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="panel" data-name="kind words" aria-label="Kind words">
+  <section class="panel" data-name="reviews" aria-label="Reviews">
     <div class="pin">
-      <p class="plab">03 &#183; Kind words</p>
-      <p class="quiet">Kind words are being collected.</p>
+      <p class="plab">03 &#183; Reviews</p>
+      <p class="revhead">Fanish Sports on the App Store<span class="stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>5 stars</p>
+      <ul class="reviews">
+        <li class="rev">
+          <p class="q">&#8220;OBSESSED. Gives me only the important info of what&#8217;s going on so I can stay in the loop!&#8221;</p>
+          <p class="by">MicWilly <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+        </li>
+        <li class="rev">
+          <p class="q">&#8220;I basically look like a lifelong soccer fan to my friends. Easy to navigate and something I&#8217;ll return to frequently.&#8221;</p>
+          <p class="by">wwojoo <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+        </li>
+        <li class="rev">
+          <p class="q">&#8220;Actually taught me more about the game and provided interesting tidbits to share with friends!&#8221;</p>
+          <p class="by">sanchiii <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+        </li>
+        <li class="rev">
+          <p class="q">&#8220;The in-match events keep me up to speed on what&#8217;s happening, just the moments that matter, in plain language.&#8221;</p>
+          <p class="by">Buff of sports <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+        </li>
+        <li class="rev">
+          <p class="q">&#8220;I love the innovative Fanish toggle, makes it super easy to navigate and fun to use.&#8221;</p>
+          <p class="by">Tylerhopf <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+        </li>
+      </ul>
+      <a class="link" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">Read them on the App Store &#8599;</a>
     </div>
   </section>
 
@@ -227,7 +266,7 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">04 &#183; The record</p>
       <h2>The record.</h2>
-      <p>The formal version, one document, ready to keep or forward.</p>
+      <p>A short written record of the brand work, if you want it on file.</p>
       <a class="pdfgo" href="record-brands.pdf" target="_blank" rel="noopener">The record (PDF) &#8599;</a>
     </div>
   </section>

@@ -7,8 +7,9 @@ Runs on a daily GitHub Action. Rewrites:
     The meter is the centerpiece of that dark terminal lane.
 
 Layout notes:
-  - The dollar labels ($9/$17/$25) sit in a clean right gutter; the plot is inset
-    to its left so no bar, end dot, or end label overlaps them.
+  - The y-axis figures (9/17/25) sit in a clean right gutter; the plot is inset
+    to its left so no bar, end dot, or end label overlaps them. The dollar sign
+    is shown once, on the month total in the stat line, not on every figure.
   - The process split renders only genuinely non-zero buckets. A category that
     rounds to 0 percent is never drawn. PROCESS_GROUPS below is the editable map
     from Airtable Process to outward bucket; breadth comes from real data.
@@ -91,6 +92,13 @@ def money(x):
     return f"${round(x):,}"
 
 
+def whole(x):
+    """Whole number, no dollar sign. The meter shows the $ once (on the month
+    total); the y-axis and the in-chart peak label read as bare numbers so the
+    dollar sign is not repeated on every figure."""
+    return f"{round(x):,}"
+
+
 def tokens_fmt(n):
     n = int(n)
     if n >= 1_000_000:
@@ -155,9 +163,9 @@ def build_chart(days, vals):
         y = y_of(gd)
         svg.append(f'            <line class="g" x1="0" y1="{y:.0f}" x2="{PLOT_W:.0f}" y2="{y:.0f}"/>')
     svg.append(f'            <line class="base" x1="0" y1="{BASE_Y:.0f}" x2="{PLOT_W:.0f}" y2="{BASE_Y:.0f}"/>')
-    for gd in GRID_DOLLARS:                         # $ labels live in the right gutter
+    for gd in GRID_DOLLARS:                         # bare axis figures in the right gutter; $ shows once, on the total
         y = y_of(gd) - 4
-        svg.append(f'            <text x="640" y="{y:.0f}" text-anchor="end">${gd}</text>')
+        svg.append(f'            <text x="640" y="{y:.0f}" text-anchor="end">{gd}</text>')
     svg.append(f'            <text x="0" y="146">{days[0].strftime("%b %d").upper()}</text>')
     svg.append(f'            <text x="{PLOT_W:.0f}" y="146" text-anchor="end">{days[-1].strftime("%b %d").upper()}</text>')
 
@@ -180,7 +188,7 @@ def build_chart(days, vals):
     if vals[spike_i] > 0 and spike_i != n - 1:
         sx = PAD_X + spike_i * step + bar_w / 2
         sy = max(12.0, y_of(vals[spike_i]) - 8)
-        svg.append(f'            <text x="{sx:.0f}" y="{sy:.0f}" text-anchor="middle">{money(vals[spike_i])}</text>')
+        svg.append(f'            <text x="{sx:.0f}" y="{sy:.0f}" text-anchor="middle">{whole(vals[spike_i])}</text>')
     ex = PAD_X + (n - 1) * step + bar_w / 2
     ey = BASE_Y - max(1.0, BASE_Y - y_of(vals[-1])) - 6
     svg.append(f'            <circle class="enddot" cx="{ex:.1f}" cy="{ey:.1f}" r="2.6"/>')

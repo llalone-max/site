@@ -26,9 +26,9 @@
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
 :root{
-  --bg:#0E100D; --ink:#8FDE9C; --soft:#5F9B6C; --dim:#3E6448;
-  --hair:rgba(143,222,156,.16); --strong:rgba(143,222,156,.4);
-  --lc:#57E389;
+  --bg:#0F0D08; --ink:#F2B24C; --soft:#C08A3E; --dim:#7A5A2E;
+  --hair:rgba(255,176,0,.16); --strong:rgba(255,176,0,.42);
+  --lc:#FFB000;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
 }
 *{box-sizing:border-box}
@@ -38,7 +38,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--mono);overflow:hidd
   font-variant-numeric:tabular-nums}
 a{color:inherit}
 a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
-::selection{background:var(--lc);color:#0E100D}
+::selection{background:var(--lc);color:#0F0D08}
 
 /* tracker: the site band, miniature */
 .tracker{position:fixed;top:0;left:0;right:0;z-index:40;height:48px;background:#191814;
@@ -108,27 +108,17 @@ a.link:hover{color:var(--ink)}
   letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:52ch}
 @media (prefers-reduced-motion:reduce){.talkreveal,.talkreveal.open{transition:none}}
 
-/* the record: a real preview of the PDF, click to open */
-.recview{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
-  max-width:520px;max-height:58vh;overflow:auto;border:1px solid var(--strong);background:#fff;
-  text-decoration:none;transition:border-color .25s;-webkit-overflow-scrolling:touch}
-.recview img{display:block;width:100%;height:auto}
-.recview:hover{border-color:var(--lc)}
-.recview:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
-.reccap{margin:12px 0 0;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--lc)}
-.reccap a{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
-
 /* the live meter: this lane's centerpiece, refreshed daily by update_meter.py */
 .ops{display:block;text-decoration:none;min-width:0;max-width:640px;margin-top:clamp(6px,1.5vh,14px)}
 .chart{display:block;width:100%;height:auto}
-.chart .g{stroke:rgba(143,222,156,.10);stroke-width:1}
+.chart .g{stroke:rgba(255,176,0,.10);stroke-width:1}
 .chart .base{stroke:var(--hair);stroke-width:1}
-.chart .b{fill:rgba(143,222,156,.26);transition:fill .3s}
+.chart .b{fill:rgba(255,176,0,.26);transition:fill .3s}
 .chart .spike{fill:color-mix(in srgb,var(--lc) 52%,var(--bg))}
 .chart .end{fill:var(--lc)}
 .chart .enddot{fill:var(--lc)}
 .chart text{font-size:9.5px;letter-spacing:.06em;fill:var(--soft);font-variant-numeric:tabular-nums}
-.ops:hover .b{fill:rgba(143,222,156,.42)}
+.ops:hover .b{fill:rgba(255,176,0,.44)}
 .opsstat{display:flex;align-items:baseline;gap:10px;margin-top:14px;
   font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);
   font-variant-numeric:tabular-nums}
@@ -143,9 +133,9 @@ a.link:hover{color:var(--ink)}
 .segbar{display:flex;gap:2px;height:4px}
 .segbar i{display:block;height:100%}
 .sw{display:inline-block;width:7px;height:7px;margin-right:6px}
-.s1{background:rgba(143,222,156,.92)} .s2{background:rgba(143,222,156,.64)}
-.s3{background:rgba(143,222,156,.42)} .s4{background:rgba(143,222,156,.26)}
-.s5{background:rgba(143,222,156,.15)}
+.s1{background:rgba(255,176,0,.92)} .s2{background:rgba(255,176,0,.64)}
+.s3{background:rgba(255,176,0,.42)} .s4{background:rgba(255,176,0,.26)}
+.s5{background:rgba(255,176,0,.15)}
 .splitrow{display:block;margin-top:9px;font-size:10.5px;letter-spacing:.08em;
   line-height:1.9;color:var(--soft);font-variant-numeric:tabular-nums}
 .sl{white-space:nowrap;margin-right:14px}
@@ -179,10 +169,10 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <span class="pos" id="pos">01 / 05 &#183; hello</span>
+  <span class="pos" id="pos">01 / 03 &#183; hello</span>
 </div>
 
-<main class="track" id="track" aria-label="AI operations, a walk in five panels">
+<main class="track" id="track" aria-label="AI operations, a walk in three panels">
 
   <section class="panel" data-name="hello" aria-label="Hello">
     <div class="pin">
@@ -204,67 +194,49 @@ document.documentElement.classList.add('js');
          aria-label="Metered AI spend. Open the live dashboard at ops.lazarlalone.com">
         <!--METER-->
           <svg class="chart" viewBox="0 0 640 150" role="img"
-               aria-label="Daily bars of metered AI spend since July 1; peak $45">
+               aria-label="Daily bars of metered AI spend since July 1; peak $52">
             <line class="g" x1="0" y1="96" x2="598" y2="96"/>
             <line class="g" x1="0" y1="60" x2="598" y2="60"/>
             <line class="g" x1="0" y1="24" x2="598" y2="24"/>
             <line class="base" x1="0" y1="132" x2="598" y2="132"/>
-            <text x="640" y="92" text-anchor="end">$9</text>
-            <text x="640" y="56" text-anchor="end">$17</text>
-            <text x="640" y="20" text-anchor="end">$25</text>
+            <text x="640" y="92" text-anchor="end">9</text>
+            <text x="640" y="56" text-anchor="end">17</text>
+            <text x="640" y="20" text-anchor="end">25</text>
             <text x="0" y="146">JUL 01</text>
             <text x="598" y="146" text-anchor="end">JUL 18</text>
-            <rect class="b" x="5.2" y="114.9" width="20.4" height="17.1"/>
-            <rect class="b" x="38.9" y="118.3" width="20.4" height="13.7"/>
-            <rect class="b" x="72.5" y="118.0" width="20.4" height="14.0"/>
-            <rect class="b" x="106.2" y="113.6" width="20.4" height="18.4"/>
+            <rect class="b" x="5.2" y="113.0" width="20.4" height="19.0"/>
+            <rect class="b" x="38.9" y="116.8" width="20.4" height="15.2"/>
+            <rect class="b" x="72.5" y="116.5" width="20.4" height="15.5"/>
+            <rect class="b" x="106.2" y="111.7" width="20.4" height="20.3"/>
             <rect class="b" x="139.9" y="131.0" width="20.4" height="1.0"/>
             <rect class="b" x="173.6" y="130.4" width="20.4" height="1.6"/>
             <rect class="b" x="207.2" y="131.0" width="20.4" height="1.0"/>
             <rect class="b" x="240.9" y="131.0" width="20.4" height="1.0"/>
             <rect class="b" x="274.6" y="131.0" width="20.4" height="1.0"/>
-            <rect class="b" x="308.2" y="119.0" width="20.4" height="13.0"/>
-            <rect class="b" x="341.9" y="115.2" width="20.4" height="16.8"/>
-            <rect class="b" x="375.6" y="115.6" width="20.4" height="16.4"/>
+            <rect class="b" x="308.2" y="117.5" width="20.4" height="14.5"/>
+            <rect class="b" x="341.9" y="113.4" width="20.4" height="18.6"/>
+            <rect class="b" x="375.6" y="113.8" width="20.4" height="18.2"/>
             <rect class="b" x="409.2" y="41.8" width="20.4" height="90.2"/>
             <rect class="b" x="442.9" y="131.0" width="20.4" height="1.0"/>
-            <rect class="b" x="476.6" y="115.2" width="20.4" height="16.8"/>
-            <rect class="b" x="510.3" y="114.6" width="20.4" height="17.4"/>
+            <rect class="b" x="476.6" y="113.4" width="20.4" height="18.6"/>
+            <rect class="b" x="510.3" y="112.7" width="20.4" height="19.3"/>
             <rect class="b" x="543.9" y="74.7" width="20.4" height="57.3"/>
-            <rect class="b spike end" x="577.6" y="24.0" width="20.4" height="108.0"><title>Today &#183; $45</title></rect>
+            <rect class="b spike end" x="577.6" y="24.0" width="20.4" height="108.0"><title>Today &#183; $52</title></rect>
             <circle class="enddot" cx="587.8" cy="18.0" r="2.6"/>
           </svg>
-          <span class="opsstat"><span class="live"></span><span class="t">Metered AI spend since Jul 1 &#183; $126 this month &#183; 46M tokens</span></span>
-          <span class="split"><span class="segbar" aria-hidden="true"><i class="s1" style="flex-grow:70"></i><i class="s2" style="flex-grow:25"></i><i class="s3" style="flex-grow:5"></i></span>
-          <span class="splitrow"><span class="sl"><i class="sw s1"></i>Auditing 70%</span> <span class="sl"><i class="sw s2"></i>Net-new content 25%</span> <span class="sl"><i class="sw s3"></i>Data fetching 5%</span></span>
+          <span class="opsstat"><span class="live"></span><span class="t">Metered AI spend since Jul 1 &#183; $136 this month &#183; 57M tokens</span></span>
+          <span class="split"><span class="segbar" aria-hidden="true"><i class="s1" style="flex-grow:64"></i><i class="s2" style="flex-grow:31"></i><i class="s3" style="flex-grow:5"></i></span>
+          <span class="splitrow"><span class="sl"><i class="sw s1"></i>Auditing 64%</span> <span class="sl"><i class="sw s2"></i>Net-new content 31%</span> <span class="sl"><i class="sw s3"></i>Data fetching 5%</span></span>
           <span class="depth">A summary for this page. The full per-process drill-down runs internally.</span></span>
         <!--/METER-->
       </a>
-      <a class="link" href="https://ops.lazarlalone.com" target="_blank" rel="noopener">ops.lazarlalone.com &#8599;</a>
-    </div>
-  </section>
-
-  <section class="panel" data-name="kind words" aria-label="Kind words">
-    <div class="pin">
-      <p class="plab">03 &#183; kind words</p>
-      <p class="quiet">Kind words are being collected.</p>
-    </div>
-  </section>
-
-  <section class="panel" data-name="the record" aria-label="The record">
-    <div class="pin">
-      <p class="plab">04 &#183; the record</p>
-      <h2>The record.</h2>
-      <a class="recview" href="record-ai.pdf" target="_blank" rel="noopener" aria-label="Open the record as a PDF">
-        <img src="record-ai-p1.webp" width="1000" height="1294" alt="First page of the record" loading="lazy">
-      </a>
-      <p class="reccap"><a href="record-ai.pdf" target="_blank" rel="noopener">open the pdf &#8599;</a></p>
+      <a class="link" href="https://ops.lazarlalone.com" target="_blank" rel="noopener">The full internal dashboard &#8599;</a>
     </div>
   </section>
 
   <section class="panel" data-name="talk" aria-label="Talk">
     <div class="pin">
-      <p class="plab">05 &#183; talk</p>
+      <p class="plab">03 &#183; talk</p>
       <h2><button class="talktrigger" id="talktrigger" type="button"
           aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
       <div class="talkreveal" id="talkpanel">
