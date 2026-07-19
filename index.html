@@ -148,8 +148,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   --hdr:clamp(150px,19vw,360px);
   --rail:clamp(84px,12vw,150px);
   --overlap:clamp(18px,2.4vw,34px);
-  --pw:clamp(220px,22vw,320px);
-  --ptop:clamp(180px,36vh,340px);
+  --pw:clamp(310px,32vw,458px);
+  /* the portrait STARTS HIGH: its top overlaps the header band, around the
+     vertical mid-point of the giant "lalone" letters. --ptop is negative
+     (measured up from the herostage top, i.e. the header's bottom edge). */
+  --ptop:calc(var(--hdr) * -0.42);
   --railH:clamp(340px,52vh,540px);
   --slide:clamp(24px,4vh,52px)}
 
@@ -182,7 +185,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* caption sits below the figure's feet at EVERY scroll position: its offset
    grows with the same progress that unfolds the figure, never overlaid on it */
 .pcap{position:absolute;left:0;
-  top:calc(100% + 14px + (0.85 * var(--pw) + var(--slide)) * var(--sp));
+  top:calc(100% + 14px + (1.2 * var(--pw) + var(--slide)) * var(--sp));
   width:var(--pw);font-family:var(--mono);font-size:11px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--soft);line-height:1.7}
 
@@ -192,9 +195,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .p1{transition:opacity .3s linear,translate .4s cubic-bezier(.2,.7,.3,1),scale .4s ease}
   .pcap{transition:top .4s cubic-bezier(.2,.7,.3,1)}
 }
-/* reduced motion: no scrub, just the fully-formed figure with the caption below */
+/* reduced motion: no scrub, just the fully-formed figure with the caption below.
+   --dsc scales the tall figure down to a sane size where it rests. */
 @media (prefers-reduced-motion:reduce){
-  .portrait{--sp:1}
+  .portrait{--sp:1;--dsc:.6}
 }
 
 /* DESKTOP: a two-column grid, everything in NORMAL FLOW (no pin, nothing sticky).
@@ -212,12 +216,21 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   /* the thesis row fills to the fold (min-height tracks the viewport minus the
      header), so the practice nav in the row below always starts just under the
      fold on any screen height and reveals with a small scroll */
-  .herocopy{grid-area:copy;max-width:760px;min-height:calc(100vh - var(--hdr))}
+  .herocopy{grid-area:copy;max-width:760px;
+    min-height:calc(100vh - var(--hdr) + clamp(70px,11vh,150px))}
   .herorail{grid-area:rail;position:relative;min-height:var(--railH)}
   .practicewrap{grid-area:prac;max-width:760px;
     padding:clamp(28px,6vh,64px) clamp(22px,6vw,60px) clamp(30px,6vh,72px) clamp(22px,6vw,76px)}
   .portrait{position:absolute;top:var(--ptop);
-    right:calc(var(--rail) - var(--overlap));width:var(--pw)}
+    right:calc(var(--rail) - var(--overlap));width:var(--pw);
+    /* the scroll script writes --ty (downward travel) and --dsc (dock scale);
+       scaled from the TOP so the frame's top stays the anchor as it settles */
+    transform-origin:50% 0;
+    transform:translateY(var(--ty,0px)) scale(var(--dsc,1))}
+  /* a taller framed headshot so the whole face fills the first screen above the
+     fold; the source is centred so a slightly-high object-position keeps the face */
+  .pframe{aspect-ratio:5/7}
+  .pframe .p0{object-position:50% 28%}
 }
 
 /* MOBILE: one column in NORMAL FLOW (nothing sticky). Order is thesis -> portrait
@@ -542,28 +555,70 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   });
 })();
 
-/* the portrait FORMS as it scrolls, tied to its POSITION in the viewport. --sp
-   climbs from 0 (a clean framed headshot) to 1 (the full six-armed figure) as the
-   portrait's center rides UP the viewport: it holds the clean headshot while the
-   frame sits low (below START), forms across the middle of the screen, and is fully
-   the figure by the time its center reaches the upper third (END) - so the face is
-   clearly in view all through the transform. Nothing is pinned; the portrait then
-   scrolls up and away naturally. Reduced motion opts out (CSS shows the figure). */
+/* the portrait FORMS and TRAVELS as you scroll, driven by scroll progress (0..1).
+   At load it sits HIGH (top overlapping the header, the whole face above the fold).
+   As you scroll it slides DOWN the page - staying in view, never scrolling up and
+   off - and FORMS from the clean headshot into the six-armed figure across the
+   middle of the journey (--sp 0 to 1). Over the back half it settles to a smaller
+   scale (--dsc) and comes to rest DOCKED BESIDE THE COOKIE at the bottom (figure on
+   the right, cookie on the left). Nothing is pinned: --sp / --ty / --dsc are written
+   each frame. On mobile it just forms in place (no travel). Reduced motion opts out
+   (CSS shows the formed figure at rest). */
 (function(){
   var portrait = document.querySelector('.portrait');
   if(!portrait) return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var START = 0.62;   /* center at 62% of viewport height: still a clean headshot */
-  var END   = 0.42;   /* center at 42%: fully formed, face comfortably in view    */
+  var host   = document.getElementById('herostage');
+  var fig    = portrait.querySelector('.p1');
+  var cookie = document.querySelector('.cookie');
+  var mqDesk = window.matchMedia('(min-width:900px)');
+
+  var FORM_START = 0.05;   /* scroll progress where the figure begins forming    */
+  var FORM_END   = 0.42;   /* fully the figure, its face still comfortably in view */
+  var MID_SCALE  = 0.56;   /* scale once formed, so the WHOLE figure fits the view */
+  var DOCK_SCALE = 0.44;   /* final scale, sized to sit beside the little cookie   */
+  var DOCK_FEET  = 30;     /* nudge: the figure's feet land just past the cookie   */
+
   var raf = 0;
+  function naturalTop(){ return host.offsetTop + portrait.offsetTop; }
+  function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
   function update(){
     raf = 0;
     var vh = window.innerHeight || document.documentElement.clientHeight;
-    var r = portrait.getBoundingClientRect();
-    var center = r.top + r.height / 2;         /* portrait center, from viewport top */
-    var p = (START * vh - center) / ((START - END) * vh);
-    p = p < 0 ? 0 : p > 1 ? 1 : p;
-    portrait.style.setProperty('--sp', p.toFixed(3));
+    var max = Math.max(1, document.documentElement.scrollHeight - vh);
+    var scroll = window.scrollY || window.pageYOffset || 0;
+    var prog = clamp01(scroll / max);
+
+    /* form */
+    var sp = clamp01((prog - FORM_START) / (FORM_END - FORM_START));
+    portrait.style.setProperty('--sp', sp.toFixed(3));
+
+    if(!mqDesk.matches){                       /* mobile: form in place, no travel */
+      portrait.style.setProperty('--ty','0px');
+      portrait.style.setProperty('--dsc','1');
+      return;
+    }
+
+    /* scale: full size at load -> MID_SCALE by the time it is fully formed (so the
+       whole figure fits the screen mid-journey) -> DOCK_SCALE at the bottom */
+    var dsc;
+    if(prog <= FORM_END){ dsc = 1 - (1 - MID_SCALE) * (prog / FORM_END); }
+    else { dsc = MID_SCALE - (MID_SCALE - DOCK_SCALE) * ((prog - FORM_END) / (1 - FORM_END)); }
+    portrait.style.setProperty('--dsc', dsc.toFixed(3));
+
+    /* vertical travel: the frame's viewport TOP eases linearly from its natural
+       load spot down to a docked spot beside the cookie. Linear in scroll keeps it
+       in view the whole way (it never rises up and off). */
+    var nat = naturalTop();                    /* frame's page top when --ty = 0    */
+    var loadVpTop = nat;                        /* == its viewport top at scroll 0   */
+    var ck = cookie.getBoundingClientRect();
+    var cookieVpBottomAtMax = (ck.bottom + scroll) - max;   /* cookie's screen y at the very bottom */
+    var figScaledH = fig.offsetHeight * DOCK_SCALE;
+    var dockVpTop = cookieVpBottomAtMax - figScaledH + DOCK_FEET;
+    if(dockVpTop < 48) dockVpTop = 48;          /* keep the head on screen           */
+    var vpTop = loadVpTop + prog * (dockVpTop - loadVpTop);
+    var ty = (vpTop + scroll) - nat;
+    portrait.style.setProperty('--ty', ty.toFixed(1) + 'px');
   }
   function tick(){ if(!raf) raf = requestAnimationFrame(update); }
   window.addEventListener('scroll', tick, {passive:true});
