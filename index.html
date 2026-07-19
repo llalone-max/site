@@ -180,8 +180,29 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (hover:hover){
   .portrait:has(.pswap:hover) .pcap{opacity:1;margin-top:calc(clamp(12px,2vw,18px) + 224px)}
 }
-/* portrait + talk read as one unit: the face, then how to reach me */
-.meframe{max-width:560px}
+/* DESKTOP two-column hero. Left column: the thesis, the practice nav, then
+   "Let's talk." and its contact reveal. Right column: the portrait, filling the
+   space that was empty, top-anchored so the six-armed figure still forms and
+   grows straight DOWN on scroll exactly as before. Below 900px none of this
+   applies: the page stays the original single-column stack (thesis, practice,
+   portrait, then talk) in plain source order, so mobile is untouched. */
+@media (min-width:900px){
+  .lead{display:grid;
+    grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);
+    column-gap:clamp(40px,5.5vw,92px);
+    grid-template-areas:"hero portrait" "talk portrait";
+    align-items:start;
+    margin-top:clamp(56px,9vh,110px)}
+  .lead .hero{grid-area:hero;margin-top:0}
+  .lead .fig{grid-area:portrait;margin-top:0;align-self:start}
+  .lead .talk{grid-area:talk}
+  /* the thesis stays the loud headline but is sized to read cleanly in the
+     narrower left column instead of overflowing it */
+  .lead .hero h1{font-size:clamp(40px,4.4vw,62px)}
+  /* portrait fills the right column, a touch larger at rest and centered */
+  .lead .portrait{width:100%}
+  .lead .pswap{max-width:340px;margin-left:auto;margin-right:auto}
+}
 
 /* 7 · talk, tucked directly under the portrait */
 .talk{margin-top:clamp(18px,3vw,30px)}
@@ -222,6 +243,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   letter-spacing:-.012em;line-height:1;color:var(--ink);white-space:nowrap;
   user-select:text;-webkit-user-select:text;cursor:text;outline:none}
 .textcard-num:focus-visible{outline:1.5px solid var(--ink);outline-offset:6px}
+/* when the reader highlights the number to copy it, invert to a solid black
+   field with white digits so every character stays crisp under the selection */
+.textcard-num::selection{background:#000;color:#fff}
+.textcard-num::-moz-selection{background:#000;color:#fff}
 .textcard-ph{flex:none;width:clamp(74px,9vw,104px);height:auto;
   opacity:0;transform:scale(.55) rotate(-7deg);transform-origin:50% 60%}
 .textcard.in .textcard-ph{opacity:1;transform:none}
@@ -333,6 +358,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 <div class="wrap">
 <main>
 
+  <!-- lead: on desktop this is a two-column hero (left: thesis + practice + talk,
+       right: portrait). On mobile it collapses to the single-column source-order
+       stack: thesis, practice, portrait, talk. -->
+  <div class="lead">
+
   <!-- 3 · hero -->
   <section class="hero">
     <h1><span class="dcap" aria-hidden="true"><svg viewBox="0 0 28 72" focusable="false"><path d="M14 0 V72"/></svg></span><span class="sr">I</span> build products, brands, and pipelines with AI, an opinion, and an eye.</h1>
@@ -342,43 +372,44 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
       <a class="lane" href="ai.html" data-lane="ai">ai operations</a>.</p>
   </section>
 
-  <!-- 5 · portrait + talk: this is me, here is how to reach me -->
+  <!-- 5 · portrait: this is me. On desktop it fills the right column. -->
   <section class="fig">
-    <div class="meframe">
-      <figure class="portrait">
-        <button class="pswap" id="pswap" type="button" aria-pressed="false"
-                aria-label="Portrait of Lazar LaLone, ink and watercolor. Activate to see the full figure, mechanical arms and all.">
-          <img class="p0" src="portrait-oncream.jpg" width="640" height="640" alt="">
-          <img class="p1" src="portrait-full-oncream.webp" width="720" height="1290" alt="" loading="lazy">
-        </button>
-        <figcaption class="pcap" aria-hidden="true">Everywhere at once. On purpose.</figcaption>
-      </figure>
+    <figure class="portrait">
+      <button class="pswap" id="pswap" type="button" aria-pressed="false"
+              aria-label="Portrait of Lazar LaLone, ink and watercolor. Activate to see the full figure, mechanical arms and all.">
+        <img class="p0" src="portrait-oncream.jpg" width="640" height="640" alt="">
+        <img class="p1" src="portrait-full-oncream.webp" width="720" height="1290" alt="" loading="lazy">
+      </button>
+      <figcaption class="pcap" aria-hidden="true">Everywhere at once. On purpose.</figcaption>
+    </figure>
+  </section>
 
-      <div class="talk" id="talk">
-        <h2><button class="talktrigger" id="talktrigger" type="button"
-            aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
-        <div class="talkreveal" id="talkpanel">
-          <div class="talklinks">
-            <a href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
-            <a href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">Email</a>
-            <a class="textlink" id="textlink" href="sms:+14129445506">Text +1 412 944 5506</a>
-          </div>
-          <p class="talknote">LinkedIn and email work. A text reaches me quickest.</p>
+  <!-- 7 · talk: here is how to reach me -->
+  <div class="talk" id="talk">
+    <h2><button class="talktrigger" id="talktrigger" type="button"
+        aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
+    <div class="talkreveal" id="talkpanel">
+      <div class="talklinks">
+        <a href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+        <a href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">Email</a>
+        <a class="textlink" id="textlink" href="sms:+14129445506">Text +1 412 944 5506</a>
+      </div>
+      <p class="talknote">LinkedIn and email work. A text reaches me quickest.</p>
 
-          <!-- desktop-only: clicking Text reveals the number inline, big and copyable,
-               with a little Nokia that winks in beside it -->
-          <div class="textcard" id="textcard" hidden>
-            <button class="textcard-x" id="textcardx" type="button" aria-label="Back to contact links">&#215;</button>
-            <div class="textcard-body">
-              <p class="textcard-lab">Text me</p>
-              <div class="textcard-num" id="textcardnum" tabindex="-1" aria-live="polite">+1 412 944 5506</div>
-            </div>
-            <img class="textcard-ph" src="nokia-cut.webp" width="360" height="388" alt="A hand-drawn Nokia phone">
-          </div>
+      <!-- desktop-only: clicking Text reveals the number inline, big and copyable,
+           with a little Nokia that winks in beside it -->
+      <div class="textcard" id="textcard" hidden>
+        <button class="textcard-x" id="textcardx" type="button" aria-label="Back to contact links">&#215;</button>
+        <div class="textcard-body">
+          <p class="textcard-lab">Text me</p>
+          <div class="textcard-num" id="textcardnum" tabindex="-1" aria-live="polite">+1 412 944 5506</div>
         </div>
+        <img class="textcard-ph" src="nokia-cut.webp" width="360" height="388" alt="A hand-drawn Nokia phone">
       </div>
     </div>
-  </section>
+  </div>
+
+  </div><!-- /.lead -->
 
   <!-- 7.5 · the fortune cookie -->
   <section class="cookiemod" id="cookiemod" aria-label="Fortune cookie">
