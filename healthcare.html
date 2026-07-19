@@ -116,13 +116,32 @@ a.link:hover{color:var(--ink)}
   letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:52ch}
 @media (prefers-reduced-motion:reduce){.talkreveal,.talkreveal.open{transition:none}}
 
-/* the client wall: a quiet type grid of the health systems */
-.walllab{margin:clamp(22px,4vh,34px) 0 12px;font-family:var(--mono);font-size:10.5px;
-  letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
-.wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;
-  background:var(--hair);border:1px solid var(--hair);max-width:560px}
-.wall span{background:var(--bg);padding:12px 14px;font-family:var(--mono);
-  font-size:12px;letter-spacing:.04em;color:var(--ink)}
+/* the client wall: a logo grid of the health systems, normalized by height.
+   Tier 1 (domestic marquee) reads largest; tier 2 (domestic, newer) a touch
+   smaller under a hairline; tier 3 is the international group, its own sublabel.
+   Wide marks (Kaiser, Centura, Advocate) run longer and wrap into a tidy grid. */
+.walllab{margin:clamp(22px,4vh,34px) 0 clamp(12px,2vh,16px);font-family:var(--mono);
+  font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.logowall{max-width:660px}
+.lw-row{display:flex;flex-wrap:wrap;align-items:center;
+  gap:clamp(13px,2.2vh,19px) clamp(20px,3vw,32px)}
+.lw-row img{width:auto;display:block;flex:0 0 auto}
+.lw-t1 img{height:36px}
+.lw-t2{margin-top:clamp(16px,2.8vh,24px);padding-top:clamp(14px,2.4vh,20px);
+  border-top:1px solid var(--hair)}
+.lw-t2 img{height:29px}
+.lw-sublab{margin:clamp(18px,3vh,26px) 0 clamp(11px,1.8vh,14px);font-family:var(--mono);
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.lw-t3 img{height:31px}
+/* two marks ship with width/height attributes that fight their own viewBox;
+   pin the true aspect ratio so height drives width correctly at every width */
+.lw-dubai{aspect-ratio:166.4/60}
+.lw-montage{aspect-ratio:577.18/150.29}
+@media (max-width:600px){
+  .lw-t1 img{height:28px}
+  .lw-t2 img{height:23px}
+  .lw-t3 img{height:25px}
+}
 
 /* a forward step into the next panel */
 .nextpanel{appearance:none;background:none;border:0;cursor:pointer;align-self:flex-start;
@@ -201,12 +220,11 @@ document.documentElement.classList.add('js');
       <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 8 H120 l8 0 5 -6 6 11 7 -13 8 14 6 -8 4 2 H340"/></svg>
       <h1>My Career.</h1>
-      <p>Most of my career has lived in healthcare. Much of the work I've done isn't mine to
-        share, but my work covers product strategy, clinical and consumer experiences, health
-        data and analytics, and go-to-market at scale.</p>
-      <p class="deep">My expertise is in capacity management across the inpatient
-        and outpatient spaces, front-to-mid revenue cycle, and clinical AI tooling at the point
-        of care and beyond.</p>
+      <p>I have spent most of my career in healthcare, and I know it cold. The biggest work
+        stays under NDA, but the throughline is public: I lead product strategy, clinical and
+        consumer experience, health data and analytics, and go-to-market at scale.</p>
+      <p class="deep">I go deep on capacity management across inpatient and outpatient,
+        front-to-mid revenue cycle, and clinical AI tooling at the point of care and beyond.</p>
       <p class="hint" aria-hidden="true">scroll &#8594;</p>
     </div>
   </section>
@@ -215,17 +233,33 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">02 &#183; The work</p>
       <h2>The work.</h2>
-      <p>More information on <a class="inlink" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">my LinkedIn</a> about my time at Epic and Ambience.</p>
+      <p>More on my time at Epic and Ambience on <a class="inlink" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">my LinkedIn</a>.</p>
       <p class="walllab">Systems I have worked with</p>
-      <div class="wall" aria-label="Health systems I have worked with">
-        <span>Kaiser Permanente</span>
-        <span>Texas Health Resources</span>
-        <span>Ardent Health Services</span>
-        <span>Highmark</span>
-        <span>MultiCare Health System</span>
-        <span>Trinity Health</span>
-        <span>Centura Health</span>
-        <span>Allegheny Health Network</span>
+      <div class="logowall" role="group" aria-label="Health systems I have worked with">
+        <div class="lw-row lw-t1">
+          <img src="healthcare-logos/northwestern-medicine.svg" alt="Northwestern Medicine" loading="lazy">
+          <img src="healthcare-logos/kaiser-permanente.svg" alt="Kaiser Permanente" loading="lazy">
+          <img src="healthcare-logos/texas-health-resources.svg" alt="Texas Health Resources" loading="lazy">
+          <img src="healthcare-logos/allegheny-health-network.svg" alt="Allegheny Health Network" loading="lazy">
+          <img src="healthcare-logos/highmark.svg" alt="Highmark" loading="lazy">
+          <img src="healthcare-logos/multicare-health-system.svg" alt="MultiCare Health System" loading="lazy">
+          <img src="healthcare-logos/trinity-health.svg" alt="Trinity Health" loading="lazy">
+          <img src="healthcare-logos/ardent-health.png" alt="Ardent Health" loading="lazy">
+          <img src="healthcare-logos/centura-health.png" alt="Centura Health" loading="lazy">
+        </div>
+        <div class="lw-row lw-t2">
+          <img src="healthcare-logos/cedars-sinai.png" alt="Cedars-Sinai" loading="lazy">
+          <img src="healthcare-logos/advocate-health-care.svg" alt="Advocate Health Care" loading="lazy">
+          <img class="lw-montage" src="healthcare-logos/montage-health.svg" alt="Montage Health" loading="lazy">
+          <img src="healthcare-logos/uhealth-university-of-miami.svg" alt="UHealth: University of Miami Health System" loading="lazy">
+        </div>
+        <p class="lw-sublab">Internationally</p>
+        <div class="lw-row lw-t3">
+          <img src="healthcare-logos/nhs.svg" alt="NHS" loading="lazy">
+          <img class="lw-dubai" src="healthcare-logos/dubai-health-authority.svg" alt="Dubai Health Authority" loading="lazy">
+          <img src="healthcare-logos/cheo.svg" alt="CHEO: Children's Hospital of Eastern Ontario" loading="lazy">
+          <img src="healthcare-logos/etz.svg" alt="ETZ: Elisabeth-TweeSteden Ziekenhuis (Tilburg, Netherlands)" loading="lazy">
+        </div>
       </div>
       <button class="nextpanel" type="button" data-next>The venture &#8594;</button>
     </div>
