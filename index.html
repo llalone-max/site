@@ -248,27 +248,33 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .cookie.open{cursor:default}
 .cookie.open .ck0{opacity:0}
 .cookie.open .ck1{opacity:1}
-/* the fortune slip: real folded fortune-cookie paper. Warm off-white stock,
-   uneven corners (clip-path), two fold creases so it clearly "was folded in thirds",
-   a soft top-to-bottom curl so the sheet reads gently curved, and a directional lift
-   shadow so it sits ABOVE the surface instead of being painted flat on it. */
+/* the fortune slip: a cheap little strip that just came out of a cookie. Thin warm
+   off-white stock, a faint gritty PAPER NOISE texture, WAVY curled top and bottom
+   edges (clip-path, never a crisp rectangle), two fold creases from being folded in
+   thirds, and a soft UNEVEN lift shadow so it reads flimsy and floating, not printed
+   flat. Narrow and short so every fortune lands in at most two lines. Red text kept. */
 .slipwrap{display:flex;flex-direction:column;align-items:flex-start;
   gap:clamp(12px,2vw,16px)}
 .slip{position:relative;font-family:"Courier New",Courier,"American Typewriter","Courier 10 Pitch",monospace;
-  font-size:13px;letter-spacing:.02em;line-height:1.55;font-weight:700;
-  color:#B4241C;
+  font-size:12.5px;letter-spacing:.01em;line-height:1.5;font-weight:700;
+  color:#B4241C;text-align:center;
   background:
+    /* faint gritty paper grain */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E") 0 0/90px 90px,
     /* two fold creases: folded into thirds inside the cookie */
-    linear-gradient(90deg,transparent calc(34% - .7px),rgba(25,24,20,.085) 34%,transparent calc(34% + .7px)),
-    linear-gradient(90deg,transparent calc(67% - .7px),rgba(25,24,20,.06) 67%,transparent calc(67% + .7px)),
+    linear-gradient(90deg,transparent calc(34% - .7px),rgba(25,24,20,.08) 34%,transparent calc(34% + .7px)),
+    linear-gradient(90deg,transparent calc(67% - .7px),rgba(25,24,20,.055) 67%,transparent calc(67% + .7px)),
     /* curl: the sheet lifts a touch at top and bottom, catches light near the top */
-    linear-gradient(180deg,rgba(25,24,20,.05) 0%,rgba(255,255,255,.55) 11%,rgba(255,255,255,0) 46%,rgba(25,24,20,.02) 78%,rgba(25,24,20,.05) 100%),
+    linear-gradient(180deg,rgba(25,24,20,.05) 0%,rgba(255,255,255,.5) 12%,rgba(255,255,255,0) 48%,rgba(25,24,20,.02) 80%,rgba(25,24,20,.05) 100%),
     /* warm paper stock */
     #FAF6EA;
-  padding:14px 19px;max-width:34ch;transform:rotate(-1.2deg);
-  clip-path:polygon(0.6% 4%, 97.8% 0.6%, 99.4% 62%, 100% 94%, 2.2% 99.4%, 0.4% 40%);
-  /* directional lift: a tight ambient contact shadow + a longer down-right cast */
-  filter:drop-shadow(0 1px 1px rgba(25,24,20,.12)) drop-shadow(3px 7px 9px rgba(25,24,20,.20));
+  padding:11px 20px;max-width:28ch;transform:rotate(-1.4deg);
+  /* wavy edges: gently undulating top and bottom, so it reads as a flimsy strip */
+  clip-path:polygon(
+    0% 22%, 11% 9%, 24% 15%, 37% 6%, 50% 12%, 63% 5%, 76% 13%, 89% 7%, 100% 16%,
+    99% 84%, 88% 95%, 75% 88%, 62% 96%, 50% 89%, 37% 97%, 24% 90%, 11% 96%, 1% 86%);
+  /* soft uneven lift: a light ambient contact shadow + a longer, softer cast */
+  filter:drop-shadow(0 1px 1.5px rgba(25,24,20,.10)) drop-shadow(2px 9px 12px rgba(25,24,20,.16));
   opacity:0;visibility:hidden;translate:0 8px}
 @media (prefers-reduced-motion:no-preference){
   .slip{transition:opacity .35s ease .15s,translate .35s cubic-bezier(.2,.7,.3,1) .15s}
@@ -344,7 +350,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
           <img class="p0" src="portrait.jpg" width="640" height="640" alt="">
           <img class="p1" src="portrait-full.webp" width="720" height="1290" alt="" loading="lazy">
         </button>
-        <figcaption class="pcap" aria-hidden="true">Everywhere at once.</figcaption>
+        <figcaption class="pcap" aria-hidden="true">It&#8217;s hard to be everywhere at once.</figcaption>
       </figure>
 
       <div class="talk" id="talk">
@@ -443,23 +449,31 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   });
 })();
 
-/* scroll scrub: as the portrait rises into view it dissolves the framed headshot
-   and grows into the six-armed figure, tied to scroll progress. Hover/tap stay a
-   fallback; reduced motion opts out entirely (still headshot, tap still works). */
+/* scroll scrub, ONE-WAY RATCHET: as the portrait rises into view it dissolves the
+   framed headshot and grows into the six-armed figure. --sp only ever CLIMBS while
+   you read downward and then HOLDS at 1 for the rest of the page (including the very
+   bottom), so once the arms form they stay formed: no stuck half-state. It releases
+   back toward the headshot only if you scroll back UP so the portrait drops fully
+   below the fold again. Hover/tap stay a fallback; reduced motion opts out entirely. */
 (function(){
   var b = document.getElementById('pswap');
   if(!b) return;
   var fig = b.closest('.portrait') || b;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var raf = 0;
+  var maxSp = 0;   /* the ratchet: highest --sp reached on this downward pass */
   function update(){
     raf = 0;
     var r = b.getBoundingClientRect();
     var vh = window.innerHeight || document.documentElement.clientHeight;
-    var mid = r.top + r.height / 2;
-    var p = (vh * 0.9 - mid) / (vh * 0.9 - vh * 0.42);   /* 0 as it enters, 1 near centered */
+    /* raw progress by how far the portrait has risen: 0 as its top enters at the
+       bottom of the viewport, 1 by the time its top reaches the upper third, and
+       it stays >=1 (clamped) for everything further down, bottom of page included */
+    var p = (vh - r.top) / (vh * 0.62);
     p = p < 0 ? 0 : p > 1 ? 1 : p;
-    if(!b.classList.contains('arms')) fig.style.setProperty('--sp', p.toFixed(3));
+    if(r.top >= vh){ maxSp = 0; }          /* portrait fully below the fold: allow reset */
+    else if(p > maxSp){ maxSp = p; }        /* otherwise only ever climb, then hold */
+    if(!b.classList.contains('arms')) fig.style.setProperty('--sp', maxSp.toFixed(3));
   }
   function tick(){ if(!raf) raf = requestAnimationFrame(update); }
   var io = new IntersectionObserver(function(es){
@@ -515,15 +529,15 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 (function(){
   var FORTUNES = [
     'Hard work compounds quietly.',
-    "Everyone's journey is different. Yours is on schedule.",
-    "The thing you're building is closer than it looks.",
-    "Taste is a skill. You're practicing right now.",
-    'Ship it. Perfection moves anyway.',
-    "Someone you haven't met is rooting for you.",
-    'Your curiosity is the whole strategy.',
+    'You are on schedule.',
+    'It is closer than it looks.',
+    'Taste is a skill. Keep going.',
+    'Ship it. Perfection can wait.',
+    'Someone is rooting for you.',
+    'Curiosity is the whole strategy.',
     'Slow is smooth. Smooth is fast.',
     'Say the opinion out loud.',
-    'This site uses no cookies. Except this one.'
+    'No cookies here. Except this one.'
   ];
   var mod = document.getElementById('cookiemod');
   var btn = document.getElementById('cookie');
