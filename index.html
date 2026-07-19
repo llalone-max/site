@@ -281,10 +281,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .cookie.open .ck0{opacity:0}
 .cookie.open .ck1{opacity:1}
 /* the fortune slip: a cheap little strip that just came out of a cookie. Thin warm
-   off-white stock, a faint gritty PAPER NOISE texture, WAVY curled top and bottom
-   edges (clip-path, never a crisp rectangle), two fold creases from being folded in
-   thirds, and a soft UNEVEN lift shadow so it reads flimsy and floating, not printed
-   flat. Narrow and short so every fortune lands in at most two lines. Red text kept. */
+   off-white stock, a faint gritty PAPER NOISE texture, STRAIGHT cut edges that CURL
+   off the surface (curl shading darkens the top and bottom edges, a soft lift shadow
+   below), two fold creases from being folded in thirds, and roomy padding so text
+   stays off the edges. Narrow and short so every fortune lands in at most two lines. */
 /* the slip + its nudge sit BESIDE the cookie, emerging from its right, partly
    overlapping the cracked shell. Absolutely positioned and vertically centered
    on the cookie, so revealing the fortune reflows nothing. pointer-events:none
@@ -305,17 +305,15 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     /* two fold creases: folded into thirds inside the cookie */
     linear-gradient(90deg,transparent calc(34% - .7px),rgba(25,24,20,.08) 34%,transparent calc(34% + .7px)),
     linear-gradient(90deg,transparent calc(67% - .7px),rgba(25,24,20,.055) 67%,transparent calc(67% + .7px)),
-    /* curl: the sheet lifts a touch at top and bottom, catches light near the top */
-    linear-gradient(180deg,rgba(25,24,20,.05) 0%,rgba(255,255,255,.5) 12%,rgba(255,255,255,0) 48%,rgba(25,24,20,.02) 80%,rgba(25,24,20,.05) 100%),
+    /* curl shading: straight cut edges, but the strip curls off the surface, so the
+       top and bottom edges fall into shadow while the middle catches the light */
+    linear-gradient(180deg,rgba(25,24,20,.15) 0%,rgba(25,24,20,0) 17%,rgba(255,255,255,.32) 50%,rgba(25,24,20,0) 83%,rgba(25,24,20,.15) 100%),
     /* warm paper stock */
     #FAF6EA;
-  padding:11px 20px;max-width:28ch;transform:rotate(-1.4deg);
-  /* wavy edges: gently undulating top and bottom, so it reads as a flimsy strip */
-  clip-path:polygon(
-    0% 22%, 11% 9%, 24% 15%, 37% 6%, 50% 12%, 63% 5%, 76% 13%, 89% 7%, 100% 16%,
-    99% 84%, 88% 95%, 75% 88%, 62% 96%, 50% 89%, 37% 97%, 24% 90%, 11% 96%, 1% 86%);
-  /* soft uneven lift: a light ambient contact shadow + a longer, softer cast */
-  filter:drop-shadow(0 1px 1.5px rgba(25,24,20,.10)) drop-shadow(2px 9px 12px rgba(25,24,20,.16));
+  padding:22px 26px;max-width:30ch;transform:rotate(-1.1deg);border-radius:1px;
+  /* straight edges like a real cut slip; the realism is the curl shading above and
+     the lift shadow below, not a wavy outline. Roomy padding keeps text off the edges. */
+  box-shadow:0 1px 1px rgba(25,24,20,.10), 0 9px 15px rgba(25,24,20,.15);
   opacity:0;visibility:hidden;translate:0 8px}
 @media (prefers-reduced-motion:no-preference){
   .slip{transition:opacity .35s ease .15s,translate .35s cubic-bezier(.2,.7,.3,1) .15s}
