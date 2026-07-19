@@ -551,6 +551,15 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     t.setAttribute('aria-expanded', open ? 'true' : 'false');
     if(open) panel.removeAttribute('inert'); else panel.setAttribute('inert','');
   });
+  /* arriving from another page's "Let's talk" band link (/#talk): open the
+     contact reveal and bring it into view, so the link lands on the open panel. */
+  function openFromHash(){
+    if(location.hash !== '#talk') return;
+    if(!panel.classList.contains('open')) t.click();
+    document.getElementById('talk').scrollIntoView({block:'center'});
+  }
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
 })();
 
 /* the text path: tap-to-text on touch phones (sms: link, untouched). On a non-touch
