@@ -365,7 +365,7 @@ document.documentElement.classList.add('js');
     lastWheel = now;
     if(now < coolUntil) return;
     acc += delta;
-    if(Math.abs(acc) > 90){
+    if(Math.abs(acc) > 26){
       (acc > 0 ? next() : prev());
       acc = 0;
       coolUntil = now + (reduce ? 200 : 620);

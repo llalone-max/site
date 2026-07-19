@@ -120,11 +120,12 @@ a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px
   transition:color .25s}
 a.link:hover{color:var(--ink)}
 .quiet{color:var(--soft)}
-/* the record: a real preview of the PDF's first page, framed, scrollable, click to open */
+/* the record: the PDF's first page scaled whole to fit the fold, click to open.
+   No internal scroll: the image is height-capped so the panel never scrolls inside. */
 .recview{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
-  max-width:520px;max-height:58vh;overflow:auto;border:1px solid var(--hair);background:#fff;
-  text-decoration:none;transition:border-color .25s;-webkit-overflow-scrolling:touch}
-.recview img{display:block;width:100%;height:auto}
+  max-width:520px;overflow:hidden;border:1px solid var(--hair);background:#fff;
+  text-decoration:none;line-height:0;transition:border-color .25s}
+.recview img{display:block;width:auto;height:auto;max-width:100%;max-height:46vh}
 .recview:hover{border-color:var(--lc)}
 .recview:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .reccap{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
@@ -366,7 +367,7 @@ document.documentElement.classList.add('js');
     lastWheel = now;
     if(now < coolUntil) return;
     acc += delta;
-    if(Math.abs(acc) > 90){
+    if(Math.abs(acc) > 26){
       (acc > 0 ? next() : prev());
       acc = 0;
       coolUntil = now + (reduce ? 200 : 620);

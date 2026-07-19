@@ -150,20 +150,28 @@ a.link:hover{color:var(--ink)}
 .nextpanel:hover{color:var(--ink)}
 .nextpanel:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 
-/* the venture: a live preview of the fractionalaesthetics.com homepage, click through */
-.fapreview{display:block;align-self:stretch;margin-top:clamp(18px,3.5vh,30px);
-  border:1px solid var(--hair);background:#0d0d0d;text-decoration:none;line-height:0;
-  overflow:hidden;box-shadow:0 1px 2px rgba(23,34,43,.06);
+/* the venture: a compact doorway to fractionalaesthetics.com, clearly a link.
+   The thumbnail is a small cropped card (not a scrollable page), captioned with
+   the domain, so the whole panel stays within the fold and traffic goes to the site. */
+.fadoor{display:inline-flex;flex-direction:column;align-self:flex-start;
+  width:clamp(210px,28vw,272px);margin-top:clamp(16px,3vh,26px);
+  border:1px solid var(--hair);border-radius:3px;background:#fff;overflow:hidden;
+  text-decoration:none;box-shadow:0 1px 2px rgba(23,34,43,.06);
   transition:border-color .25s,box-shadow .25s}
-.fapreview img{display:block;width:100%;height:auto}
-.fapreview:hover{border-color:var(--lc);box-shadow:0 6px 22px rgba(23,34,43,.14)}
-.fapreview:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+.fadoor-thumb{display:block;line-height:0;background:#0d0d0d}
+.fadoor-thumb img{display:block;width:100%;height:132px;object-fit:cover;object-position:top center}
+.fadoor-tag{display:block;padding:9px 12px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.12em;color:var(--lc);border-top:1px solid var(--hair)}
+.fadoor:hover{border-color:var(--lc);box-shadow:0 6px 22px rgba(23,34,43,.14)}
+.fadoor:hover .fadoor-tag{color:var(--ink)}
+.fadoor:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 
-/* the record: a real preview of the PDF, click to open */
+/* the record: the PDF's first page scaled whole to fit the fold, click to open.
+   No internal scroll: the image is height-capped so the panel never scrolls inside. */
 .recview{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
-  max-width:520px;max-height:58vh;overflow:auto;border:1px solid var(--hair);background:#fff;
-  text-decoration:none;transition:border-color .25s;-webkit-overflow-scrolling:touch}
-.recview img{display:block;width:100%;height:auto}
+  max-width:520px;overflow:hidden;border:1px solid var(--hair);background:#fff;
+  text-decoration:none;line-height:0;transition:border-color .25s}
+.recview img{display:block;width:auto;height:auto;max-width:100%;max-height:46vh}
 .recview:hover{border-color:var(--lc)}
 .recview:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .reccap{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
@@ -208,10 +216,10 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <span class="pos num" id="pos">01 / 06 &#183; hello</span>
+  <span class="pos num" id="pos">01 / 05 &#183; hello</span>
 </div>
 
-<main class="track" id="track" aria-label="Healthcare, a walk in six panels">
+<main class="track" id="track" aria-label="Healthcare, a walk in five panels">
  <div class="walk" id="walk">
 
   <section class="panel" data-name="hello" aria-label="Hello">
@@ -232,7 +240,7 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="the work" aria-label="The work">
     <div class="pin">
       <p class="plab">02 &#183; The work</p>
-      <h2>The work.</h2>
+      <h2>Where I&#8217;ve worked.</h2>
       <p>More on my time at Epic and Ambience on <a class="inlink" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">my LinkedIn</a>.</p>
       <p class="walllab">Systems I have worked with</p>
       <div class="logowall" role="group" aria-label="Health systems I have worked with">
@@ -269,29 +277,24 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">03 &#183; The venture</p>
       <h2>Fractional Aesthetics.</h2>
-      <p>My newest venture in healthcare B2B: Fractional Aesthetics. I audit an aesthetic
-        practice's visibility, give its owners a clear read and a plan they can run, then
-        work alongside the owners and operators as deeply as they want.</p>
-      <a class="fapreview" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener" aria-label="Open fractionalaesthetics.com">
-        <img src="fa-home-preview.webp" width="1400" height="900" alt="Preview of the fractionalaesthetics.com homepage" loading="lazy">
+      <p>My newest venture in healthcare B2B is Fractional Aesthetics. My team audits aesthetic
+        practices, gives owners a clear read on where they stand, and hands them a plan they can
+        run with. I work alongside the owners as an operator and as a builder of bespoke automated
+        systems that fill the gaps we find.</p>
+      <a class="fadoor" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener" aria-label="Visit fractionalaesthetics.com">
+        <span class="fadoor-thumb"><img src="fa-home-preview.webp" width="1400" height="900" alt="" loading="lazy"></span>
+        <span class="fadoor-tag">fractionalaesthetics.com &#8599;</span>
       </a>
       <div class="tlinks">
-        <a class="link" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener">fractionalaesthetics.com &#8599;</a>
+        <a class="link" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener">Visit fractionalaesthetics.com &#8599;</a>
       </div>
-    </div>
-  </section>
-
-  <section class="panel" data-name="kind words" aria-label="Kind words">
-    <div class="pin">
-      <p class="plab">04 &#183; Kind words</p>
-      <p class="quiet">Kind words are being collected.</p>
     </div>
   </section>
 
   <section class="panel" data-name="the record" aria-label="The record">
     <div class="pin">
-      <p class="plab">05 &#183; The record</p>
-      <h2>The record.</h2>
+      <p class="plab">04 &#183; The record</p>
+      <h2>The full history.</h2>
       <a class="recview" href="record-healthcare.pdf" target="_blank" rel="noopener" aria-label="Open the record as a PDF">
         <img src="record-healthcare-p1.webp" width="1000" height="1294" alt="First page of the record" loading="lazy">
       </a>
@@ -301,7 +304,7 @@ document.documentElement.classList.add('js');
 
   <section class="panel" data-name="talk" aria-label="Talk">
     <div class="pin">
-      <p class="plab">06 &#183; Talk</p>
+      <p class="plab">05 &#183; Contact</p>
       <h2><button class="talktrigger" id="talktrigger" type="button"
           aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
       <div class="talkreveal" id="talkpanel">
@@ -389,7 +392,7 @@ document.documentElement.classList.add('js');
     lastWheel = now;
     if(now < coolUntil) return;
     acc += delta;
-    if(Math.abs(acc) > 90){
+    if(Math.abs(acc) > 26){
       (acc > 0 ? next() : prev());
       acc = 0;
       coolUntil = now + (reduce ? 200 : 620);
