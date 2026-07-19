@@ -148,6 +148,20 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .pswap.arms,.pswap:focus-visible{border-color:transparent;background:transparent}
 .pswap.arms .p0,.pswap:focus-visible .p0{opacity:0}
 .pswap.arms .p1,.pswap:focus-visible .p1{opacity:1;translate:-50% 0;scale:1}
+/* the quiet label for the arms figure: it fades in on the same scroll progress
+   (--sp) that unfolds the arms, so it appears exactly when the extra arms do.
+   Hover / tap / focus force it in, matching the full-figure fallback. */
+.pcap{margin:clamp(12px,2vw,18px) 0 0;font-family:var(--mono);font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  opacity:var(--sp);pointer-events:none}
+@media (prefers-reduced-motion:no-preference){
+  .pcap{transition:opacity .3s ease}
+}
+.portrait:has(.pswap.arms) .pcap,
+.portrait:has(.pswap:focus-visible) .pcap{opacity:1}
+@media (hover:hover){
+  .portrait:has(.pswap:hover) .pcap{opacity:1}
+}
 /* portrait + talk read as one unit: the face, then how to reach me */
 .meframe{max-width:560px}
 
@@ -216,23 +230,47 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .cookie.open{cursor:default}
 .cookie.open .ck0{opacity:0}
 .cookie.open .ck1{opacity:1}
-/* the fortune slip: real folded fortune-cookie paper. Uneven corners (clip-path),
-   two faint fold creases so it clearly "was folded once", only a light shadow. */
-.slip{font-family:"Courier New",Courier,"American Typewriter","Courier 10 Pitch",monospace;
+/* the fortune slip: real folded fortune-cookie paper. Warm off-white stock,
+   uneven corners (clip-path), two fold creases so it clearly "was folded in thirds",
+   a soft top-to-bottom curl so the sheet reads gently curved, and a directional lift
+   shadow so it sits ABOVE the surface instead of being painted flat on it. */
+.slipwrap{display:flex;flex-direction:column;align-items:flex-start;
+  gap:clamp(12px,2vw,16px)}
+.slip{position:relative;font-family:"Courier New",Courier,"American Typewriter","Courier 10 Pitch",monospace;
   font-size:13px;letter-spacing:.02em;line-height:1.55;font-weight:700;
   color:#B4241C;
   background:
-    linear-gradient(90deg,transparent calc(36% - .6px),rgba(25,24,20,.07) 36%,transparent calc(36% + .6px)),
-    linear-gradient(90deg,transparent calc(69% - .6px),rgba(25,24,20,.05) 69%,transparent calc(69% + .6px)),
-    #FBFAF4;
-  padding:13px 18px;max-width:34ch;transform:rotate(-1.2deg);
-  clip-path:polygon(0.6% 3%, 98.6% 0.4%, 100% 95%, 1.4% 99%);
-  filter:drop-shadow(0 1.5px 1.5px rgba(25,24,20,.12));
+    /* two fold creases: folded into thirds inside the cookie */
+    linear-gradient(90deg,transparent calc(34% - .7px),rgba(25,24,20,.085) 34%,transparent calc(34% + .7px)),
+    linear-gradient(90deg,transparent calc(67% - .7px),rgba(25,24,20,.06) 67%,transparent calc(67% + .7px)),
+    /* curl: the sheet lifts a touch at top and bottom, catches light near the top */
+    linear-gradient(180deg,rgba(25,24,20,.05) 0%,rgba(255,255,255,.55) 11%,rgba(255,255,255,0) 46%,rgba(25,24,20,.02) 78%,rgba(25,24,20,.05) 100%),
+    /* warm paper stock */
+    #FAF6EA;
+  padding:14px 19px;max-width:34ch;transform:rotate(-1.2deg);
+  clip-path:polygon(0.6% 4%, 97.8% 0.6%, 99.4% 62%, 100% 94%, 2.2% 99.4%, 0.4% 40%);
+  /* directional lift: a tight ambient contact shadow + a longer down-right cast */
+  filter:drop-shadow(0 1px 1px rgba(25,24,20,.12)) drop-shadow(3px 7px 9px rgba(25,24,20,.20));
   opacity:0;visibility:hidden;translate:0 8px}
 @media (prefers-reduced-motion:no-preference){
   .slip{transition:opacity .35s ease .15s,translate .35s cubic-bezier(.2,.7,.3,1) .15s}
 }
 .cookiemod.open .slip{opacity:1;visibility:visible;translate:0 0}
+
+/* the nudge under the fortune: the cookie is not a dead end, it points to hello */
+.slipcta{display:flex;align-items:baseline;gap:clamp(8px,1.6vw,14px);flex-wrap:wrap;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--soft);
+  opacity:0;visibility:hidden;translate:0 6px}
+.slipcta-line{color:var(--soft)}
+.slipcta-go{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;
+  font:inherit;letter-spacing:inherit;color:var(--ink);
+  border-bottom:1px solid var(--strong);padding-bottom:2px;transition:color .25s,border-color .25s}
+.slipcta-go:hover{color:var(--ai);border-color:var(--ai)}
+.slipcta-go:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
+@media (prefers-reduced-motion:no-preference){
+  .slipcta{transition:opacity .35s ease .28s,translate .35s cubic-bezier(.2,.7,.3,1) .28s}
+}
+.cookiemod.open .slipcta{opacity:1;visibility:visible;translate:0 0}
 .cookienote{flex-basis:100%;margin:0 0 6px;font-family:var(--mono);font-size:10.5px;
   letter-spacing:.08em;color:var(--dim)}
 .rainbow{font-weight:600;
@@ -297,6 +335,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
           <img class="p0" src="portrait.jpg" width="640" height="640" alt="">
           <img class="p1" src="portrait-full.webp" width="720" height="1290" alt="" loading="lazy">
         </button>
+        <figcaption class="pcap" aria-hidden="true">Everywhere at once.</figcaption>
       </figure>
 
       <div class="talk" id="talk">
@@ -321,7 +360,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
       <img class="ck0" src="cookie-closed.webp" width="560" height="413" alt="">
       <img class="ck1" src="cookie-cracked.webp" width="560" height="413" alt="" loading="lazy">
     </button>
-    <p class="slip" id="slip" aria-live="polite"></p>
+    <div class="slipwrap">
+      <p class="slip" id="slip" aria-live="polite"></p>
+      <div class="slipcta" id="slipcta">
+        <span class="slipcta-line">Fortune favors a reply.</span>
+        <button class="slipcta-go" id="sayhello" type="button">Say hello</button>
+      </div>
+    </div>
   </section>
 
   <!-- 8 · colophon: a quiet credit line -->
@@ -474,7 +519,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   var mod = document.getElementById('cookiemod');
   var btn = document.getElementById('cookie');
   var slip = document.getElementById('slip');
+  var wrap = slip ? slip.closest('.slipwrap') : null;
   if(!mod || !btn || !slip) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   slip.textContent = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
   btn.addEventListener('click', function(){
     if(btn.classList.contains('open')) return;
@@ -482,6 +529,32 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     mod.classList.add('open');
     btn.setAttribute('aria-expanded','true');
     btn.setAttribute('aria-label','The cookie is open. Your fortune is beside it.');
+    /* on a phone the fortune renders below the cookie, off-screen. Bring it into
+       the middle of the viewport the instant it appears so it is always seen. */
+    var target = wrap || slip;
+    setTimeout(function(){
+      target.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'});
+    }, 60);
+  });
+})();
+
+/* the cookie is not a dead end: "Say hello" carries the reader up to Let's talk
+   and opens it. Falls back to mail if that unit is ever missing. */
+(function(){
+  var go = document.getElementById('sayhello');
+  if(!go) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  go.addEventListener('click', function(){
+    var talk = document.getElementById('talk');
+    var trigger = document.getElementById('talktrigger');
+    var panel = document.getElementById('talkpanel');
+    if(!talk || !trigger || !panel){
+      window.location.href = 'mailto:lazarlalone@gmail.com?subject=Saw%20your%20site';
+      return;
+    }
+    if(!panel.classList.contains('open')) trigger.click();
+    talk.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'});
+    setTimeout(function(){ trigger.focus(); }, reduce ? 0 : 480);
   });
 })();
 </script>
