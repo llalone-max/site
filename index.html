@@ -291,9 +291,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    lets clicks fall through to the cookie in the overlap; the "Say hello" button
    re-enables its own clicks. Width is capped to the viewport so it never spills
    off a narrow phone. */
-.slipwrap{position:absolute;top:50%;left:58%;transform:translateY(-50%);
+.slipwrap{position:absolute;top:50%;left:100%;transform:translateY(-50%);
+  margin-left:clamp(6px,1.4vw,16px);
   display:flex;flex-direction:column;align-items:flex-start;
-  gap:clamp(10px,1.8vw,14px);width:max-content;max-width:min(54vw,240px);
+  gap:clamp(10px,1.8vw,14px);width:max-content;max-width:min(42vw,210px);
   pointer-events:none;z-index:2}
 .slip{position:relative;font-family:"Courier New",Courier,"American Typewriter","Courier 10 Pitch",monospace;
   font-size:12.5px;letter-spacing:.01em;line-height:1.5;font-weight:700;
@@ -449,9 +450,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 
   <!-- 8 · colophon: a quiet credit line -->
   <footer class="colophon">
-    <p class="credit">Interaction language after
-      <a href="https://rauno.me" target="_blank" rel="noopener">rauno.me</a>.
-      Portrait drawn from life by machine. &#169; 2026 Lazar LaLone</p>
+    <p class="credit">&copy; 2026 Lazar LaLone</p>
   </footer>
 
 </main>
@@ -617,8 +616,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     'Someone is rooting for you.',
     'Curiosity is the whole strategy.',
     'Slow is smooth. Smooth is fast.',
-    'Say the opinion out loud.',
-    'No cookies here. Except this one.'
+    'Say the opinion out loud.'
   ];
   var mod = document.getElementById('cookiemod');
   var btn = document.getElementById('cookie');
@@ -626,13 +624,36 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   var wrap = slip ? slip.closest('.slipwrap') : null;
   if(!mod || !btn || !slip) return;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  slip.textContent = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
-  btn.addEventListener('click', function(){
-    if(btn.classList.contains('open')) return;
+
+  /* one fortune per SESSION, and once cracked it STAYS cracked. The chosen
+     fortune and the cracked state are persisted, so nothing on the page (the
+     "Say hello" jump, a re-render, or a reload) can regenerate a fresh closed
+     cookie or swap the fortune out from under the reader. */
+  function store(read, key, val){
+    try{ return read ? sessionStorage.getItem(key) : sessionStorage.setItem(key, val); }
+    catch(e){ return null; }
+  }
+  var fortune = store(true, 'llFortune');
+  if(fortune === null || FORTUNES.indexOf(fortune) === -1){
+    fortune = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
+    store(false, 'llFortune', fortune);
+  }
+  slip.textContent = fortune;
+
+  function crack(){
     btn.classList.add('open');
     mod.classList.add('open');
     btn.setAttribute('aria-expanded','true');
     btn.setAttribute('aria-label','The cookie is open. Your fortune is beside it.');
+  }
+  /* if it was cracked earlier this session, restore that state silently (no
+     scroll nudge): the reader is not re-cracking it, it simply stays open. */
+  if(store(true, 'llCracked') === '1') crack();
+
+  btn.addEventListener('click', function(){
+    if(btn.classList.contains('open')) return;
+    crack();
+    store(false, 'llCracked', '1');
     /* the fortune now sits BESIDE the cookie, in the same view the reader just
        tapped, so it is already on screen. Only nudge if an edge is clipped. */
     var target = wrap || slip;
