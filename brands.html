@@ -95,15 +95,16 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bwm{display:inline-block;align-self:flex-start;text-decoration:none;color:var(--ink);
   transition:color .25s}
 .bwm:hover{color:var(--lc)}
-/* no clean logo marks exist yet, so the two names carry distinct type so they no
-   longer read identical: Fanish is heavy and uppercase (its sporty, app energy),
-   Lazarvision is lighter, mixed-case and wider-tracked (its editorial, commentary
-   voice). Replace with real marks when they exist. */
-.bwmt{display:inline-block;font-family:var(--grot);font-weight:700;
-  font-size:clamp(29px,3.7vw,45px);letter-spacing:-.03em;line-height:1}
-.bwmt.fan{font-weight:800;text-transform:uppercase;letter-spacing:-.02em}
-.bwmt.lv{font-weight:500;text-transform:none;letter-spacing:.005em;
-  font-size:clamp(26px,3.3vw,40px)}
+/* the real marks now carry the two cards, each sized to read clearly on cream:
+   the Fanish path wordmark and the Lazarvision LV monogram (its name stays as a
+   label beside it, since the LV letters alone read ambiguously). */
+.bwm-fanrow,.bwm-lvrow{display:inline-flex;align-items:flex-start;gap:.14em}
+.bwm-lvrow{align-items:center;gap:12px}
+.bwm-mark{display:block;height:auto}
+.bwm-fan{width:138px}
+.bwm-lv{height:58px;width:auto;flex:none;align-self:center}
+.bwm-lvlabel{font-family:var(--grot);font-weight:500;
+  font-size:clamp(24px,2.9vw,34px);letter-spacing:.005em;line-height:1}
 .bwm .ar{color:var(--lc);font-family:var(--mono);font-size:13px;display:inline-block;
   vertical-align:top;margin-left:.14em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
 .bwm:hover .ar{transform:translate(3px,-3px)}
@@ -195,7 +196,6 @@ html.js:not(.nowel) .wcard{animation:bump .5s cubic-bezier(.4,0,.3,1) both .04s}
 @media (max-width:600px){
   .panel{padding-top:calc(40px + clamp(14px,3vh,26px))}
   .brandgrid{grid-template-columns:1fr;gap:12px}
-  .bwmt{font-size:33px}
   .reviews{gap:7px}
   .rev{padding:8px 12px}
   .rev .by{margin-bottom:4px}
@@ -236,6 +236,7 @@ document.documentElement.classList.add('js');
       <p class="plab">01 &#183; Brands <span class="plq">(B2C)</span></p>
       <h1>Two brands.</h1>
       <p>I build and run consumer brands. Each has its own voice, its own audience, and its own content and automation pipelines.</p>
+      <p style="margin-top:clamp(12px,2vh,18px)">I enjoy the opportunity to build skills, work with interesting people, and use technology to enact change.</p>
     </div>
   </section>
 
@@ -244,8 +245,11 @@ document.documentElement.classList.add('js');
       <p class="plab">02 &#183; The brands</p>
       <div class="brandgrid">
         <div class="bcard">
-          <a class="bwm" href="https://fanish.app" target="_blank" rel="noopener">
-            <span class="bwmt fan">Fanish<span class="ar" aria-hidden="true">&#8599;</span></span>
+          <a class="bwm" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Fanish on the App Store">
+            <span class="bwm-fanrow">
+              <img class="bwm-mark bwm-fan" src="brand-marks/fanish-wordmark.svg" alt="Fanish" width="420" height="120">
+              <span class="ar" aria-hidden="true">&#8599;</span>
+            </span>
           </a>
           <p class="bdesc">Sports culture for people who don&#8217;t love sports.</p>
           <div class="blinks">
@@ -257,8 +261,12 @@ document.documentElement.classList.add('js');
           </div>
         </div>
         <div class="bcard">
-          <a class="bwm" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener">
-            <span class="bwmt lv">Lazarvision<span class="ar" aria-hidden="true">&#8599;</span></span>
+          <a class="bwm" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Lazarvision on YouTube">
+            <span class="bwm-lvrow">
+              <img class="bwm-lv" src="brand-marks/lazarvision-lv-purple.png" alt="Lazarvision" width="2084" height="2084">
+              <span class="bwm-lvlabel">Lazarvision</span>
+              <span class="ar" aria-hidden="true">&#8599;</span>
+            </span>
           </a>
           <p class="bdesc">Cultural commentary.</p>
           <div class="blinks">
