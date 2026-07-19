@@ -145,10 +145,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    background (matching the page), so it blends onto the cream and is kept clear
    of the black rail as it forms. */
 .herostage{position:relative;
+  --hdr:clamp(150px,19vw,360px);
   --rail:clamp(84px,12vw,150px);
   --overlap:clamp(18px,2.4vw,34px);
   --pw:clamp(220px,22vw,320px);
-  --ptop:clamp(150px,26vh,300px);
+  --ptop:clamp(180px,36vh,340px);
   --railH:clamp(340px,52vh,540px);
   --slide:clamp(24px,4vh,52px)}
 
@@ -208,11 +209,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     grid-template-columns:minmax(0,1fr) var(--rail);
     grid-template-areas:"copy rail" "prac rail";
     align-items:start}
-  .herocopy{grid-area:copy;max-width:760px}
+  /* the thesis row fills to the fold (min-height tracks the viewport minus the
+     header), so the practice nav in the row below always starts just under the
+     fold on any screen height and reveals with a small scroll */
+  .herocopy{grid-area:copy;max-width:760px;min-height:calc(100vh - var(--hdr))}
   .herorail{grid-area:rail;position:relative;min-height:var(--railH)}
-  /* the practice nav, dropped below the fold with a tall lead-in */
   .practicewrap{grid-area:prac;max-width:760px;
-    padding:clamp(220px,42vh,420px) clamp(22px,6vw,60px) clamp(30px,6vh,72px) clamp(22px,6vw,76px)}
+    padding:clamp(28px,6vh,64px) clamp(22px,6vw,60px) clamp(30px,6vh,72px) clamp(22px,6vw,76px)}
   .portrait{position:absolute;top:var(--ptop);
     right:calc(var(--rail) - var(--overlap));width:var(--pw)}
 }
@@ -228,10 +231,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .herostage{display:flex;flex-direction:column}
   .herocopy{order:1;padding:clamp(30px,7vh,56px) clamp(20px,6vw,40px) 0}
   .herorail{order:2;position:relative;
-    width:min(82vw,320px);margin:clamp(120px,20vh,220px) auto 0;
+    width:min(82vw,320px);margin:clamp(50px,9vh,110px) auto 0;
     padding:clamp(20px,6vw,30px);background:var(--ink)}
   .practicewrap{order:3;
-    padding:clamp(70px,16vh,150px) clamp(20px,6vw,40px) clamp(30px,6vh,60px)}
+    padding:clamp(30px,7vh,70px) clamp(20px,6vw,40px) clamp(30px,6vh,60px)}
   .rail{display:none}
   .portrait{position:relative;width:100%;max-width:230px;margin:0 auto}
   .pframe{aspect-ratio:3/4;background:#F1F0EA;
@@ -551,7 +554,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   if(!portrait) return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var START = 0.62;   /* center at 62% of viewport height: still a clean headshot */
-  var END   = 0.34;   /* center at 34%: fully formed, face comfortably in view    */
+  var END   = 0.42;   /* center at 42%: fully formed, face comfortably in view    */
   var raf = 0;
   function update(){
     raf = 0;
