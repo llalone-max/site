@@ -206,31 +206,32 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .talknote{margin:clamp(16px,2.4vw,22px) 0 0;font-family:var(--mono);font-size:11.5px;
   letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:54ch}
 
-/* the text path on a desktop (no touch): a little Nokia pops up with the number,
-   since there is no tap-to-text there. Small, charming, dismissible. */
-.nokiapop{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:22px;
-  background:rgba(25,24,20,.30)}
-.nokiapop[hidden]{display:none}
-.nokiapop-card{position:relative;display:flex;align-items:center;gap:clamp(12px,2vw,20px);
-  background:var(--paper);border:1px solid var(--strong);padding:clamp(18px,2.4vw,26px);
-  padding-right:clamp(24px,3vw,34px);max-width:400px;
-  box-shadow:0 18px 50px rgba(25,24,20,.30)}
-.nokiapop-ph{flex:none;width:clamp(96px,13vw,132px);height:auto;mix-blend-mode:multiply}
-.nokiapop-body{text-align:left}
-.nokiapop-lab{margin:0 0 4px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+/* the text path on a desktop (no touch): clicking Text reveals the number INLINE,
+   number-forward, as the hero. A small phone winks in beside it as a quiet accent.
+   The links row hides while this shows; the close (x / Esc / click-away) brings it
+   back. sms: goes nowhere on a real desktop, so the number is here to read and copy. */
+.talkreveal.textmode .talklinks,
+.talkreveal.textmode .talknote{display:none}
+.talkreveal.open.textmode{max-height:360px}
+.textcard{position:relative;display:flex;align-items:center;
+  gap:clamp(16px,3vw,32px);margin-top:clamp(20px,3vw,30px);padding-right:34px}
+.textcard[hidden]{display:none}
+.textcard-lab{margin:0 0 8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--dim)}
-.nokiapop-num{font-family:var(--grot);font-weight:600;font-size:clamp(22px,2.4vw,30px);
-  letter-spacing:.01em;color:var(--ink);white-space:nowrap}
-.nokiapop-x{position:absolute;top:4px;right:8px;appearance:none;background:none;border:0;
-  font-size:20px;line-height:1;color:var(--dim);cursor:pointer;padding:6px}
-.nokiapop-x:hover{color:var(--ink)}
-.nokiapop-x:focus-visible{outline:1.5px solid var(--ink);outline-offset:2px}
+.textcard-num{font-family:var(--grot);font-weight:700;font-size:clamp(30px,5.2vw,54px);
+  letter-spacing:-.012em;line-height:1;color:var(--ink);white-space:nowrap;
+  user-select:text;-webkit-user-select:text;cursor:text;outline:none}
+.textcard-num:focus-visible{outline:1.5px solid var(--ink);outline-offset:6px}
+.textcard-ph{flex:none;width:clamp(74px,9vw,104px);height:auto;
+  opacity:0;transform:scale(.55) rotate(-7deg);transform-origin:50% 60%}
+.textcard.in .textcard-ph{opacity:1;transform:none}
 @media (prefers-reduced-motion:no-preference){
-  .nokiapop{animation:nokfade .2s ease}
-  .nokiapop-card{animation:nokpop .28s cubic-bezier(.2,.7,.3,1)}
+  .textcard-ph{transition:opacity .28s ease,transform .42s cubic-bezier(.2,.9,.3,1.5)}
 }
-@keyframes nokfade{from{opacity:0}to{opacity:1}}
-@keyframes nokpop{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+.textcard-x{position:absolute;top:-6px;right:0;appearance:none;background:none;border:0;
+  font-size:20px;line-height:1;color:var(--dim);cursor:pointer;padding:6px}
+.textcard-x:hover{color:var(--ink)}
+.textcard-x:focus-visible{outline:1.5px solid var(--ink);outline-offset:2px}
 
 /* 7.5 · the fortune cookie: ink and watercolor, cracks on tap */
 .cookiemod{margin-top:clamp(60px,9vh,110px);display:flex;align-items:center;
@@ -360,9 +361,20 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
           <div class="talklinks">
             <a href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
             <a href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">Email</a>
-            <a class="textlink" id="textlink" href="sms:+14129445506">Text 412-944-5506</a>
+            <a class="textlink" id="textlink" href="sms:+14129445506">Text +1 412 944 5506</a>
           </div>
           <p class="talknote">LinkedIn and email work. A text reaches me quickest.</p>
+
+          <!-- desktop-only: clicking Text reveals the number inline, big and copyable,
+               with a little Nokia that winks in beside it -->
+          <div class="textcard" id="textcard" hidden>
+            <button class="textcard-x" id="textcardx" type="button" aria-label="Back to contact links">&#215;</button>
+            <div class="textcard-body">
+              <p class="textcard-lab">Text me</p>
+              <div class="textcard-num" id="textcardnum" tabindex="-1" aria-live="polite">+1 412 944 5506</div>
+            </div>
+            <img class="textcard-ph" src="nokia-cut.webp" width="360" height="388" alt="A hand-drawn Nokia phone">
+          </div>
         </div>
       </div>
     </div>
@@ -392,18 +404,6 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   </footer>
 
 </main>
-</div>
-
-<!-- desktop-only: the text number, with a friendly old Nokia -->
-<div class="nokiapop" id="nokiapop" hidden>
-  <div class="nokiapop-card" role="dialog" aria-modal="true" aria-label="Text me at 412-944-5506">
-    <button class="nokiapop-x" id="nokiapopx" type="button" aria-label="Close">&#215;</button>
-    <img class="nokiapop-ph" src="nokia.webp" width="360" height="388" alt="A hand-drawn Nokia phone">
-    <div class="nokiapop-body">
-      <p class="nokiapop-lab">Text me</p>
-      <div class="nokiapop-num">412-944-5506</div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -459,6 +459,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   var b = document.getElementById('pswap');
   if(!b) return;
   var fig = b.closest('.portrait') || b;
+  /* Mobile / touch: no scroll-scrub. Present the fully-formed six-armed figure
+     cleanly at every scroll position (headshot fully faded, arms fully drawn) so
+     there is never a ghosted double-exposure at the top of the page. */
+  var mobile = window.matchMedia('(max-width:600px)').matches
+            || window.matchMedia('(hover:none) and (pointer:coarse)').matches;
+  if(mobile){ fig.style.setProperty('--sp','1'); return; }
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var raf = 0;
   var maxSp = 0;   /* the ratchet: highest --sp reached on this downward pass */
@@ -498,30 +504,47 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   });
 })();
 
-/* the text path: tap-to-text on touch phones, a little Nokia pop-up on a
-   non-touch desktop (where sms: goes nowhere). */
+/* the text path: tap-to-text on touch phones (sms: link, untouched). On a non-touch
+   desktop, sms: goes nowhere, so clicking Text reveals the number INLINE, number
+   forward: big and copyable, with a little Nokia that winks in beside it. Esc,
+   the x, or a click away returns to the links row. */
 (function(){
   var link = document.getElementById('textlink');
-  var pop = document.getElementById('nokiapop');
-  if(!link || !pop) return;
+  var panel = document.getElementById('talkpanel');
+  var card = document.getElementById('textcard');
+  if(!link || !panel || !card) return;
   var desktop = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
   if(!desktop) return;                     /* touch: leave sms: link as-is */
-  var closeBtn = document.getElementById('nokiapopx');
-  var lastFocus = null;
-  function onKey(e){ if(e.key === 'Escape') close(); }
+  var closeBtn = document.getElementById('textcardx');
+  var num = document.getElementById('textcardnum');
+  var lastFocus = null, isOpen = false;
+  function onKey(e){ if(e.key === 'Escape'){ e.stopPropagation(); close(); } }
+  function onDocClick(e){
+    if(!card.contains(e.target) && e.target !== link) close();
+  }
   function open(){
+    if(isOpen) return;
+    isOpen = true;
     lastFocus = document.activeElement;
-    pop.hidden = false;
-    if(closeBtn) closeBtn.focus();
+    card.hidden = false;
+    panel.classList.add('textmode');
+    requestAnimationFrame(function(){ card.classList.add('in'); });
+    if(num) num.focus();
     document.addEventListener('keydown', onKey);
+    /* defer so the click that opened this does not immediately close it */
+    setTimeout(function(){ document.addEventListener('click', onDocClick, true); }, 0);
   }
   function close(){
-    pop.hidden = true;
+    if(!isOpen) return;
+    isOpen = false;
+    card.classList.remove('in');
+    card.hidden = true;
+    panel.classList.remove('textmode');
     document.removeEventListener('keydown', onKey);
+    document.removeEventListener('click', onDocClick, true);
     if(lastFocus && lastFocus.focus) lastFocus.focus();
   }
   link.addEventListener('click', function(e){ e.preventDefault(); open(); });
-  pop.addEventListener('click', function(e){ if(e.target === pop) close(); });
   if(closeBtn) closeBtn.addEventListener('click', close);
 })();
 
