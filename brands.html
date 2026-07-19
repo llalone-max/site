@@ -26,9 +26,9 @@
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
 :root{
-  --bg:#2A1713; --ink:#F2E4D2; --soft:#C9AD97; --dim:#8F715F;
-  --hair:rgba(242,228,210,.16); --strong:rgba(242,228,210,.42);
-  --lc:#D06A4A;
+  --bg:#F3EBDF; --ink:#241611; --soft:#6E5749; --dim:#A38C79;
+  --hair:rgba(36,22,17,.15); --strong:rgba(36,22,17,.40);
+  --lc:#C84B31;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
   --grot:"Helvetica Neue",Helvetica,-apple-system,"Segoe UI",Arial,sans-serif;
 }
@@ -36,12 +36,9 @@
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--grot);overflow:hidden;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-/* warm ambient light, resting */
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(58% 52% at 32% 18%,rgba(208,106,74,.13),transparent 72%)}
 a{color:inherit}
 a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
-::selection{background:var(--lc);color:#2A1713}
+::selection{background:var(--lc);color:#F3EBDF}
 
 /* tracker: the site band, miniature */
 .tracker{position:fixed;top:0;left:0;right:0;z-index:40;height:48px;background:#191814;
@@ -152,17 +149,10 @@ a.link:hover{color:var(--ink)}
   letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:52ch}
 @media (prefers-reduced-motion:reduce){.talkreveal,.talkreveal.open{transition:none}}
 
-/* welcome: warm light sweeps once, the nameplate snaps in */
+/* welcome: the masthead nameplate stamps in, clean on the page ground */
 .wel{display:none}
 html.js:not(.nowel) .wel{position:fixed;inset:0;z-index:60;background:var(--bg);
   display:grid;place-items:center;overflow:hidden}
-html.js:not(.nowel) .wel::before{content:"";position:absolute;inset:-20%;
-  background:radial-gradient(46% 42% at 50% 46%,rgba(232,164,122,.32),rgba(208,106,74,.10) 55%,transparent 74%);
-  animation:sweep .72s cubic-bezier(.4,0,.4,1) both}
-@keyframes sweep{
-  from{transform:translateX(-46%)}
-  to{transform:translateX(30%)}
-}
 .wcard{position:relative;margin:0;font-family:var(--grot);font-weight:700;
   font-size:clamp(52px,11vw,150px);letter-spacing:-.03em;color:var(--ink)}
 html.js:not(.nowel) .wcard{animation:bump .4s steps(3,end) both .12s}

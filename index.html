@@ -148,22 +148,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .pswap.arms,.pswap:focus-visible{border-color:transparent;background:transparent}
 .pswap.arms .p0,.pswap:focus-visible .p0{opacity:0}
 .pswap.arms .p1,.pswap:focus-visible .p1{opacity:1;translate:-50% 0;scale:1}
-.capswap{display:grid}
-.capswap span{grid-area:1/1;transition:opacity .35s ease}
-.capswap .c0{opacity:calc(1 - var(--sp))}
-.capswap .c1{opacity:var(--sp)}
-@media (hover:hover){
-  .portrait:has(.pswap:hover) .c0{opacity:0}
-  .portrait:has(.pswap:hover) .c1{opacity:1}
-}
-.portrait:has(.pswap.arms) .c0,.portrait:has(.pswap:focus-visible) .c0{opacity:0}
-.portrait:has(.pswap.arms) .c1,.portrait:has(.pswap:focus-visible) .c1{opacity:1}
-@media (prefers-reduced-motion:reduce){.capswap span{transition:none}}
+/* portrait + talk read as one unit: the face, then how to reach me */
+.meframe{max-width:560px}
 
-/* 7 · talk */
-.talk{margin-top:clamp(80px,13vh,160px);border-top:1px solid var(--strong);
-  padding-top:clamp(26px,4vw,40px)}
-.talk h2{margin:0;font-weight:600;font-size:clamp(38px,6.5vw,84px);letter-spacing:-.028em;line-height:1}
+/* 7 · talk, tucked directly under the portrait */
+.talk{margin-top:clamp(18px,3vw,30px)}
+.talk h2{margin:0;font-weight:600;font-size:clamp(34px,5.4vw,64px);letter-spacing:-.028em;line-height:1}
 .talktrigger{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;
   font-family:inherit;font-weight:inherit;font-size:inherit;letter-spacing:inherit;
   line-height:inherit;color:inherit;text-align:left;
@@ -183,6 +173,32 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .talklinks a:hover{color:var(--ink);border-color:var(--strong)}
 .talknote{margin:clamp(16px,2.4vw,22px) 0 0;font-family:var(--mono);font-size:11.5px;
   letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:54ch}
+
+/* the text path on a desktop (no touch): a little Nokia pops up with the number,
+   since there is no tap-to-text there. Small, charming, dismissible. */
+.nokiapop{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:22px;
+  background:rgba(25,24,20,.30)}
+.nokiapop[hidden]{display:none}
+.nokiapop-card{position:relative;display:flex;align-items:center;gap:clamp(12px,2vw,20px);
+  background:var(--paper);border:1px solid var(--strong);padding:clamp(18px,2.4vw,26px);
+  padding-right:clamp(24px,3vw,34px);max-width:400px;
+  box-shadow:0 18px 50px rgba(25,24,20,.30)}
+.nokiapop-ph{flex:none;width:clamp(96px,13vw,132px);height:auto;mix-blend-mode:multiply}
+.nokiapop-body{text-align:left}
+.nokiapop-lab{margin:0 0 4px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim)}
+.nokiapop-num{font-family:var(--grot);font-weight:600;font-size:clamp(22px,2.4vw,30px);
+  letter-spacing:.01em;color:var(--ink);white-space:nowrap}
+.nokiapop-x{position:absolute;top:4px;right:8px;appearance:none;background:none;border:0;
+  font-size:20px;line-height:1;color:var(--dim);cursor:pointer;padding:6px}
+.nokiapop-x:hover{color:var(--ink)}
+.nokiapop-x:focus-visible{outline:1.5px solid var(--ink);outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){
+  .nokiapop{animation:nokfade .2s ease}
+  .nokiapop-card{animation:nokpop .28s cubic-bezier(.2,.7,.3,1)}
+}
+@keyframes nokfade{from{opacity:0}to{opacity:1}}
+@keyframes nokpop{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
 
 /* 7.5 · the fortune cookie: ink and watercolor, cracks on tap */
 .cookiemod{margin-top:clamp(60px,9vh,110px);display:flex;align-items:center;
@@ -272,32 +288,29 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
       <span class="dno">03</span><span class="dna">AI OPERATIONS</span><span class="dar" aria-hidden="true">&#8594;</span></a>
   </nav>
 
-  <!-- 5 · portrait -->
+  <!-- 5 · portrait + talk: this is me, here is how to reach me -->
   <section class="fig">
-    <figure class="portrait">
-      <button class="pswap" id="pswap" type="button" aria-pressed="false"
-              aria-label="Portrait of Lazar LaLone, ink and watercolor. Activate to see the full figure, mechanical arms and all.">
-        <img class="p0" src="portrait.jpg" width="640" height="640" alt="">
-        <img class="p1" src="portrait-full.webp" width="720" height="1290" alt="" loading="lazy">
-      </button>
-      <figcaption class="cap capswap">
-        <span class="c0">Ink and watercolor, from life.</span>
-        <span class="c1" aria-hidden="true">Everywhere at once.</span>
-      </figcaption>
-    </figure>
-  </section>
+    <div class="meframe">
+      <figure class="portrait">
+        <button class="pswap" id="pswap" type="button" aria-pressed="false"
+                aria-label="Portrait of Lazar LaLone, ink and watercolor. Activate to see the full figure, mechanical arms and all.">
+          <img class="p0" src="portrait.jpg" width="640" height="640" alt="">
+          <img class="p1" src="portrait-full.webp" width="720" height="1290" alt="" loading="lazy">
+        </button>
+      </figure>
 
-  <!-- 7 · get in touch -->
-  <section class="talk" id="talk">
-    <h2><button class="talktrigger" id="talktrigger" type="button"
-        aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
-    <div class="talkreveal" id="talkpanel">
-      <div class="talklinks">
-        <a href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
-        <a href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">Email</a>
-        <a href="sms:+14129445506">Text me</a>
+      <div class="talk" id="talk">
+        <h2><button class="talktrigger" id="talktrigger" type="button"
+            aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
+        <div class="talkreveal" id="talkpanel">
+          <div class="talklinks">
+            <a href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">Email</a>
+            <a class="textlink" id="textlink" href="sms:+14129445506">Text 412-944-5506</a>
+          </div>
+          <p class="talknote">LinkedIn and email work. A text reaches me quickest.</p>
+        </div>
       </div>
-      <p class="talknote">LinkedIn and email work. A text reaches me quickest.</p>
     </div>
   </section>
 
@@ -319,6 +332,18 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   </footer>
 
 </main>
+</div>
+
+<!-- desktop-only: the text number, with a friendly old Nokia -->
+<div class="nokiapop" id="nokiapop" hidden>
+  <div class="nokiapop-card" role="dialog" aria-modal="true" aria-label="Text me at 412-944-5506">
+    <button class="nokiapop-x" id="nokiapopx" type="button" aria-label="Close">&#215;</button>
+    <img class="nokiapop-ph" src="nokia.webp" width="360" height="388" alt="A hand-drawn Nokia phone">
+    <div class="nokiapop-body">
+      <p class="nokiapop-lab">Text me</p>
+      <div class="nokiapop-num">412-944-5506</div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -403,6 +428,33 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     t.setAttribute('aria-expanded', open ? 'true' : 'false');
     if(open) panel.removeAttribute('inert'); else panel.setAttribute('inert','');
   });
+})();
+
+/* the text path: tap-to-text on touch phones, a little Nokia pop-up on a
+   non-touch desktop (where sms: goes nowhere). */
+(function(){
+  var link = document.getElementById('textlink');
+  var pop = document.getElementById('nokiapop');
+  if(!link || !pop) return;
+  var desktop = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(!desktop) return;                     /* touch: leave sms: link as-is */
+  var closeBtn = document.getElementById('nokiapopx');
+  var lastFocus = null;
+  function onKey(e){ if(e.key === 'Escape') close(); }
+  function open(){
+    lastFocus = document.activeElement;
+    pop.hidden = false;
+    if(closeBtn) closeBtn.focus();
+    document.addEventListener('keydown', onKey);
+  }
+  function close(){
+    pop.hidden = true;
+    document.removeEventListener('keydown', onKey);
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  link.addEventListener('click', function(e){ e.preventDefault(); open(); });
+  pop.addEventListener('click', function(e){ if(e.target === pop) close(); });
+  if(closeBtn) closeBtn.addEventListener('click', close);
 })();
 
 /* the fortune cookie: one fortune per visit */

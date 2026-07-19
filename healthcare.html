@@ -132,6 +132,15 @@ a.link:hover{color:var(--ink)}
 .nextpanel:hover{color:var(--ink)}
 .nextpanel:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 
+/* the venture: a live preview of the fractionalaesthetics.com homepage, click through */
+.fapreview{display:block;align-self:stretch;margin-top:clamp(18px,3.5vh,30px);
+  border:1px solid var(--hair);background:#0d0d0d;text-decoration:none;line-height:0;
+  overflow:hidden;box-shadow:0 1px 2px rgba(23,34,43,.06);
+  transition:border-color .25s,box-shadow .25s}
+.fapreview img{display:block;width:100%;height:auto}
+.fapreview:hover{border-color:var(--lc);box-shadow:0 6px 22px rgba(23,34,43,.14)}
+.fapreview:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+
 /* the record: a real preview of the PDF, click to open */
 .recview{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
   max-width:520px;max-height:58vh;overflow:auto;border:1px solid var(--hair);background:#fff;
@@ -225,12 +234,14 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">03 &#183; The venture</p>
       <h2>Fractional Aesthetics.</h2>
-      <p>My newest venture in healthcare B2B: audits and embedded advisory for aesthetic
-        medical practices. I help them get a clear read on their visibility and build a plan
-        they can run. I am available to work as closely with them as they want.</p>
+      <p>My newest venture in healthcare B2B: Fractional Aesthetics. I audit an aesthetic
+        practice's visibility, give its owners a clear read and a plan they can run, then
+        work alongside the owners and operators as deeply as they want.</p>
+      <a class="fapreview" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener" aria-label="Open fractionalaesthetics.com">
+        <img src="fa-home-preview.webp" width="1400" height="900" alt="Preview of the fractionalaesthetics.com homepage" loading="lazy">
+      </a>
       <div class="tlinks">
         <a class="link" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener">fractionalaesthetics.com &#8599;</a>
-        <a class="link" href="fractional-aesthetics-brand.html">Brand guidelines &#8599;</a>
       </div>
     </div>
   </section>

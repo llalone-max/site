@@ -1,0 +1,60 @@
+name: refresh FA preview
+
+# Screenshots the fractionalaesthetics.com homepage daily and rewrites
+# fa-home-preview.webp, so the preview on healthcare.html stays current.
+# Commits only when the image actually changed (same pattern as meter.yml).
+
+on:
+  schedule:
+    - cron: "27 7 * * *"   # daily
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fa-preview
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install Playwright chromium
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm i playwright@latest
+          npx --yes playwright install --with-deps chromium
+      - name: Install webp tools
+        run: sudo apt-get update && sudo apt-get install -y webp
+      - name: Screenshot the homepage
+        run: |
+          node <<'EOF'
+          const { chromium } = require('playwright');
+          (async () => {
+            const b = await chromium.launch();
+            const c = await b.newContext({ viewport: { width: 1400, height: 900 }, deviceScaleFactor: 2 });
+            const p = await c.newPage();
+            await p.goto('https://www.fractionalaesthetics.com', { waitUntil: 'networkidle', timeout: 60000 });
+            await p.waitForTimeout(1200);
+            await p.screenshot({ path: 'fa-home.png', clip: { x: 0, y: 0, width: 1400, height: 900 } });
+            await b.close();
+          })().catch(e => { console.error(e); process.exit(1); });
+          EOF
+      - name: Compress to webp
+        run: cwebp -q 80 -resize 1400 0 fa-home.png -o fa-home-preview.webp
+      - name: Commit if changed
+        run: |
+          git config user.name "fa-preview-bot"
+          git config user.email "fa-preview-bot@users.noreply.github.com"
+          git add fa-home-preview.webp
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            git commit -m "refresh FA homepage preview [skip ci]"
+            git push
+          fi
