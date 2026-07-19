@@ -43,38 +43,51 @@ a{color:inherit}
 a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 ::selection{background:var(--lc);color:#F7F9FB}
 
-/* tracker: the site band, miniature */
+/* tracker: the site band. Left = Talk to me, center = tick pagination (one mark
+   per panel, current one emphasized), right = the lane name. The lalone wordmark
+   stays as the home link. */
 .tracker{position:fixed;top:0;left:0;right:0;z-index:40;height:48px;background:#191814;
-  display:flex;justify-content:space-between;align-items:center;gap:16px;overflow:hidden;
-  padding:0 clamp(14px,3vw,24px) 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em}
-.bandlink{position:relative;display:block;flex:none;height:100%;width:272px}
-.bandlink .wm{position:absolute;left:12px;bottom:-.03em;margin:0;
-  font-family:"Helvetica Neue",Helvetica,-apple-system,"Segoe UI",Arial,sans-serif;
-  font-weight:700;font-size:98px;line-height:1;letter-spacing:-.045em;white-space:nowrap;
+  display:flex;align-items:center;gap:clamp(14px,3vw,22px);overflow:hidden;
+  padding:0 clamp(14px,3vw,24px);font-family:var(--mono);font-size:11px;letter-spacing:.14em}
+.bandlink{position:relative;display:inline-flex;align-items:center;flex:none;height:100%;
+  text-decoration:none}
+.bandlink .wm{margin:0;font-family:"Helvetica Neue",Helvetica,-apple-system,"Segoe UI",Arial,sans-serif;
+  font-weight:700;font-size:26px;line-height:1;letter-spacing:-.04em;white-space:nowrap;
   color:#F4F2EA;user-select:none;transition:color .25s}
 .bandlink:hover .wm{color:var(--lc)}
-.bandlink:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:-3px}
-.tracker .pos{color:rgba(244,242,234,.62);font-variant-numeric:tabular-nums}
-.trackend{display:flex;align-items:center;gap:clamp(14px,3vw,22px)}
-.talklink{color:rgba(244,242,234,.62);text-decoration:none;font-family:var(--mono);
+.bandlink:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:2px}
+.talklink{appearance:none;background:none;border:0;cursor:pointer;flex:none;padding:0;
+  color:rgba(244,242,234,.62);text-decoration:none;font-family:var(--mono);
   font-size:11px;letter-spacing:.14em;white-space:nowrap;transition:color .25s}
 .talklink:hover,.talklink:focus-visible{color:var(--lc)}
 .talklink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+.ticks{position:absolute;left:50%;top:0;height:100%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:6px;z-index:1}
+.tick{appearance:none;background:none;border:0;cursor:pointer;padding:8px 2px;
+  display:block;line-height:0}
+.tick i{display:block;width:2px;height:9px;background:rgba(244,242,234,.30);
+  transition:height .25s,background .25s}
+.tick[aria-current="true"] i{height:15px;background:var(--lc)}
+.tick:hover i{background:rgba(244,242,234,.65)}
+.tick:focus-visible{outline:1.5px solid var(--lc);outline-offset:2px}
+.section{margin-left:auto;flex:none;color:rgba(244,242,234,.62);font-family:var(--mono);
+  font-size:11px;letter-spacing:.14em;white-space:nowrap}
 @media (max-width:600px){
-  .tracker{height:40px}
-  .bandlink{width:230px}
-  .bandlink .wm{left:10px;font-size:50px}
-  .tracker .pos{font-size:10px;letter-spacing:.08em}
-  .trackend{gap:12px}
-  .talklink{font-size:10px;letter-spacing:.08em}
+  .tracker{height:40px;gap:12px;padding:0 12px}
+  .bandlink .wm{font-size:21px}
+  .talklink{font-size:10px;letter-spacing:.06em}
+  .section{font-size:10px;letter-spacing:.06em}
+  .ticks{gap:5px}
+  .tick i{height:8px}
+  .tick[aria-current="true"] i{height:13px}
 }
 
 /* horizontal walk: Embla viewport / container / slides */
 .track{height:100dvh;overflow:hidden}
 .walk{display:flex;height:100dvh;touch-action:pan-y pinch-zoom;
   will-change:transform;backface-visibility:hidden}
-.panel{flex:0 0 100%;min-width:0;height:100dvh;
-  overflow-y:auto;overflow-x:hidden;padding:calc(48px + clamp(18px,4vh,44px)) clamp(22px,6vw,90px) clamp(24px,5vh,56px)}
+.panel{flex:0 0 100%;min-width:0;height:100dvh;overflow:hidden;
+  padding:calc(48px + clamp(18px,4vh,44px)) clamp(22px,6vw,90px) clamp(24px,5vh,56px)}
 .pin{max-width:720px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center;
   user-select:none;-webkit-user-select:none}
 .plab{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
@@ -101,61 +114,33 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   text-decoration-thickness:.06em;transition:color .25s}
 .panel p a.inlink:hover{color:var(--ink)}
 
-/* the client wall: one clean wall of the health systems, ordered by how closely
-   I worked with each, closest first. A domestic block, then an "Internationally"
-   block under its own sublabel. Marks are normalized by OPTICAL size, not by
-   bounding box: each logo carries its own height so every mark reads at roughly
-   the same visual weight. Wide wordmarks (Kaiser, Centura, Advocate) run longer;
-   compact marks (NHS, ETZ, UHealth) hold a shorter, denser block.
-   Centura is the grey mark on purpose: it is the only defunct org here. */
-.walllab{margin:clamp(22px,4vh,34px) 0 clamp(12px,2vh,16px);font-family:var(--mono);
+/* the client wall: a disciplined, uniform grid. Equal-size cells, every mark
+   centered and height-normalized so the wall reads systematic rather than a set
+   of logos floating at random weights. Colors are kept (color-coded). Order runs
+   by how closely I worked with each, closest first. Centura is grey on purpose:
+   the only defunct org here. The four international marks sit in their own
+   "Internationally" group. */
+.walllab{margin:clamp(14px,2.6vh,22px) 0 clamp(10px,1.8vh,14px);font-family:var(--mono);
   font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
-.logowall{max-width:640px}
-.lw-row{display:flex;flex-wrap:wrap;align-items:center;
-  gap:clamp(16px,2.8vh,24px) clamp(22px,3.2vw,34px)}
-.lw-row img{width:auto;display:block;flex:0 0 auto}
-/* per-logo optical heights: base ~34px, tuned so nothing reads shrunken next to
-   Highmark. Some marks ship width/height attrs that fight their viewBox, so we
-   also pin the true aspect ratio where needed. */
-.lw-highmark{height:34px}
-.lw-multicare{height:26px}
-.lw-kaiser{height:23px}
-.lw-texas{height:31px}
-.lw-centura{height:29px}
-.lw-allegheny{height:46px}
-.lw-northwestern{height:29px}
-.lw-trinity{height:44px;aspect-ratio:263.36/76.33}
-.lw-ardent{height:26px}
-.lw-cedars{height:29px}
-.lw-advocate{height:24px}
-.lw-montage{height:38px;aspect-ratio:577.18/150.29}
-.lw-uhealth{height:48px}
-.lw-nhs{height:42px}
-.lw-dubai{height:40px;aspect-ratio:166.4/60}
-.lw-cheo{height:40px}
-.lw-etz{height:48px;aspect-ratio:161.19/87.24}
-.lw-sublab{margin:clamp(20px,3.4vh,28px) 0 clamp(13px,2vh,16px);font-family:var(--mono);
+.logowall{max-width:660px}
+.lw-grid{display:grid;grid-template-columns:repeat(4,1fr);align-items:center;
+  justify-items:center;gap:clamp(14px,2.6vh,24px) clamp(14px,2.2vw,30px)}
+.lw-grid.intl{max-width:470px}
+.lw-cell{display:flex;align-items:center;justify-content:center;width:100%;
+  height:clamp(26px,3.6vh,34px)}
+.lw-cell img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block}
+/* a few marks ship width/height attrs that fight their viewBox; pin the true ratio */
+.lw-cell img.ar-trinity{aspect-ratio:263.36/76.33}
+.lw-cell img.ar-montage{aspect-ratio:577.18/150.29}
+.lw-cell img.ar-dubai{aspect-ratio:166.4/60}
+.lw-cell img.ar-etz{aspect-ratio:161.19/87.24}
+.lw-sublab{margin:clamp(14px,2.4vh,20px) 0 clamp(10px,1.8vh,14px);font-family:var(--mono);
   font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
 @media (max-width:600px){
   .logowall{max-width:100%}
-  .lw-row{gap:clamp(13px,2.4vh,18px) clamp(16px,4.5vw,22px)}
-  .lw-highmark{height:27px}
-  .lw-multicare{height:21px}
-  .lw-kaiser{height:19px}
-  .lw-texas{height:25px}
-  .lw-centura{height:23px}
-  .lw-allegheny{height:37px}
-  .lw-northwestern{height:23px}
-  .lw-trinity{height:35px}
-  .lw-ardent{height:21px}
-  .lw-cedars{height:23px}
-  .lw-advocate{height:19px}
-  .lw-montage{height:30px}
-  .lw-uhealth{height:38px}
-  .lw-nhs{height:33px}
-  .lw-dubai{height:32px}
-  .lw-cheo{height:32px}
-  .lw-etz{height:38px}
+  .lw-grid{grid-template-columns:repeat(3,1fr);gap:15px 14px}
+  .lw-grid.intl{grid-template-columns:repeat(4,1fr)}
+  .lw-cell{height:24px}
 }
 
 /* a forward step into the next panel */
@@ -198,6 +183,35 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   text-transform:uppercase;color:var(--lc)}
 .reccap a{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
 
+/* contact overlay: blurs and dims the page, brings the ways to reach me forward */
+.talksheet[hidden]{display:none}
+.talksheet{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px}
+.talkscrim{position:absolute;inset:0;background:rgba(23,34,43,.34);
+  -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);animation:scrimin .26s ease both}
+.talkcard{position:relative;z-index:1;width:min(92vw,420px);background:var(--bg);
+  border:1px solid var(--strong);padding:clamp(26px,4vw,40px);
+  box-shadow:0 30px 80px rgba(23,34,43,.28);animation:talkin .26s cubic-bezier(.2,.7,.2,1) both}
+.talkkicker{margin:0 0 clamp(16px,3vh,22px);font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--lc)}
+.talklist{list-style:none;margin:0;padding:0;display:grid;gap:clamp(9px,1.5vh,13px)}
+.talklist a{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  text-decoration:none;color:var(--ink);font-family:var(--grot);font-weight:600;
+  font-size:clamp(18px,2.2vw,22px);letter-spacing:-.01em;
+  border-bottom:1px solid var(--hair);padding:clamp(9px,1.5vh,13px) 0;transition:color .2s}
+.talklist li:last-child a{border-bottom:0}
+.talklist a .lab{font-family:var(--mono);font-size:10px;font-weight:400;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--soft);white-space:nowrap}
+.talklist a:hover,.talklist a:focus-visible{color:var(--lc)}
+.talkx{position:absolute;top:8px;right:10px;appearance:none;background:none;border:0;
+  cursor:pointer;color:var(--soft);font-size:22px;line-height:1;padding:8px;transition:color .2s}
+.talkx:hover,.talkx:focus-visible{color:var(--lc)}
+.talkx:focus-visible,.talklist a:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+@keyframes talkin{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes scrimin{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .talkcard,.talkscrim{animation:none}
+}
+
 /* welcome: the EKG draws itself, then settles into the header rule */
 .wel{display:none}
 html.js:not(.nowel) .wel{position:fixed;inset:0;z-index:60;background:var(--bg);
@@ -236,10 +250,9 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <div class="trackend">
-    <a class="talklink" href="/#talk">Let&#8217;s talk</a>
-    <span class="pos num" id="pos">01 / 04 &#183; hello</span>
-  </div>
+  <button class="talklink" type="button" data-talk aria-haspopup="dialog">Talk to me</button>
+  <div class="ticks" id="ticks" role="tablist" aria-label="Panels"></div>
+  <span class="section">Healthcare</span>
 </div>
 
 <main class="track" id="track" aria-label="Healthcare, a walk in four panels">
@@ -251,9 +264,11 @@ document.documentElement.classList.add('js');
       <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 8 H120 l8 0 5 -6 6 11 7 -13 8 14 6 -8 4 2 H340"/></svg>
       <h1>My Career.</h1>
-      <p>I have spent most of my career in healthcare, and I know it cold. The biggest work
-        stays under NDA, but the throughline is public: I lead product strategy, clinical and
-        consumer experience, health data and analytics, and go-to-market at scale.</p>
+      <p>Most of my career has lived in healthcare, born of a long interest in human medicine
+        and in some of the hardest problems there are. The work runs from product strategy and
+        clinical and consumer experience to health data and analytics and taking all of it to
+        market at scale. I keep an employer&#8217;s specifics to myself, but the interest behind
+        the work is old and real.</p>
       <p class="deep">I go deep on capacity management across inpatient and outpatient,
         front-to-mid revenue cycle, and clinical AI tooling at the point of care and beyond.</p>
     </div>
@@ -263,30 +278,29 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">02 &#183; The work</p>
       <h2>Where I&#8217;ve worked.</h2>
-      <p>More on my time at Epic and Ambience on <a class="inlink" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">my LinkedIn</a>.</p>
       <p class="walllab">Systems I have worked with</p>
       <div class="logowall" role="group" aria-label="Health systems I have worked with">
-        <div class="lw-row">
-          <img class="lw-highmark" src="healthcare-logos/highmark.svg" alt="Highmark" loading="lazy">
-          <img class="lw-multicare" src="healthcare-logos/multicare-health-system.svg" alt="MultiCare Health System" loading="lazy">
-          <img class="lw-kaiser" src="healthcare-logos/kaiser-permanente.svg" alt="Kaiser Permanente" loading="lazy">
-          <img class="lw-texas" src="healthcare-logos/texas-health-resources.svg" alt="Texas Health Resources" loading="lazy">
-          <img class="lw-centura" src="healthcare-logos/centura-health.png" alt="Centura Health" loading="lazy">
-          <img class="lw-allegheny" src="healthcare-logos/allegheny-health-network.svg" alt="Allegheny Health Network" loading="lazy">
-          <img class="lw-northwestern" src="healthcare-logos/northwestern-medicine.svg" alt="Northwestern Medicine" loading="lazy">
-          <img class="lw-trinity" src="healthcare-logos/trinity-health.svg" alt="Trinity Health" loading="lazy">
-          <img class="lw-ardent" src="healthcare-logos/ardent-health.png" alt="Ardent Health" loading="lazy">
-          <img class="lw-cedars" src="healthcare-logos/cedars-sinai.png" alt="Cedars-Sinai" loading="lazy">
-          <img class="lw-advocate" src="healthcare-logos/advocate-health-care.svg" alt="Advocate Health Care" loading="lazy">
-          <img class="lw-montage" src="healthcare-logos/montage-health.svg" alt="Montage Health" loading="lazy">
-          <img class="lw-uhealth" src="healthcare-logos/uhealth-university-of-miami.svg" alt="UHealth: University of Miami Health System" loading="lazy">
+        <div class="lw-grid">
+          <span class="lw-cell"><img src="healthcare-logos/highmark.svg" alt="Highmark" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/multicare-health-system.svg" alt="MultiCare Health System" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/kaiser-permanente.svg" alt="Kaiser Permanente" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/texas-health-resources.svg" alt="Texas Health Resources" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/centura-health.png" alt="Centura Health" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/allegheny-health-network.svg" alt="Allegheny Health Network" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/northwestern-medicine.svg" alt="Northwestern Medicine" loading="lazy"></span>
+          <span class="lw-cell"><img class="ar-trinity" src="healthcare-logos/trinity-health.svg" alt="Trinity Health" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/ardent-health.png" alt="Ardent Health" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/cedars-sinai.png" alt="Cedars-Sinai" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/advocate-health-care.svg" alt="Advocate Health Care" loading="lazy"></span>
+          <span class="lw-cell"><img class="ar-montage" src="healthcare-logos/montage-health.svg" alt="Montage Health" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/uhealth-university-of-miami.svg" alt="UHealth: University of Miami Health System" loading="lazy"></span>
         </div>
         <p class="lw-sublab">Internationally</p>
-        <div class="lw-row">
-          <img class="lw-nhs" src="healthcare-logos/nhs.svg" alt="NHS" loading="lazy">
-          <img class="lw-dubai" src="healthcare-logos/dubai-health-authority.svg" alt="Dubai Health Authority" loading="lazy">
-          <img class="lw-cheo" src="healthcare-logos/cheo.svg" alt="CHEO: Children&#8217;s Hospital of Eastern Ontario" loading="lazy">
-          <img class="lw-etz" src="healthcare-logos/etz.svg" alt="ETZ: Elisabeth-TweeSteden Ziekenhuis (Tilburg, Netherlands)" loading="lazy">
+        <div class="lw-grid intl">
+          <span class="lw-cell"><img src="healthcare-logos/nhs.svg" alt="NHS" loading="lazy"></span>
+          <span class="lw-cell"><img class="ar-dubai" src="healthcare-logos/dubai-health-authority.svg" alt="Dubai Health Authority" loading="lazy"></span>
+          <span class="lw-cell"><img src="healthcare-logos/cheo.svg" alt="CHEO: Children&#8217;s Hospital of Eastern Ontario" loading="lazy"></span>
+          <span class="lw-cell"><img class="ar-etz" src="healthcare-logos/etz.svg" alt="ETZ: Elisabeth-TweeSteden Ziekenhuis (Tilburg, Netherlands)" loading="lazy"></span>
         </div>
       </div>
       <button class="nextpanel" type="button" data-next>The venture &#8594;</button>
@@ -328,6 +342,19 @@ document.documentElement.classList.add('js');
   </svg>
 </div>
 
+<div class="talksheet" id="talksheet" hidden>
+  <div class="talkscrim" data-talkclose></div>
+  <div class="talkcard" role="dialog" aria-modal="true" aria-labelledby="talkkick">
+    <button class="talkx" type="button" data-talkclose aria-label="Close">&#215;</button>
+    <p class="talkkicker" id="talkkick">Talk to me</p>
+    <ul class="talklist">
+      <li><a href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn <span class="lab">Connect</span></a></li>
+      <li><a href="mailto:lazarlalone@gmail.com">lazarlalone@gmail.com <span class="lab">Email</span></a></li>
+      <li><a href="sms:+14129445506">+1 412 944 5506 <span class="lab">Text</span></a></li>
+    </ul>
+  </div>
+</div>
+
 <script src="/assets/embla-carousel.umd.js"></script>
 <script>
 (function(){
@@ -349,18 +376,66 @@ document.documentElement.classList.add('js');
      feed that same engine, so nothing fights. */
   var viewport = document.getElementById('track');
   var panels = [].slice.call(viewport.querySelectorAll('.panel'));
-  var pos = document.getElementById('pos');
   var cur = 0;
-  function pad(n){ return (n < 10 ? '0' : '') + n; }
+
+  /* contact overlay: "Talk to me" blurs the page and brings the ways to reach me
+     forward. Esc, the close control, or the scrim closes it and unblurs. Focus is
+     moved in on open and restored on close, and Tab is trapped inside. */
+  var sheet = document.getElementById('talksheet');
+  var talkBtn = document.querySelector('[data-talk]');
+  var lastFocus = null;
+  function openTalk(){
+    if(!sheet) return;
+    lastFocus = document.activeElement;
+    sheet.hidden = false;
+    var f = sheet.querySelector('a[href],button');
+    if(f) f.focus();
+  }
+  function closeTalk(){
+    if(!sheet || sheet.hidden) return;
+    sheet.hidden = true;
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  if(talkBtn) talkBtn.addEventListener('click', function(e){ e.preventDefault(); openTalk(); });
+  if(sheet){
+    [].forEach.call(sheet.querySelectorAll('[data-talkclose]'), function(el){
+      el.addEventListener('click', closeTalk);
+    });
+    sheet.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){ e.preventDefault(); closeTalk(); return; }
+      if(e.key !== 'Tab') return;
+      var f = sheet.querySelectorAll('a[href],button');
+      if(!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    });
+  }
+  addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && sheet && !sheet.hidden){ e.preventDefault(); closeTalk(); }
+  });
+
+  /* tick pagination: one mark per panel, the current one emphasized. Marks jump. */
+  var ticksWrap = document.getElementById('ticks');
+  var ticks = panels.map(function(p, i){
+    var b = document.createElement('button');
+    b.className = 'tick'; b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-label', p.getAttribute('data-name'));
+    b.innerHTML = '<i></i>';
+    b.addEventListener('click', function(){ toIndex(i); });
+    if(ticksWrap) ticksWrap.appendChild(b);
+    return b;
+  });
   function setPos(i){
     cur = i;
-    pos.textContent = pad(i+1) + ' / ' + pad(panels.length) + ' · ' + panels[i].getAttribute('data-name');
+    ticks.forEach(function(b, j){ b.setAttribute('aria-current', j === i ? 'true' : 'false'); });
   }
   setPos(0);
 
   var embla = window.EmblaCarousel && EmblaCarousel(viewport, {
     axis:'x', loop:false, align:'start', containScroll:'trimSnaps',
-    dragFree:false, skipSnaps:false, duration: reduce ? 0 : 25
+    dragFree:false, skipSnaps:false, duration: reduce ? 0 : 28, watchDrag: false
   });
   function next(){ if(embla) embla.scrollNext(); }
   function prev(){ if(embla) embla.scrollPrev(); }
@@ -376,29 +451,23 @@ document.documentElement.classList.add('js');
   var acc = 0, coolUntil = 0, lastWheel = 0;
   viewport.addEventListener('wheel', function(e){
     if(e.ctrlKey || e.metaKey) return;
+    if(sheet && !sheet.hidden) return;
     /* the record viewer scrolls its own content; let it, and never advance */
     if(e.target.closest && e.target.closest('.recviewer')) return;
     var dx = e.deltaX, dy = e.deltaY;
     var vertical = Math.abs(dy) >= Math.abs(dx);
     var delta = vertical ? dy : dx;
     if(!delta) return;
-    var p = panels[cur];
-    if(vertical && p.scrollHeight > p.clientHeight + 4){
-      var up = dy < 0;
-      var atTop = p.scrollTop <= 0;
-      var atBot = p.scrollTop + p.clientHeight >= p.scrollHeight - 1;
-      if(!((up && atTop) || (!up && atBot))) return;
-    }
     e.preventDefault();
     var now = performance.now();
     if(now - lastWheel > 140) acc = 0;
     lastWheel = now;
     if(now < coolUntil) return;
     acc += delta;
-    if(Math.abs(acc) > 26){
+    if(Math.abs(acc) > 40){
       (acc > 0 ? next() : prev());
       acc = 0;
-      coolUntil = now + (reduce ? 200 : 620);
+      coolUntil = now + (reduce ? 200 : 640);
     }
   }, {passive:false});
 
@@ -411,18 +480,17 @@ document.documentElement.classList.add('js');
   }, {passive:true});
   viewport.addEventListener('touchend', function(e){
     if(!e.changedTouches.length) return;
+    if(sheet && !sheet.hidden) return;
     /* a drag on the record viewer scrolls it; it must not flick the walk */
     if(e.target.closest && e.target.closest('.recviewer')) return;
     var dx = e.changedTouches[0].clientX - txs;
     var dy = e.changedTouches[0].clientY - tys;
-    if(Math.abs(dy) < 55 || Math.abs(dy) < Math.abs(dx) * 1.25) return;
-    var p = panels[cur];
-    var fwd = dy < 0;
-    if(p.scrollHeight > p.clientHeight + 4){
-      if(fwd && p.scrollTop + p.clientHeight < p.scrollHeight - 2) return;
-      if(!fwd && p.scrollTop > 2) return;
-    }
-    (fwd ? next() : prev());
+    var ax = Math.abs(dx), ay = Math.abs(dy);
+    /* a deliberate horizontal swipe turns the page; a small/accidental one does not */
+    if(ax > 55 && ax > ay * 1.2){ (dx < 0 ? next() : prev()); return; }
+    /* a clear vertical swipe advances too */
+    if(ay < 60 || ay < ax * 1.3) return;
+    (dy < 0 ? next() : prev());
   }, {passive:true});
 
   /* edge taps: a quick tap on the outer margin turns the page, but only on
@@ -437,9 +505,18 @@ document.documentElement.classList.add('js');
     var m = Math.max(Math.abs(e.clientX - psx), Math.abs(e.clientY - psy));
     if(m > pmax) pmax = m;
   }, {passive:true});
-  viewport.addEventListener('pointerup', function(){ pdown = false; }, {passive:true});
+  viewport.addEventListener('pointerup', function(e){
+    pdown = false;
+    if(e.pointerType === 'touch') return;            /* touch is handled on touchend */
+    if(sheet && !sheet.hidden) return;
+    if(e.target.closest && e.target.closest('.recviewer')) return;
+    var dx = e.clientX - psx, dy = e.clientY - psy;
+    /* a deliberate horizontal drag turns the page; a small one does not */
+    if(Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.2){ (dx < 0 ? next() : prev()); }
+  }, {passive:true});
   viewport.addEventListener('pointercancel', function(){ pdown = false; }, {passive:true});
   viewport.addEventListener('click', function(e){
+    if(sheet && !sheet.hidden) return;
     if(pmax > 10 || performance.now() - pt0 > 500) return;   /* a drag or hold, not a tap */
     if(e.target.closest && e.target.closest('a,button,input,textarea,select,summary,label,[role="button"],.recviewer')) return;
     var w = viewport.clientWidth, x = e.clientX;
@@ -453,6 +530,7 @@ document.documentElement.classList.add('js');
   });
 
   addEventListener('keydown', function(e){
+    if(sheet && !sheet.hidden) return;
     if(e.altKey || e.metaKey || e.ctrlKey) return;
     var k = e.key;
     if(k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown'){ e.preventDefault(); next(); }
