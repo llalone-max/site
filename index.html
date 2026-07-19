@@ -76,41 +76,30 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 }
 @keyframes penstroke{to{stroke-dashoffset:0}}
 @keyframes inksettle{0%,74%{transform:none}86%{transform:scaleY(1.018)}100%{transform:none}}
-.practice{margin:clamp(22px,3.2vw,36px) 0 0;font-weight:600;
-  font-size:clamp(19px,2.5vw,32px);letter-spacing:-.014em;color:var(--soft)}
-.lane{color:var(--ink);text-decoration:none;padding:.02em .09em;margin:-.02em -.09em}
-.lane:hover,.lane:focus-visible{background:var(--ink);color:var(--paper)}
+/* the practice sentence IS the navigation: bigger, editorial, with an
+   unmistakable hairline underline at rest and the inverted ink-highlight on
+   hover / press. Monochrome ink on paper; the lane-color flood fires on click. */
+.practice{margin:clamp(24px,3.6vw,44px) 0 0;font-weight:600;
+  font-size:clamp(22px,3.2vw,40px);letter-spacing:-.016em;line-height:1.28;color:var(--soft)}
+.lane{color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:.18em;text-decoration-color:var(--strong);
+  padding:.02em .1em;margin:-.02em -.1em;
+  transition:background-color .2s ease,color .2s ease,text-decoration-color .2s ease}
+.lane:hover,.lane:focus-visible,.lane:active{background:var(--ink);color:var(--paper);
+  text-decoration-color:transparent}
 .lane:focus-visible{outline:none}
 .lq{font-family:var(--mono);font-size:.5em;font-weight:400;letter-spacing:.05em;
   color:var(--dim)}
 
-/* 4 · three doors */
-.doors{margin-top:clamp(60px,9vh,120px);border-bottom:1px solid var(--strong)}
-.door{--lc:var(--ink);display:grid;grid-template-columns:3.2em 1fr auto;align-items:center;
-  gap:14px;padding:clamp(20px,3.4vw,32px) 6px;border-top:1px solid var(--strong);
-  font-family:var(--mono);font-size:clamp(14px,1.7vw,19px);letter-spacing:.2em;
-  text-decoration:none;transition:background-color .25s,color .25s}
-.door .dno{font-size:.72em;color:var(--dim);letter-spacing:.24em;
-  font-variant-numeric:tabular-nums;transition:color .25s}
-.door .dq{font-size:.7em;letter-spacing:.14em;color:var(--dim);transition:color .25s}
-.door:hover .dq,.door:focus-visible .dq{color:var(--lc)}
-.door .dar{transition:transform .3s cubic-bezier(.22,.8,.2,1),color .25s;color:var(--dim)}
-.door:hover,.door:focus-visible{background:color-mix(in srgb,var(--lc) 6%,transparent);color:var(--lc)}
-.door:hover .dar,.door:focus-visible .dar{transform:translateX(8px);color:var(--lc)}
-.door:hover .dno,.door:focus-visible .dno{color:var(--lc)}
-.door:focus-visible{outline:1.5px solid var(--lc);outline-offset:-1.5px}
-.d-hc{--lc:var(--hc)} .d-br{--lc:var(--br)} .d-ai{--lc:var(--ai)}
-/* touch devices have no real hover: cancel the hover states so a tapped door
-   does not stick as "pre-pressed and red" after you navigate back to it */
+/* touch devices have no real hover: cancel the hover state so a tapped lane
+   does not stick as inverted ink after you navigate back to it. The hairline
+   underline stays, so the words still read as the way in. */
 @media (hover:none){
-  .lane:hover{background:none;color:var(--ink)}
-  .door:hover{background:none;color:inherit}
-  .door:hover .dq,.door:hover .dno,.door:hover .dar{color:var(--dim)}
-  .door:hover .dar{transform:none}
+  .lane:hover{background:none;color:var(--ink);text-decoration-color:var(--strong)}
 }
 
 /* section furniture */
-.fig{margin-top:clamp(70px,11vh,140px)}
+.fig{margin-top:clamp(30px,5vh,66px)}
 .figlab{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;color:var(--dim);
   text-transform:uppercase;border-top:1px solid var(--hair);padding-top:10px;margin:0 0 clamp(18px,3vw,30px)}
 .cap{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.07em;
@@ -130,9 +119,14 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   width:100%;max-width:260px;aspect-ratio:1/1}
 .pswap .p0{display:block;position:absolute;inset:0;width:100%;height:100%;
   opacity:calc(1 - var(--sp))}
-.pswap .p1{display:block;position:absolute;left:50%;bottom:-1px;height:185%;width:auto;
-  transform-origin:50% 100%;mix-blend-mode:multiply;pointer-events:none;
-  opacity:var(--sp);translate:-50% calc(14px * (1 - var(--sp)));
+/* the full six-armed figure is TOP-anchored: the head stays put over the
+   headshot and the body grows DOWNWARD into the reserved empty space below,
+   so it never reaches up over the thesis or the practice-sentence nav. It is
+   pointer-events:none, so every click in its footprint passes through to the
+   real controls beneath it. */
+.pswap .p1{display:block;position:absolute;left:50%;top:-1px;height:185%;width:auto;
+  transform-origin:50% 0;mix-blend-mode:multiply;pointer-events:none;
+  opacity:var(--sp);translate:-50% calc(-8px * (1 - var(--sp)));
   scale:calc(.9 + .1 * var(--sp))}
 .pswap:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (prefers-reduced-motion:no-preference){
@@ -151,16 +145,20 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* the quiet label for the arms figure: it fades in on the same scroll progress
    (--sp) that unfolds the arms, so it appears exactly when the extra arms do.
    Hover / tap / focus force it in, matching the full-figure fallback. */
-.pcap{margin:clamp(12px,2vw,18px) 0 0;font-family:var(--mono);font-size:11px;
+/* the caption sits just under the figure's feet. Its top margin grows with the
+   same scroll progress that unfolds the figure, so the caption (and the "Let's
+   talk" unit below it) glide down to stay clear of the growing figure instead of
+   being covered by it. */
+.pcap{margin:calc(clamp(12px,2vw,18px) + 216px * var(--sp)) 0 0;font-family:var(--mono);font-size:11px;
   letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
   opacity:var(--sp);pointer-events:none}
 @media (prefers-reduced-motion:no-preference){
-  .pcap{transition:opacity .3s ease}
+  .pcap{transition:opacity .3s ease,margin-top .35s cubic-bezier(.2,.7,.3,1)}
 }
 .portrait:has(.pswap.arms) .pcap,
-.portrait:has(.pswap:focus-visible) .pcap{opacity:1}
+.portrait:has(.pswap:focus-visible) .pcap{opacity:1;margin-top:calc(clamp(12px,2vw,18px) + 224px)}
 @media (hover:hover){
-  .portrait:has(.pswap:hover) .pcap{opacity:1}
+  .portrait:has(.pswap:hover) .pcap{opacity:1;margin-top:calc(clamp(12px,2vw,18px) + 224px)}
 }
 /* portrait + talk read as one unit: the face, then how to reach me */
 .meframe{max-width:560px}
@@ -315,16 +313,6 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
       <a class="lane" href="brands.html" data-lane="br">brands</a> <span class="lq">(B2C)</span>,
       <a class="lane" href="ai.html" data-lane="ai">ai operations</a>.</p>
   </section>
-
-  <!-- 4 · three doors -->
-  <nav class="doors" aria-label="The practice, in full">
-    <a class="door d-hc" href="healthcare.html" data-lane="hc">
-      <span class="dno">01</span><span class="dna">HEALTHCARE</span><span class="dar" aria-hidden="true">&#8594;</span></a>
-    <a class="door d-br" href="brands.html" data-lane="br">
-      <span class="dno">02</span><span class="dna">BRANDS</span><span class="dar" aria-hidden="true">&#8594;</span></a>
-    <a class="door d-ai" href="ai.html" data-lane="ai">
-      <span class="dno">03</span><span class="dna">AI OPERATIONS</span><span class="dar" aria-hidden="true">&#8594;</span></a>
-  </nav>
 
   <!-- 5 · portrait + talk: this is me, here is how to reach me -->
   <section class="fig">
