@@ -52,11 +52,18 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bandlink:hover .wm{color:var(--lc)}
 .bandlink:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:-3px}
 .tracker .pos{color:rgba(244,242,234,.62);font-variant-numeric:tabular-nums}
+.trackend{display:flex;align-items:center;gap:clamp(14px,3vw,22px)}
+.talklink{color:rgba(244,242,234,.62);text-decoration:none;font-family:var(--mono);
+  font-size:11px;letter-spacing:.14em;white-space:nowrap;transition:color .25s}
+.talklink:hover,.talklink:focus-visible{color:var(--lc)}
+.talklink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 @media (max-width:600px){
   .tracker{height:40px}
   .bandlink{width:230px}
   .bandlink .wm{left:10px;font-size:50px}
   .tracker .pos{font-size:10px;letter-spacing:.08em}
+  .trackend{gap:12px}
+  .talklink{font-size:10px;letter-spacing:.08em}
 }
 
 /* horizontal walk: Embla viewport / container / slides */
@@ -162,7 +169,10 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <span class="pos" id="pos">01 / 02 &#183; hello</span>
+  <div class="trackend">
+    <a class="talklink" href="/#talk">Let&#8217;s talk</a>
+    <span class="pos" id="pos">01 / 02 &#183; hello</span>
+  </div>
 </div>
 
 <main class="track" id="track" aria-label="AI operations, a walk in two panels">
