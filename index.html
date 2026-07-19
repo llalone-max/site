@@ -294,7 +294,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .slipwrap{position:absolute;top:50%;left:100%;transform:translateY(-50%);
   margin-left:clamp(6px,1.4vw,16px);
   display:flex;flex-direction:column;align-items:flex-start;
-  gap:clamp(10px,1.8vw,14px);width:max-content;max-width:min(42vw,210px);
+  gap:clamp(10px,1.8vw,14px);width:max-content;max-width:min(52vw,260px);
   pointer-events:none;z-index:2}
 .slip{position:relative;font-family:"Courier New",Courier,"American Typewriter","Courier 10 Pitch",monospace;
   font-size:12.5px;letter-spacing:.01em;line-height:1.5;font-weight:700;
@@ -302,18 +302,17 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   background:
     /* faint gritty paper grain */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E") 0 0/90px 90px,
-    /* two fold creases: folded into thirds inside the cookie */
-    linear-gradient(90deg,transparent calc(34% - .7px),rgba(25,24,20,.08) 34%,transparent calc(34% + .7px)),
-    linear-gradient(90deg,transparent calc(67% - .7px),rgba(25,24,20,.055) 67%,transparent calc(67% + .7px)),
-    /* curl shading: straight cut edges, but the strip curls off the surface, so the
-       top and bottom edges fall into shadow while the middle catches the light */
-    linear-gradient(180deg,rgba(25,24,20,.15) 0%,rgba(25,24,20,0) 17%,rgba(255,255,255,.32) 50%,rgba(25,24,20,0) 83%,rgba(25,24,20,.15) 100%),
+    /* one faint center fold crease */
+    linear-gradient(90deg,transparent calc(50% - .6px),rgba(25,24,20,.05) 50%,transparent calc(50% + .6px)),
+    /* the BOW: a long thin strip that curves along its length, so the two ENDS fall
+       away into soft shadow while the middle faces you and catches the light */
+    linear-gradient(90deg,rgba(25,24,20,.17) 0%,rgba(25,24,20,0) 15%,rgba(255,255,255,.26) 50%,rgba(25,24,20,0) 85%,rgba(25,24,20,.17) 100%),
     /* warm paper stock */
     #FAF6EA;
-  padding:22px 26px;max-width:30ch;transform:rotate(-1.1deg);border-radius:1px;
-  /* straight edges like a real cut slip; the realism is the curl shading above and
-     the lift shadow below, not a wavy outline. Roomy padding keeps text off the edges. */
-  box-shadow:0 1px 1px rgba(25,24,20,.10), 0 9px 15px rgba(25,24,20,.15);
+  width:min(44vw,248px);padding:16px 22px;transform:rotate(-1deg);border-radius:1px;
+  /* a real slip: long and thin, straight cut edges, bowed. The realism is the
+     length-wise bow shading above and the soft lift shadow below, not a wavy edge. */
+  box-shadow:0 2px 3px rgba(25,24,20,.10), 0 11px 17px rgba(25,24,20,.15);
   opacity:0;visibility:hidden;translate:0 8px}
 @media (prefers-reduced-motion:no-preference){
   .slip{transition:opacity .35s ease .15s,translate .35s cubic-bezier(.2,.7,.3,1) .15s}
@@ -614,7 +613,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     'Someone is rooting for you.',
     'Curiosity is the whole strategy.',
     'Slow is smooth. Smooth is fast.',
-    'Say the opinion out loud.'
+    'Say the opinion out loud.',
+    'Every exit is an entrance to new experiences.'
   ];
   var mod = document.getElementById('cookiemod');
   var btn = document.getElementById('cookie');
