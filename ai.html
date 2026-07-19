@@ -64,7 +64,7 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .walk{display:flex;height:100dvh;touch-action:pan-y pinch-zoom;
   will-change:transform;backface-visibility:hidden}
 .panel{flex:0 0 100%;min-width:0;height:100dvh;
-  overflow-y:auto;overflow-x:hidden;padding:calc(48px + clamp(18px,4vh,44px)) clamp(22px,6vw,90px) clamp(24px,5vh,56px)}
+  overflow-y:auto;overflow-x:hidden;padding:calc(48px + clamp(16px,3.4vh,34px)) clamp(22px,6vw,90px) clamp(20px,4vh,42px)}
 .pin{max-width:720px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
 .plab{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--lc);
   margin:0 0 clamp(18px,3.6vh,32px)}
@@ -263,7 +263,7 @@ document.documentElement.classList.add('js');
 
   <section class="panel" data-name="talk" aria-label="Talk">
     <div class="pin">
-      <p class="plab">03 &#183; talk</p>
+      <p class="plab">03 &#183; Contact</p>
       <h2><button class="talktrigger" id="talktrigger" type="button"
           aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
       <div class="talkreveal" id="talkpanel">
@@ -297,14 +297,25 @@ document.documentElement.classList.add('js');
     try{ sessionStorage.setItem('v2wel-ai','1'); }catch(e){}
     var out = document.getElementById('boot');
     var lines = ['meter: live', 'pipelines: 6', 'spend today: $0.41'];
-    var li = 0, ci = 0;
+    var li = 0, ci = 0, gone = false;
+    /* the boot log types itself, holds briefly, then yields. Any scroll, tap or
+       key dismisses it at once so it never sits on top swallowing the first
+       gesture: that overlay hold was the "stuck between 01 and 02" feel. */
+    function dismiss(){
+      if(gone) return; gone = true;
+      clearInterval(t); clearTimeout(hold);
+      if(!wel) return;
+      wel.classList.add('bye');
+      setTimeout(function(){ if(wel){ wel.remove(); wel = null; } }, 320);
+    }
+    var hold = setTimeout(dismiss, 900);
+    ['wheel','touchstart','pointerdown','keydown'].forEach(function(ev){
+      window.addEventListener(ev, dismiss, {once:true, passive:true, capture:true});
+    });
     var t = setInterval(function(){
       if(li >= lines.length){
         clearInterval(t);
         out.textContent = lines.join('\n');
-        /* hold the finished boot log on screen long enough to actually read it */
-        setTimeout(function(){ wel.classList.add('bye'); }, 2000);
-        setTimeout(function(){ wel.remove(); }, 2340);
         return;
       }
       ci++;

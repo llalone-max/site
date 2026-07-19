@@ -166,14 +166,18 @@ a.link:hover{color:var(--ink)}
 .fadoor:hover .fadoor-tag{color:var(--ink)}
 .fadoor:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 
-/* the record: the PDF's first page scaled whole to fit the fold, click to open.
-   No internal scroll: the image is height-capped so the panel never scrolls inside. */
-.recview{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
-  max-width:520px;overflow:hidden;border:1px solid var(--hair);background:#fff;
-  text-decoration:none;line-height:0;transition:border-color .25s}
-.recview img{display:block;width:auto;height:auto;max-width:100%;max-height:46vh}
-.recview:hover{border-color:var(--lc)}
-.recview:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+/* the record: the full history in a fixed-height frame that scrolls its own
+   content. Hover and wheel (or touch-drag) scrolls the resume; the walk's wheel
+   handler hands off to it and does not advance. Open the PDF for the full-size,
+   printable copy. */
+.recviewer{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
+  width:100%;max-width:440px;height:clamp(300px,42vh,440px);
+  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;border:1px solid var(--hair);background:#fff;
+  line-height:0;transition:border-color .25s}
+.recviewer img{display:block;width:100%;height:auto}
+.recviewer:hover{border-color:var(--lc)}
+.recviewer:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .reccap{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--lc)}
 .reccap a{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
@@ -295,9 +299,9 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">04 &#183; The record</p>
       <h2>The full history.</h2>
-      <a class="recview" href="record-healthcare.pdf" target="_blank" rel="noopener" aria-label="Open the record as a PDF">
-        <img src="record-healthcare-p1.webp" width="1000" height="1294" alt="First page of the record" loading="lazy">
-      </a>
+      <div class="recviewer" tabindex="0" role="group" aria-label="The full history, scroll to read. Open the PDF for the full-size copy.">
+        <img src="record-healthcare-p1.webp" width="1000" height="1294" alt="The full history" loading="lazy">
+      </div>
       <p class="reccap"><a href="record-healthcare.pdf" target="_blank" rel="noopener">Open the PDF &#8599;</a></p>
     </div>
   </section>
@@ -375,6 +379,8 @@ document.documentElement.classList.add('js');
   var acc = 0, coolUntil = 0, lastWheel = 0;
   viewport.addEventListener('wheel', function(e){
     if(e.ctrlKey || e.metaKey) return;
+    /* the record viewer scrolls its own content; let it, and never advance */
+    if(e.target.closest && e.target.closest('.recviewer')) return;
     var dx = e.deltaX, dy = e.deltaY;
     var vertical = Math.abs(dy) >= Math.abs(dx);
     var delta = vertical ? dy : dx;
@@ -408,6 +414,8 @@ document.documentElement.classList.add('js');
   }, {passive:true});
   viewport.addEventListener('touchend', function(e){
     if(!e.changedTouches.length) return;
+    /* a drag on the record viewer scrolls it; it must not flick the walk */
+    if(e.target.closest && e.target.closest('.recviewer')) return;
     var dx = e.changedTouches[0].clientX - txs;
     var dy = e.changedTouches[0].clientY - tys;
     if(Math.abs(dy) < 55 || Math.abs(dy) < Math.abs(dx) * 1.25) return;
@@ -436,7 +444,7 @@ document.documentElement.classList.add('js');
   viewport.addEventListener('pointercancel', function(){ pdown = false; }, {passive:true});
   viewport.addEventListener('click', function(e){
     if(pmax > 10 || performance.now() - pt0 > 500) return;   /* a drag or hold, not a tap */
-    if(e.target.closest && e.target.closest('a,button,input,textarea,select,summary,label,[role="button"]')) return;
+    if(e.target.closest && e.target.closest('a,button,input,textarea,select,summary,label,[role="button"],.recviewer')) return;
     var w = viewport.clientWidth, x = e.clientX;
     if(x < w * EDGE) prev();
     else if(x > w * (1 - EDGE)) next();

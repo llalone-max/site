@@ -85,49 +85,87 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .panel .hint{margin-top:clamp(26px,5vh,46px);font-family:var(--mono);font-size:11px;
   letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
 
-/* the titles: brands lead with their own wordmark, a contents-page feel */
-.titles{margin-top:clamp(6px,1.5vh,14px);max-width:680px}
-.entry{padding:clamp(16px,2.8vh,28px) 0;border-top:1px solid var(--hair)}
-.entry:first-child{border-top:0}
-.wmlink{display:inline-block;text-decoration:none;color:var(--ink);transition:color .25s}
-.wmlink:hover{color:var(--lc)}
-.entry .wm2{margin:0;font-family:var(--grot);font-weight:700;
-  font-size:clamp(42px,7.4vw,88px);letter-spacing:-.032em;line-height:.98}
-.entry .ar{color:var(--lc);font-family:var(--mono);font-size:15px;display:inline-block;
-  vertical-align:top;margin-left:.16em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
-.wmlink:hover .ar{transform:translate(4px,-3px)}
-.entry .desc{margin:10px 0 0;font-size:clamp(15px,1.45vw,18.5px);color:var(--soft);max-width:48ch}
-.glinks{display:flex;flex-direction:column;align-items:flex-start;gap:9px;margin-top:16px}
-.glinks a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+/* the brands: two co-equal cards, equal size and weight. App Store cues on
+   Fanish, YouTube on Lazarvision. Side by side on desktop, stacked on phones. */
+.brandgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(13px,1.8vw,20px);
+  max-width:720px;margin-top:clamp(8px,1.8vh,16px);align-items:stretch}
+.bcard{display:flex;flex-direction:column;min-width:0;
+  padding:clamp(15px,2.2vh,22px) clamp(15px,1.7vw,21px);
+  border:1px solid var(--hair);border-radius:14px;background:rgba(255,255,255,.42);
+  transition:border-color .25s,box-shadow .25s}
+.bcard:hover{border-color:var(--strong);box-shadow:0 8px 30px rgba(36,22,17,.08)}
+.bwm{display:inline-block;align-self:flex-start;text-decoration:none;color:var(--ink);
+  transition:color .25s}
+.bwm:hover{color:var(--lc)}
+.bwmt{display:inline-block;font-family:var(--grot);font-weight:700;
+  font-size:clamp(29px,3.7vw,45px);letter-spacing:-.03em;line-height:1}
+.bwm .ar{color:var(--lc);font-family:var(--mono);font-size:13px;display:inline-block;
+  vertical-align:top;margin-left:.14em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
+.bwm:hover .ar{transform:translate(3px,-3px)}
+.bdesc{margin:9px 0 0;font-size:clamp(14px,1.35vw,17px);color:var(--soft);line-height:1.5}
+.bmeta{margin:11px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim)}
+.blinks{display:flex;flex-direction:column;align-items:flex-start;gap:12px;
+  margin-top:auto;padding-top:clamp(14px,2.2vh,20px)}
+/* the store badge: a compact dark pill in the App Store convention, on-brand */
+.badge{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  background:#191814;color:#F4F2EA;border-radius:9px;padding:8px 14px;
+  border:1px solid rgba(255,255,255,.06);transition:background .25s,transform .2s}
+.badge:hover{background:#2a2621;transform:translateY(-1px)}
+.badge .glyph{font-size:19px;line-height:1;flex:none}
+.badge .lbl{display:flex;flex-direction:column;line-height:1.12;text-align:left}
+.badge .lbl .s{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;
+  text-transform:uppercase;opacity:.72}
+.badge .lbl .b{font-family:var(--grot);font-weight:600;font-size:15px;letter-spacing:-.01em}
+.badge:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+.glink{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--soft);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;
   transition:color .25s,border-color .25s}
-.glinks a:hover{color:var(--lc);border-color:currentColor}
+.glink:hover{color:var(--lc);border-color:currentColor}
 
-/* reviews: App Store notices as editorial social proof */
-.revhead{margin:0 0 clamp(14px,2.4vh,22px);font-family:var(--mono);font-size:11px;
-  letter-spacing:.13em;text-transform:uppercase;color:var(--soft)}
-.revhead .stars{color:var(--lc);letter-spacing:.18em;margin:0 .35em}
-.reviews{max-width:680px;margin:0;padding:0;list-style:none}
-.rev{padding:clamp(13px,2.3vh,19px) 0;border-top:1px solid var(--hair)}
-.rev:first-child{border-top:0}
-.rev .q{margin:0;font-size:clamp(15.5px,1.55vw,19px);line-height:1.5;color:var(--ink);text-wrap:pretty}
-.rev .by{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:9px 0 0;
-  font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--soft)}
-.rev .by .stars{color:var(--lc);letter-spacing:.16em}
+/* reviews: App Store social proof, native cues but on-brand */
+.revsum{display:flex;align-items:center;gap:clamp(14px,2.4vw,26px);flex-wrap:wrap;
+  margin:0 0 clamp(13px,2.2vh,18px);padding-bottom:clamp(12px,2vh,16px);
+  border-bottom:1px solid var(--hair);max-width:680px}
+.rsscore{display:flex;align-items:center;gap:13px}
+.rsnum{font-family:var(--grot);font-weight:700;font-size:clamp(32px,4.2vw,50px);
+  letter-spacing:-.03em;line-height:1;color:var(--ink)}
+.rscol{display:flex;flex-direction:column;gap:5px}
+.rsstars{color:var(--lc);letter-spacing:.2em;font-size:15px}
+.rstag{align-self:flex-start;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--soft);border:1px solid var(--hair);
+  border-radius:20px;padding:3px 9px}
+.rscount{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--soft)}
+.reviews{max-width:680px;margin:0;padding:0;list-style:none;
+  display:grid;gap:clamp(8px,1.3vh,11px)}
+.rev{padding:clamp(10px,1.7vh,14px) clamp(13px,1.5vw,16px);
+  border:1px solid var(--hair);border-radius:10px;background:rgba(255,255,255,.4)}
+.rev .by{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 6px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--soft)}
+.rev .by .who{color:var(--ink);font-weight:600}
+.rev .by .stars{color:var(--lc);letter-spacing:.14em}
+.rev .q{margin:0;font-size:clamp(14px,1.4vw,16.5px);line-height:1.45;color:var(--ink);text-wrap:pretty}
+.revfoot{display:flex;align-items:center;gap:clamp(18px,3vw,30px);flex-wrap:wrap;
+  margin-top:clamp(15px,2.5vh,22px)}
+.revfoot .link{margin-top:0}
 a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);font-family:var(--mono);
   font-size:12px;letter-spacing:.16em;color:var(--lc);
   text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;
   transition:color .25s}
 a.link:hover{color:var(--ink)}
 .quiet{color:var(--soft)}
-/* the record: the PDF's first page scaled whole to fit the fold, click to open.
-   No internal scroll: the image is height-capped so the panel never scrolls inside. */
-.recview{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
-  max-width:520px;overflow:hidden;border:1px solid var(--hair);background:#fff;
-  text-decoration:none;line-height:0;transition:border-color .25s}
-.recview img{display:block;width:auto;height:auto;max-width:100%;max-height:46vh}
-.recview:hover{border-color:var(--lc)}
-.recview:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+/* the record: the full history in a fixed-height frame that scrolls its own
+   content. Hover and wheel (or touch-drag) scrolls the resume; the walk's wheel
+   handler hands off to it and does not advance. Open the PDF for the full-size,
+   printable copy. */
+.recviewer{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
+  width:100%;max-width:440px;height:clamp(300px,42vh,440px);
+  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;border:1px solid var(--hair);background:#fff;
+  line-height:0;transition:border-color .25s}
+.recviewer img{display:block;width:100%;height:auto}
+.recviewer:hover{border-color:var(--lc)}
+.recviewer:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .reccap{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--lc)}
 .reccap a{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
@@ -169,10 +207,15 @@ html.js:not(.nowel) .wcard{animation:bump .4s steps(3,end) both .12s}
    advances the walk. Placed after the base rules so these overrides actually win. */
 @media (max-width:600px){
   .panel{padding-top:calc(40px + clamp(14px,3vh,26px))}
-  .rev{padding:clamp(9px,1.5vh,14px) 0}
-  .rev .q{font-size:15px;line-height:1.45}
-  .rev .by{margin-top:6px}
-  .revhead{margin-bottom:clamp(10px,2vh,16px)}
+  .brandgrid{grid-template-columns:1fr;gap:12px}
+  .bwmt{font-size:33px}
+  .reviews{gap:7px}
+  .rev{padding:8px 12px}
+  .rev .by{margin-bottom:4px}
+  .rev .q{font-size:14px;line-height:1.38}
+  .revsum{margin-bottom:11px;padding-bottom:10px}
+  .rsnum{font-size:30px}
+  .revfoot{margin-top:12px;gap:16px}
 }
 </style>
 <script>
@@ -203,35 +246,43 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="hello" aria-label="Hello">
     <div class="pin">
       <p class="plab">01 &#183; Brands <span class="plq">(B2C)</span></p>
-      <h1>Under one masthead.</h1>
-      <p>I run more than one brand at a time. Each has its own voice, its own audience,
-        and its own content and automation pipeline behind it.</p>
+      <h1>Two brands.</h1>
+      <p>I build and run two consumer brands at once. Each has its own voice, its own
+        audience, and its own content and automation pipeline behind it.</p>
       <p class="hint" aria-hidden="true">scroll &#8594;</p>
     </div>
   </section>
 
   <section class="panel" data-name="the brands" aria-label="The brands">
     <div class="pin">
-      <p class="plab">02 &#183; In this issue</p>
-      <div class="titles">
-        <div class="entry">
-          <a class="wmlink" href="https://fanish.app" target="_blank" rel="noopener">
-            <p class="wm2">Fanish<span class="ar" aria-hidden="true">&#8599;</span></p>
+      <p class="plab">02 &#183; The brands</p>
+      <div class="brandgrid">
+        <div class="bcard">
+          <a class="bwm" href="https://fanish.app" target="_blank" rel="noopener">
+            <span class="bwmt">Fanish<span class="ar" aria-hidden="true">&#8599;</span></span>
           </a>
-          <p class="desc">Sports culture for people who don&#8217;t love sports.</p>
-          <div class="glinks">
-            <a href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">&#63743; Download on the App Store &#8599;</a>
-            <a href="fanish-brand.html">Brand guidelines (PDF) &#8599;</a>
+          <p class="bdesc">Sports culture for people who don&#8217;t love sports.</p>
+          <p class="bmeta">iOS app &#183; App Store</p>
+          <div class="blinks">
+            <a class="badge" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
+              <span class="glyph" aria-hidden="true">&#63743;</span>
+              <span class="lbl"><span class="s">Download on the</span><span class="b">App Store</span></span>
+            </a>
+            <a class="glink" href="fanish-brand.html">Brand guidelines (PDF) &#8599;</a>
           </div>
         </div>
-        <div class="entry">
-          <a class="wmlink" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener">
-            <p class="wm2">Lazarvision<span class="ar" aria-hidden="true">&#8599;</span></p>
+        <div class="bcard">
+          <a class="bwm" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener">
+            <span class="bwmt">Lazarvision<span class="ar" aria-hidden="true">&#8599;</span></span>
           </a>
-          <p class="desc">Cultural commentary.</p>
-          <div class="glinks">
-            <a href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener">YouTube channel &#8599;</a>
-            <a href="lazarvision-brand.html">Brand guidelines (PDF) &#8599;</a>
+          <p class="bdesc">Cultural commentary.</p>
+          <p class="bmeta">YouTube channel &#183; Video</p>
+          <div class="blinks">
+            <a class="badge" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Watch Lazarvision on YouTube">
+              <span class="glyph" aria-hidden="true">&#9654;</span>
+              <span class="lbl"><span class="s">Watch on</span><span class="b">YouTube</span></span>
+            </a>
+            <a class="glink" href="lazarvision-brand.html">Brand guidelines (PDF) &#8599;</a>
           </div>
         </div>
       </div>
@@ -241,47 +292,62 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="reviews" aria-label="Reviews">
     <div class="pin">
       <p class="plab">03 &#183; Reviews</p>
-      <p class="revhead">Fanish Sports on the App Store<span class="stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>5 stars</p>
+      <div class="revsum">
+        <div class="rsscore">
+          <span class="rsnum">5.0</span>
+          <span class="rscol">
+            <span class="rsstars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span class="rstag">App Store</span>
+          </span>
+        </div>
+        <span class="rscount">Fanish Sports &#183; all five stars</span>
+      </div>
       <ul class="reviews">
         <li class="rev">
+          <p class="by"><span class="who">MicWilly</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
           <p class="q">&#8220;OBSESSED. Gives me only the important info of what&#8217;s going on so I can stay in the loop!&#8221;</p>
-          <p class="by">MicWilly <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
         </li>
         <li class="rev">
+          <p class="by"><span class="who">wwojoo</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
           <p class="q">&#8220;I basically look like a lifelong soccer fan to my friends. Easy to navigate and something I&#8217;ll return to frequently.&#8221;</p>
-          <p class="by">wwojoo <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
         </li>
         <li class="rev">
+          <p class="by"><span class="who">sanchiii</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
           <p class="q">&#8220;Actually taught me more about the game and provided interesting tidbits to share with friends!&#8221;</p>
-          <p class="by">sanchiii <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
         </li>
         <li class="rev">
+          <p class="by"><span class="who">Buff of sports</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
           <p class="q">&#8220;The in-match events keep me up to speed on what&#8217;s happening, just the moments that matter, in plain language.&#8221;</p>
-          <p class="by">Buff of sports <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
         </li>
         <li class="rev">
+          <p class="by"><span class="who">Tylerhopf</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
           <p class="q">&#8220;I love the innovative Fanish toggle, makes it super easy to navigate and fun to use.&#8221;</p>
-          <p class="by">Tylerhopf <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
         </li>
       </ul>
-      <a class="link" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">Read them on the App Store &#8599;</a>
+      <div class="revfoot">
+        <a class="badge" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
+          <span class="glyph" aria-hidden="true">&#63743;</span>
+          <span class="lbl"><span class="s">Download on the</span><span class="b">App Store</span></span>
+        </a>
+        <a class="link" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">Read them on the App Store &#8599;</a>
+      </div>
     </div>
   </section>
 
   <section class="panel" data-name="the record" aria-label="The record">
     <div class="pin">
       <p class="plab">04 &#183; The record</p>
-      <h2>The record.</h2>
-      <a class="recview" href="record-brands.pdf" target="_blank" rel="noopener" aria-label="Open the record as a PDF">
-        <img src="record-brands-p1.webp" width="1000" height="1294" alt="First page of the record" loading="lazy">
-      </a>
+      <h2>The full history.</h2>
+      <div class="recviewer" tabindex="0" role="group" aria-label="The full history, scroll to read. Open the PDF for the full-size copy.">
+        <img src="record-brands-p1.webp" width="1000" height="1294" alt="The full history" loading="lazy">
+      </div>
       <p class="reccap"><a href="record-brands.pdf" target="_blank" rel="noopener">Open the PDF &#8599;</a></p>
     </div>
   </section>
 
   <section class="panel" data-name="talk" aria-label="Talk">
     <div class="pin">
-      <p class="plab">05 &#183; Talk</p>
+      <p class="plab">05 &#183; Contact</p>
       <h2><button class="talktrigger" id="talktrigger" type="button"
           aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
       <div class="talkreveal" id="talkpanel">
@@ -350,6 +416,8 @@ document.documentElement.classList.add('js');
   var acc = 0, coolUntil = 0, lastWheel = 0;
   viewport.addEventListener('wheel', function(e){
     if(e.ctrlKey || e.metaKey) return;
+    /* the record viewer scrolls its own content; let it, and never advance */
+    if(e.target.closest && e.target.closest('.recviewer')) return;
     var dx = e.deltaX, dy = e.deltaY;
     var vertical = Math.abs(dy) >= Math.abs(dx);
     var delta = vertical ? dy : dx;
@@ -383,6 +451,8 @@ document.documentElement.classList.add('js');
   }, {passive:true});
   viewport.addEventListener('touchend', function(e){
     if(!e.changedTouches.length) return;
+    /* a drag on the record viewer scrolls it; it must not flick the walk */
+    if(e.target.closest && e.target.closest('.recviewer')) return;
     var dx = e.changedTouches[0].clientX - txs;
     var dy = e.changedTouches[0].clientY - tys;
     if(Math.abs(dy) < 55 || Math.abs(dy) < Math.abs(dx) * 1.25) return;
@@ -411,7 +481,7 @@ document.documentElement.classList.add('js');
   viewport.addEventListener('pointercancel', function(){ pdown = false; }, {passive:true});
   viewport.addEventListener('click', function(e){
     if(pmax > 10 || performance.now() - pt0 > 500) return;   /* a drag or hold, not a tap */
-    if(e.target.closest && e.target.closest('a,button,input,textarea,select,summary,label,[role="button"]')) return;
+    if(e.target.closest && e.target.closest('a,button,input,textarea,select,summary,label,[role="button"],.recviewer')) return;
     var w = viewport.clientWidth, x = e.clientX;
     if(x < w * EDGE) prev();
     else if(x > w * (1 - EDGE)) next();
