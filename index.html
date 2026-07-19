@@ -348,8 +348,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
       <figure class="portrait">
         <button class="pswap" id="pswap" type="button" aria-pressed="false"
                 aria-label="Portrait of Lazar LaLone, ink and watercolor. Activate to see the full figure, mechanical arms and all.">
-          <img class="p0" src="portrait.jpg" width="640" height="640" alt="">
-          <img class="p1" src="portrait-full.webp" width="720" height="1290" alt="" loading="lazy">
+          <img class="p0" src="portrait-oncream.jpg" width="640" height="640" alt="">
+          <img class="p1" src="portrait-full-oncream.webp" width="720" height="1290" alt="" loading="lazy">
         </button>
         <figcaption class="pcap" aria-hidden="true">Everywhere at once. On purpose.</figcaption>
       </figure>
@@ -459,12 +459,6 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   var b = document.getElementById('pswap');
   if(!b) return;
   var fig = b.closest('.portrait') || b;
-  /* Mobile / touch: no scroll-scrub. Present the fully-formed six-armed figure
-     cleanly at every scroll position (headshot fully faded, arms fully drawn) so
-     there is never a ghosted double-exposure at the top of the page. */
-  var mobile = window.matchMedia('(max-width:600px)').matches
-            || window.matchMedia('(hover:none) and (pointer:coarse)').matches;
-  if(mobile){ fig.style.setProperty('--sp','1'); return; }
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var raf = 0;
   var maxSp = 0;   /* the ratchet: highest --sp reached on this downward pass */
@@ -472,10 +466,14 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     raf = 0;
     var r = b.getBoundingClientRect();
     var vh = window.innerHeight || document.documentElement.clientHeight;
-    /* raw progress by how far the portrait has risen: 0 as its top enters at the
-       bottom of the viewport, 1 by the time its top reaches the upper third, and
-       it stays >=1 (clamped) for everything further down, bottom of page included */
-    var p = (vh - r.top) / (vh * 0.62);
+    /* Anchor progress on SCROLL DISTANCE, not on where the portrait sits in the
+       viewport. Read from the viewport, the portrait rests HIGH on a phone (its top
+       is already past mid-screen at scrollTop 0), so the old viewport read started
+       the morph ~0.77 in: an ugly half-formed ghost at rest. Scroll distance is 0 at
+       the top of the page on EVERY device, so the clean headshot always shows first.
+       It climbs to 1 after ~0.55 of a viewport of downward scrolling, then the
+       ratchet below holds it formed. */
+    var p = window.scrollY / (vh * 0.55);
     p = p < 0 ? 0 : p > 1 ? 1 : p;
     if(r.top >= vh){ maxSp = 0; }          /* portrait fully below the fold: allow reset */
     else if(p > maxSp){ maxSp = p; }        /* otherwise only ever climb, then hold */
