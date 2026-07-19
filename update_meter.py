@@ -69,7 +69,7 @@ PROCESS_GROUPS = {
 GROUP_ORDER = ["Auditing", "Data fetching", "Net-new content", "Automation overhead"]
 DEFAULT_GROUP = "Automation overhead"
 
-DEPTH_LINE = "A summary for this page. The full per-process drill-down runs internally."
+DEPTH_LINE = "High-level for the purposes of this page. Full, per-process drill-down runs internally."
 
 
 def _get(url):
