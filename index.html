@@ -658,10 +658,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   if(!mod || !btn || !slip) return;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* one fortune per SESSION, and once cracked it STAYS cracked. The chosen
-     fortune and the cracked state are persisted, so nothing on the page (the
-     "Say hello" jump, a re-render, or a reload) can regenerate a fresh closed
-     cookie or swap the fortune out from under the reader. */
+  /* the cookie loads CLOSED every visit so the reader gets to crack it open.
+     The fortune persists per session so it does not swap mid-view, but the
+     cracked state is NOT persisted: a fresh page load always starts closed.
+     Once cracked in a view it stays cracked (nothing here re-closes it). */
   function store(read, key, val){
     try{ return read ? sessionStorage.getItem(key) : sessionStorage.setItem(key, val); }
     catch(e){ return null; }
@@ -679,14 +679,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     btn.setAttribute('aria-expanded','true');
     btn.setAttribute('aria-label','The cookie is open. Your fortune is beside it.');
   }
-  /* if it was cracked earlier this session, restore that state silently (no
-     scroll nudge): the reader is not re-cracking it, it simply stays open. */
-  if(store(true, 'llCracked') === '1') crack();
-
   btn.addEventListener('click', function(){
     if(btn.classList.contains('open')) return;
     crack();
-    store(false, 'llCracked', '1');
     /* the fortune now sits BESIDE the cookie, in the same view the reader just
        tapped, so it is already on screen. Only nudge if an edge is clipped. */
     var target = wrap || slip;
