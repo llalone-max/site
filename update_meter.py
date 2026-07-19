@@ -23,12 +23,16 @@ identical history. Real (multiplied) daily totals take over wherever real rows
 exist; today is always real. The stat line's month total is the sum of the
 displayed series so the module stays self-consistent.
 
-Y-axis is fixed at $1 to $25 and every figure displayed in the meter module is a
-whole number (no decimal points). Stdlib only; fail LOUD (a broken refresh should
-fail the workflow, never write a broken page).
+Y-axis AUTO-SCALES: each run picks the smallest clean whole-dollar ceiling
+comfortably above the peak day, so the tallest bar always fits with headroom and
+the chart fills the same vertical space smoothly whatever the numbers are. Every
+figure displayed in the meter module is a whole number (no decimal points).
+Stdlib only; fail LOUD (a broken refresh should fail the workflow, never write a
+broken page).
 """
 import os
 import json
+import math
 import hashlib
 import random
 import datetime as dt
@@ -42,8 +46,7 @@ PLOT_W = W - GUTTER_R                              # bars/grid/dots stay left of
 PAD_X = 5.2
 SERIES_START = dt.date(2026, 7, 1)
 MAX_DAYS = 30
-AXIS_MIN, AXIS_MAX = 1.0, 25.0                    # fixed axis, whole dollars
-GRID_DOLLARS = (9, 17, 25)
+AXIS_MIN = 0.0                                    # baseline is $0; the top auto-scales
 # Outward-facing multipliers (Lazar, 2026-07-16); internal dashboard stays real.
 PUBLIC_MULT_COST = 4.4
 PUBLIC_MULT_TOKENS = 5
@@ -145,9 +148,23 @@ def build_series(rows, today):
     return days, vals
 
 
-def y_of(v):
-    v = min(max(v, AXIS_MIN), AXIS_MAX)
-    return BASE_Y - (v - AXIS_MIN) / (AXIS_MAX - AXIS_MIN) * (BASE_Y - TOP_Y)
+def nice_axis_max(peak):
+    """Smallest clean whole-dollar ceiling comfortably above the peak, so the
+    tallest bar always fits with headroom and the axis fills the space smoothly."""
+    if peak <= 0:
+        return 6.0
+    target = peak * 1.10
+    mag = 10 ** math.floor(math.log10(target))
+    for m in (1, 1.5, 2, 3, 4, 5, 6, 8, 10):
+        cand = m * mag
+        if cand >= target:
+            return float(round(cand))
+    return float(round(10 * mag))
+
+
+def y_of(v, axis_max):
+    v = min(max(v, AXIS_MIN), axis_max)
+    return BASE_Y - (v - AXIS_MIN) / (axis_max - AXIS_MIN) * (BASE_Y - TOP_Y)
 
 
 def build_chart(days, vals):
@@ -156,22 +173,24 @@ def build_chart(days, vals):
     bar_w = round(avail / n * 0.62, 1)
     step = (avail - bar_w) / (n - 1) if n > 1 else 0.0
     spike_i = vals.index(max(vals))
+    axis_max = nice_axis_max(max(vals) if vals else 0.0)
+    grids = [round(axis_max / 3), round(axis_max * 2 / 3), round(axis_max)]
 
     svg = ['          <svg class="chart" viewBox="0 0 640 150" role="img"',
            f'               aria-label="Daily bars of metered AI spend in US dollars since {days[0].strftime("%B")} {days[0].day}; peak {money(max(vals))}">']
-    for gd in GRID_DOLLARS:
-        y = y_of(gd)
+    for gd in grids:
+        y = y_of(gd, axis_max)
         svg.append(f'            <line class="g" x1="0" y1="{y:.0f}" x2="{PLOT_W:.0f}" y2="{y:.0f}"/>')
     svg.append(f'            <line class="base" x1="0" y1="{BASE_Y:.0f}" x2="{PLOT_W:.0f}" y2="{BASE_Y:.0f}"/>')
-    for gd in GRID_DOLLARS:                         # bare axis figures in the right gutter; the axis label names the unit
-        y = y_of(gd) - 4
+    for gd in grids:                                # bare axis figures in the right gutter; the axis label names the unit
+        y = y_of(gd, axis_max) - 4
         svg.append(f'            <text x="640" y="{y:.0f}" text-anchor="end">{gd}</text>')
     svg.append('            <text class="axu" x="640" y="10" text-anchor="end">$ / day</text>')
     svg.append(f'            <text x="0" y="146">{days[0].strftime("%b %d").upper()}</text>')
     svg.append(f'            <text x="{PLOT_W:.0f}" y="146" text-anchor="end">{days[-1].strftime("%b %d").upper()}</text>')
 
     for i, v in enumerate(vals):
-        h = max(1.0, BASE_Y - y_of(v))
+        h = max(1.0, BASE_Y - y_of(v, axis_max))
         x = PAD_X + i * step
         y = BASE_Y - h
         cls = "b"
@@ -188,10 +207,10 @@ def build_chart(days, vals):
 
     if vals[spike_i] > 0 and spike_i != n - 1:
         sx = PAD_X + spike_i * step + bar_w / 2
-        sy = max(12.0, y_of(vals[spike_i]) - 8)
+        sy = max(12.0, y_of(vals[spike_i], axis_max) - 8)
         svg.append(f'            <text x="{sx:.0f}" y="{sy:.0f}" text-anchor="middle">{whole(vals[spike_i])}</text>')
     ex = PAD_X + (n - 1) * step + bar_w / 2
-    ey = BASE_Y - max(1.0, BASE_Y - y_of(vals[-1])) - 6
+    ey = BASE_Y - max(1.0, BASE_Y - y_of(vals[-1], axis_max)) - 6
     svg.append(f'            <circle class="enddot" cx="{ex:.1f}" cy="{ey:.1f}" r="2.6"/>')
     svg.append('          </svg>')
     return "\n".join(svg)

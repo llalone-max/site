@@ -1,6 +1,6 @@
 name: refresh live meter
 
-# Rewrites the ops chart + stat line in index.html from the live Airtable data,
+# Rewrites the ops chart + stat line in ai.html from the live Airtable data,
 # so the "refreshed daily" caption on the site stays true.
 
 on:
@@ -32,7 +32,7 @@ jobs:
         run: |
           git config user.name "meter-bot"
           git config user.email "meter-bot@users.noreply.github.com"
-          git add index.html
+          git add ai.html
           if git diff --cached --quiet; then
             echo "no change"
           else
