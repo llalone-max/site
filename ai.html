@@ -68,13 +68,13 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .pin{max-width:720px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
 .plab{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--lc);
   margin:0 0 clamp(18px,3.6vh,32px)}
-.plab::before{content:"$ ";color:var(--dim)}
 .panel h1,.panel h2{margin:0 0 clamp(16px,3vh,26px);font-weight:700;letter-spacing:-.01em;line-height:1.08}
 .panel h1{font-size:clamp(30px,5.2vw,64px)}
 .panel h2{font-size:clamp(24px,3.6vw,44px)}
-.panel p{margin:0;font-size:clamp(14px,1.3vw,16.5px);line-height:1.75;max-width:58ch;text-wrap:pretty}
-.panel .hint{margin-top:clamp(26px,5vh,46px);font-size:11px;letter-spacing:.16em;
-  color:var(--dim);text-transform:uppercase}
+.panel p{margin:0;font-size:clamp(14px,1.3vw,16.5px);line-height:1.75;max-width:58ch;text-wrap:pretty;color:#F4F2EA}
+/* the walk drags on press-and-move; unselectable body text keeps a text
+   highlight from hijacking that drag. Real text, just not selectable. */
+.pin{-webkit-user-select:none;user-select:none}
 
 /* readout table */
 .readout{margin-top:clamp(6px,1.5vh,14px);border-bottom:1px solid var(--hair);max-width:560px;
@@ -84,63 +84,35 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .kv .k{color:var(--soft)}
 .kv .v{text-align:right;color:var(--ink)}
 .kv .v em{font-style:normal;color:var(--lc)}
-a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);font-size:12px;
-  letter-spacing:.16em;color:var(--lc);text-decoration:none;
-  border-bottom:1px solid currentColor;padding-bottom:3px;transition:color .25s}
-a.link:hover{color:var(--ink)}
 .quiet{color:var(--soft)}
-.tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap}
-
-/* let's talk: a trigger expands to the three ways to reach me */
-.talktrigger{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;
-  font-family:inherit;font-weight:700;letter-spacing:-.01em;line-height:1.08;
-  font-size:clamp(24px,3.6vw,44px);color:var(--ink);text-align:left;
-  text-decoration:underline;text-decoration-thickness:.03em;text-underline-offset:.1em;
-  text-decoration-color:var(--hair);transition:text-decoration-color .3s}
-.talktrigger:hover{text-decoration-color:var(--lc)}
-.talktrigger:focus-visible{outline:1.5px solid var(--lc);outline-offset:5px}
-.talkreveal{overflow:hidden;max-height:0;opacity:0;visibility:hidden;
-  transition:max-height .42s cubic-bezier(.3,.7,.3,1),opacity .3s ease,visibility 0s .42s}
-.talkreveal.open{max-height:220px;opacity:1;visibility:visible;
-  transition:max-height .42s cubic-bezier(.3,.7,.3,1),opacity .3s ease .06s}
-.talknote{margin:clamp(16px,3vh,24px) 0 0;font-size:11.5px;
-  letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:52ch}
-@media (prefers-reduced-motion:reduce){.talkreveal,.talkreveal.open{transition:none}}
 
 /* the live meter: this lane's centerpiece, refreshed daily by update_meter.py */
-.ops{display:block;text-decoration:none;min-width:0;max-width:640px;margin-top:clamp(6px,1.5vh,14px)}
+.ops{display:block;min-width:0;max-width:640px;margin-top:clamp(6px,1.5vh,14px)}
 /* the title says plainly what the chart is, with a dollars unit chip */
 .metertitle{display:flex;align-items:baseline;gap:9px;margin:0 0 11px;
   font-size:13px;font-weight:700;letter-spacing:.01em;color:var(--ink)}
 .metertitle .u{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--bg);background:var(--lc);padding:2px 6px;border-radius:2px}
+  color:var(--bg);background:var(--lc);padding:2px 6px}
 .chart{display:block;width:100%;height:auto}
 .chart .g{stroke:rgba(255,176,0,.10);stroke-width:1}
 .chart .base{stroke:var(--hair);stroke-width:1}
-.chart .b{fill:rgba(255,176,0,.30);transition:fill .3s}
-.chart .spike{fill:color-mix(in srgb,var(--lc) 60%,var(--bg))}
+.chart .b{fill:rgba(255,176,0,.30)}
+.chart .spike{fill:rgba(255,176,0,.62)}
 .chart .end{fill:var(--lc)}
 .chart .enddot{fill:var(--lc)}
 .chart text{font-size:9.5px;letter-spacing:.06em;fill:var(--soft);font-variant-numeric:tabular-nums}
-.chart .axu{font-size:8.5px;letter-spacing:.1em;fill:var(--dim)}
-.ops:hover .b{fill:rgba(255,176,0,.46)}
 /* the one-line total: the headline number, set apart from the chart above it */
 .opsstat{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-top:14px;
   padding-top:13px;border-top:1px solid var(--hair);font-variant-numeric:tabular-nums}
 .opsstat .ostot{font-size:14px;letter-spacing:.01em;color:var(--ink)}
 .opsstat .ostot em{font-style:normal;font-weight:700;font-size:22px;color:var(--lc);margin-right:.18em}
 .opsstat .osmeta{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
-.ops:hover .opsstat .osmeta{color:var(--ink)}
-.ops:focus-visible{outline:1.5px solid var(--lc);outline-offset:6px}
-.live{flex:none;align-self:center;width:7px;height:7px;border-radius:50%;background:var(--lc);
-  animation:pulse 2.6s ease-out infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--lc) 55%,transparent)}70%,100%{box-shadow:0 0 0 9px transparent}}
-@media (prefers-reduced-motion:reduce){.live{animation:none}}
+.live{flex:none;align-self:center;width:7px;height:7px;border-radius:50%;background:var(--lc)}
 /* the process split: its own labelled block, so it reads apart from the total */
 .split{display:block;margin-top:16px;padding-top:13px;border-top:1px solid var(--hair)}
 .splithead{display:block;margin:0 0 9px;font-size:9.5px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--dim)}
-.segbar{display:flex;gap:2px;height:7px;border-radius:1px;overflow:hidden}
+.segbar{display:flex;gap:2px;height:7px;overflow:hidden}
 .segbar i{display:block;height:100%}
 .sw{display:inline-block;width:9px;height:9px;margin-right:6px;vertical-align:-1px}
 .s1{background:rgba(255,176,0,.95)} .s2{background:rgba(255,176,0,.62)}
@@ -190,10 +162,10 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <span class="pos" id="pos">01 / 03 &#183; hello</span>
+  <span class="pos" id="pos">01 / 02 &#183; hello</span>
 </div>
 
-<main class="track" id="track" aria-label="AI operations, a walk in three panels">
+<main class="track" id="track" aria-label="AI operations, a walk in two panels">
  <div class="walk" id="walk">
 
   <section class="panel" data-name="hello" aria-label="Hello">
@@ -202,7 +174,6 @@ document.documentElement.classList.add('js');
       <h1>Everything runs on pipelines.</h1>
       <p>Everything I ship runs on AI pipelines, and every pipeline meters its own cost:
         per brand, per process, per step, computed the moment each API call returns.</p>
-      <p class="hint" aria-hidden="true">scroll &#8594;</p>
     </div>
   </section>
 
@@ -212,8 +183,7 @@ document.documentElement.classList.add('js');
       <h2>The meter.</h2>
       <p>Every call meters its own cost the moment it returns. This public chart is a
         snapshot of that meter, refreshed once a day.</p>
-      <a class="ops" href="https://ops.lazarlalone.com" target="_blank" rel="noopener"
-         aria-label="Metered AI spend. Open the live dashboard at ops.lazarlalone.com">
+      <div class="ops">
         <!--METER-->
           <span class="metertitle">Metered AI spend, by day <span class="u">USD</span></span>
           <svg class="chart" viewBox="0 0 640 150" role="img"
@@ -225,7 +195,6 @@ document.documentElement.classList.add('js');
             <text x="640" y="92" text-anchor="end">20</text>
             <text x="640" y="56" text-anchor="end">40</text>
             <text x="640" y="20" text-anchor="end">60</text>
-            <text class="axu" x="640" y="10" text-anchor="end">$ / day</text>
             <text x="0" y="146">JUL 01</text>
             <text x="598" y="146" text-anchor="end">JUL 19</text>
             <rect class="b" x="5.2" y="123.1" width="19.3" height="8.9"/>
@@ -256,23 +225,6 @@ document.documentElement.classList.add('js');
           <span class="splitrow"><span class="sl"><i class="sw s1"></i>Auditing <b>64%</b></span> <span class="sl"><i class="sw s2"></i>Net-new content <b>31%</b></span> <span class="sl"><i class="sw s3"></i>Data fetching <b>5%</b></span></span>
           <span class="depth">A summary for this page. The full per-process drill-down runs internally.</span></span>
         <!--/METER-->
-      </a>
-      <a class="link" href="https://ops.lazarlalone.com" target="_blank" rel="noopener">The full internal dashboard &#8599;</a>
-    </div>
-  </section>
-
-  <section class="panel" data-name="talk" aria-label="Talk">
-    <div class="pin">
-      <p class="plab">03 &#183; Contact</p>
-      <h2><button class="talktrigger" id="talktrigger" type="button"
-          aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
-      <div class="talkreveal" id="talkpanel">
-        <div class="tlinks">
-          <a class="link" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
-          <a class="link" href="mailto:lazarlalone@gmail.com?subject=AI%20operations">Email</a>
-          <a class="link" href="sms:+14129445506">Text me</a>
-        </div>
-        <p class="talknote">LinkedIn and email work. A text reaches me quickest.</p>
       </div>
     </div>
   </section>
@@ -425,18 +377,6 @@ document.documentElement.classList.add('js');
     if(x < w * EDGE) prev();
     else if(x > w * (1 - EDGE)) next();
   });
-
-  /* let's talk: a single trigger expands to the three ways to reach me */
-  var talkT = document.getElementById('talktrigger');
-  var talkP = document.getElementById('talkpanel');
-  if(talkT && talkP){
-    talkP.setAttribute('inert','');
-    talkT.addEventListener('click', function(){
-      var open = talkP.classList.toggle('open');
-      talkT.setAttribute('aria-expanded', open ? 'true' : 'false');
-      if(open) talkP.removeAttribute('inert'); else talkP.setAttribute('inert','');
-    });
-  }
 
   /* a forward step to the next panel */
   [].forEach.call(document.querySelectorAll('[data-next]'), function(b){

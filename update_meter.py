@@ -182,10 +182,9 @@ def build_chart(days, vals):
         y = y_of(gd, axis_max)
         svg.append(f'            <line class="g" x1="0" y1="{y:.0f}" x2="{PLOT_W:.0f}" y2="{y:.0f}"/>')
     svg.append(f'            <line class="base" x1="0" y1="{BASE_Y:.0f}" x2="{PLOT_W:.0f}" y2="{BASE_Y:.0f}"/>')
-    for gd in grids:                                # bare axis figures in the right gutter; the axis label names the unit
+    for gd in grids:                                # bare axis figures in the right gutter; the title chip ("USD") names the unit
         y = y_of(gd, axis_max) - 4
         svg.append(f'            <text x="640" y="{y:.0f}" text-anchor="end">{gd}</text>')
-    svg.append('            <text class="axu" x="640" y="10" text-anchor="end">$ / day</text>')
     svg.append(f'            <text x="0" y="146">{days[0].strftime("%b %d").upper()}</text>')
     svg.append(f'            <text x="{PLOT_W:.0f}" y="146" text-anchor="end">{days[-1].strftime("%b %d").upper()}</text>')
 
