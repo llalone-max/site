@@ -506,10 +506,6 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
       </button>
       <div class="slipwrap">
         <p class="slip" id="slip" aria-live="polite"></p>
-        <div class="slipcta" id="slipcta">
-          <span class="slipcta-line">Fortune favors a reply.</span>
-          <button class="slipcta-go" id="sayhello" type="button">Say hello</button>
-        </div>
       </div>
     </div>
   </section>
@@ -695,16 +691,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* the fortune cookie: one fortune per visit */
 (function(){
   var FORTUNES = [
-    'Hard work compounds quietly.',
-    'You are on schedule.',
-    'It is closer than it looks.',
-    'Taste is a skill. Keep going.',
-    'Ship it. Perfection can wait.',
-    'Someone is rooting for you.',
-    'Curiosity is the whole strategy.',
-    'Slow is smooth. Smooth is fast.',
-    'Say the opinion out loud.',
-    'Every exit is an entrance to new experiences.'
+    'The next great thing you make, you will not make alone.',
+    'Whatever you build next, you will not build it alone.',
+    'Great things are rarely built alone.'
   ];
   var mod = document.getElementById('cookiemod');
   var btn = document.getElementById('cookie');
