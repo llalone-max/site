@@ -52,19 +52,18 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bandlink:hover .wm{color:var(--lc)}
 .bandlink:focus-visible{outline:1.5px solid #F4F2EA;outline-offset:-3px}
 .tracker .pos{color:rgba(244,242,234,.62);font-variant-numeric:tabular-nums}
-/* the record: a quiet corner link, low and off to the side */
-.reclow{position:fixed;left:clamp(14px,3vw,24px);bottom:clamp(12px,2.5vh,20px);z-index:35;
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--dim);
-  text-decoration:none;opacity:.62;border-bottom:1px solid transparent;padding-bottom:2px;
-  transition:color .25s,opacity .25s,border-color .25s}
-.reclow:hover{color:var(--lc);opacity:1;border-color:currentColor}
-.reclow:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px;opacity:1}
+.trackend{display:flex;align-items:center;gap:clamp(14px,3vw,22px)}
+.talklink{color:rgba(244,242,234,.62);text-decoration:none;font-family:var(--mono);
+  font-size:11px;letter-spacing:.14em;transition:color .25s}
+.talklink:hover,.talklink:focus-visible{color:var(--lc)}
+.talklink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 @media (max-width:600px){
   .tracker{height:40px}
   .bandlink{width:230px}
   .bandlink .wm{left:10px;font-size:50px}
   .tracker .pos{font-size:10px;letter-spacing:.08em}
-  .reclow{font-size:9px;letter-spacing:.1em}
+  .trackend{gap:12px}
+  .talklink{font-size:10px;letter-spacing:.08em}
 }
 
 /* horizontal walk: Embla viewport / container / slides */
@@ -73,7 +72,8 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   will-change:transform;backface-visibility:hidden}
 .panel{flex:0 0 100%;min-width:0;height:100dvh;
   overflow-y:auto;overflow-x:hidden;padding:calc(48px + clamp(18px,4vh,44px)) clamp(22px,6vw,90px) clamp(24px,5vh,56px)}
-.pin{max-width:760px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+.pin{max-width:760px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center;
+  user-select:none;-webkit-user-select:none}
 .plab{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
   color:var(--lc);margin:0 0 clamp(18px,3.6vh,32px);font-variant-numeric:tabular-nums;
   border-top:1px solid var(--hair);padding-top:10px;max-width:340px}
@@ -82,8 +82,6 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .panel h1{font-size:clamp(46px,8.4vw,116px)}
 .panel h2{font-size:clamp(30px,4.6vw,58px)}
 .panel p{margin:0;font-size:clamp(16.5px,1.5vw,19.5px);line-height:1.65;max-width:56ch;text-wrap:pretty}
-.panel .hint{margin-top:clamp(26px,5vh,46px);font-family:var(--mono);font-size:11px;
-  letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
 
 /* the brands: two co-equal cards, equal size and weight. App Store cues on
    Fanish, YouTube on Lazarvision. Side by side on desktop, stacked on phones. */
@@ -91,25 +89,30 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   max-width:720px;margin-top:clamp(8px,1.8vh,16px);align-items:stretch}
 .bcard{display:flex;flex-direction:column;min-width:0;
   padding:clamp(15px,2.2vh,22px) clamp(15px,1.7vw,21px);
-  border:1px solid var(--hair);border-radius:14px;background:rgba(255,255,255,.42);
+  border:1px solid var(--hair);border-radius:0;background:rgba(255,255,255,.42);
   transition:border-color .25s,box-shadow .25s}
 .bcard:hover{border-color:var(--strong);box-shadow:0 8px 30px rgba(36,22,17,.08)}
 .bwm{display:inline-block;align-self:flex-start;text-decoration:none;color:var(--ink);
   transition:color .25s}
 .bwm:hover{color:var(--lc)}
+/* no clean logo marks exist yet, so the two names carry distinct type so they no
+   longer read identical: Fanish is heavy and uppercase (its sporty, app energy),
+   Lazarvision is lighter, mixed-case and wider-tracked (its editorial, commentary
+   voice). Replace with real marks when they exist. */
 .bwmt{display:inline-block;font-family:var(--grot);font-weight:700;
   font-size:clamp(29px,3.7vw,45px);letter-spacing:-.03em;line-height:1}
+.bwmt.fan{font-weight:800;text-transform:uppercase;letter-spacing:-.02em}
+.bwmt.lv{font-weight:500;text-transform:none;letter-spacing:.005em;
+  font-size:clamp(26px,3.3vw,40px)}
 .bwm .ar{color:var(--lc);font-family:var(--mono);font-size:13px;display:inline-block;
   vertical-align:top;margin-left:.14em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
 .bwm:hover .ar{transform:translate(3px,-3px)}
 .bdesc{margin:9px 0 0;font-size:clamp(14px,1.35vw,17px);color:var(--soft);line-height:1.5}
-.bmeta{margin:11px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--dim)}
 .blinks{display:flex;flex-direction:column;align-items:flex-start;gap:12px;
   margin-top:auto;padding-top:clamp(14px,2.2vh,20px)}
 /* the store badge: a compact dark pill in the App Store convention, on-brand */
 .badge{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
-  background:#191814;color:#F4F2EA;border-radius:9px;padding:8px 14px;
+  background:#191814;color:#F4F2EA;border-radius:0;padding:8px 14px;
   border:1px solid rgba(255,255,255,.06);transition:background .25s,transform .2s}
 .badge:hover{background:#2a2621;transform:translateY(-1px)}
 .badge .glyph{font-size:19px;line-height:1;flex:none}
@@ -134,12 +137,12 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .rsstars{color:var(--lc);letter-spacing:.2em;font-size:15px}
 .rstag{align-self:flex-start;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--soft);border:1px solid var(--hair);
-  border-radius:20px;padding:3px 9px}
+  border-radius:0;padding:3px 9px}
 .rscount{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--soft)}
 .reviews{max-width:680px;margin:0;padding:0;list-style:none;
   display:grid;gap:clamp(8px,1.3vh,11px)}
 .rev{padding:clamp(10px,1.7vh,14px) clamp(13px,1.5vw,16px);
-  border:1px solid var(--hair);border-radius:10px;background:rgba(255,255,255,.4)}
+  border:1px solid var(--hair);border-radius:0;background:rgba(255,255,255,.4)}
 .rev .by{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 6px;
   font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--soft)}
 .rev .by .who{color:var(--ink);font-weight:600}
@@ -171,34 +174,18 @@ a.link:hover{color:var(--ink)}
 .reccap a{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap}
 
-/* let's talk: a trigger expands to the three ways to reach me */
-.talktrigger{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;
-  font-family:inherit;font-weight:700;letter-spacing:-.026em;line-height:1.02;
-  font-size:clamp(30px,4.6vw,58px);color:var(--ink);text-align:left;
-  text-decoration:underline;text-decoration-thickness:.03em;text-underline-offset:.1em;
-  text-decoration-color:var(--hair);transition:text-decoration-color .3s}
-.talktrigger:hover{text-decoration-color:var(--lc)}
-.talktrigger:focus-visible{outline:1.5px solid var(--lc);outline-offset:5px}
-.talkreveal{overflow:hidden;max-height:0;opacity:0;visibility:hidden;
-  transition:max-height .42s cubic-bezier(.3,.7,.3,1),opacity .3s ease,visibility 0s .42s}
-.talkreveal.open{max-height:220px;opacity:1;visibility:visible;
-  transition:max-height .42s cubic-bezier(.3,.7,.3,1),opacity .3s ease .06s}
-.talknote{margin:clamp(16px,3vh,24px) 0 0;font-family:var(--mono);font-size:11.5px;
-  letter-spacing:.07em;line-height:1.7;color:var(--soft);max-width:52ch}
-@media (prefers-reduced-motion:reduce){.talkreveal,.talkreveal.open{transition:none}}
-
 /* welcome: the masthead nameplate stamps in, clean on the page ground */
 .wel{display:none}
 html.js:not(.nowel) .wel{position:fixed;inset:0;z-index:60;background:var(--bg);
   display:grid;place-items:center;overflow:hidden}
 .wcard{position:relative;margin:0;font-family:var(--grot);font-weight:700;
   font-size:clamp(52px,11vw,150px);letter-spacing:-.03em;color:var(--ink)}
-html.js:not(.nowel) .wcard{animation:bump .4s steps(3,end) both .12s}
+html.js:not(.nowel) .wcard{animation:bump .5s cubic-bezier(.4,0,.3,1) both .04s}
 @keyframes bump{
-  from{opacity:0;transform:scale(1.5)}
+  from{opacity:0;transform:scale(1.06)}
   to{opacity:1;transform:none}
 }
-.wel.bye{opacity:0;transition:opacity .28s ease}
+.wel.bye{opacity:0;transition:opacity .3s ease}
 @media (prefers-reduced-motion:reduce){
   html.js:not(.nowel) .wel{display:none}
 }
@@ -235,21 +222,20 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <span class="pos num" id="pos">01 / 05 &#183; hello</span>
+  <div class="trackend">
+    <a class="talklink" href="/#talk">Let&#8217;s talk</a>
+    <span class="pos num" id="pos">01 / 04 &#183; hello</span>
+  </div>
 </div>
 
-<a class="reclow" href="record-brands.pdf" target="_blank" rel="noopener">The record (PDF)</a>
-
-<main class="track" id="track" aria-label="Brands, a walk in five panels">
+<main class="track" id="track" aria-label="Brands, a walk in four panels">
  <div class="walk" id="walk">
 
   <section class="panel" data-name="hello" aria-label="Hello">
     <div class="pin">
       <p class="plab">01 &#183; Brands <span class="plq">(B2C)</span></p>
       <h1>Two brands.</h1>
-      <p>I build and run two consumer brands at once. Each has its own voice, its own
-        audience, and its own content and automation pipeline behind it.</p>
-      <p class="hint" aria-hidden="true">scroll &#8594;</p>
+      <p>I build and run consumer brands. Each has its own voice, its own audience, and its own content and automation pipelines.</p>
     </div>
   </section>
 
@@ -259,10 +245,9 @@ document.documentElement.classList.add('js');
       <div class="brandgrid">
         <div class="bcard">
           <a class="bwm" href="https://fanish.app" target="_blank" rel="noopener">
-            <span class="bwmt">Fanish<span class="ar" aria-hidden="true">&#8599;</span></span>
+            <span class="bwmt fan">Fanish<span class="ar" aria-hidden="true">&#8599;</span></span>
           </a>
           <p class="bdesc">Sports culture for people who don&#8217;t love sports.</p>
-          <p class="bmeta">iOS app &#183; App Store</p>
           <div class="blinks">
             <a class="badge" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
               <span class="glyph" aria-hidden="true">&#63743;</span>
@@ -273,10 +258,9 @@ document.documentElement.classList.add('js');
         </div>
         <div class="bcard">
           <a class="bwm" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener">
-            <span class="bwmt">Lazarvision<span class="ar" aria-hidden="true">&#8599;</span></span>
+            <span class="bwmt lv">Lazarvision<span class="ar" aria-hidden="true">&#8599;</span></span>
           </a>
           <p class="bdesc">Cultural commentary.</p>
-          <p class="bmeta">YouTube channel &#183; Video</p>
           <div class="blinks">
             <a class="badge" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Watch Lazarvision on YouTube">
               <span class="glyph" aria-hidden="true">&#9654;</span>
@@ -345,22 +329,6 @@ document.documentElement.classList.add('js');
     </div>
   </section>
 
-  <section class="panel" data-name="talk" aria-label="Talk">
-    <div class="pin">
-      <p class="plab">05 &#183; Contact</p>
-      <h2><button class="talktrigger" id="talktrigger" type="button"
-          aria-expanded="false" aria-controls="talkpanel">Let&#8217;s talk.</button></h2>
-      <div class="talkreveal" id="talkpanel">
-        <div class="tlinks">
-          <a class="link" href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
-          <a class="link" href="mailto:lazarlalone@gmail.com?subject=Brands">Email</a>
-          <a class="link" href="sms:+14129445506">Text me</a>
-        </div>
-        <p class="talknote">LinkedIn and email work. A text reaches me quickest.</p>
-      </div>
-    </div>
-  </section>
-
  </div>
 </main>
 
@@ -379,8 +347,8 @@ document.documentElement.classList.add('js');
     if(wel) wel.remove();
   } else if(wel){
     try{ sessionStorage.setItem('v2wel-br','1'); }catch(e){}
-    setTimeout(function(){ wel.classList.add('bye'); }, 700);
-    setTimeout(function(){ wel.remove(); }, 1020);
+    setTimeout(function(){ wel.classList.add('bye'); }, 640);
+    setTimeout(function(){ wel.remove(); }, 980);
   }
 
   /* the walk: one engine drives it. Embla makes the strip follow the finger
@@ -486,18 +454,6 @@ document.documentElement.classList.add('js');
     if(x < w * EDGE) prev();
     else if(x > w * (1 - EDGE)) next();
   });
-
-  /* let's talk: a single trigger expands to the three ways to reach me */
-  var talkT = document.getElementById('talktrigger');
-  var talkP = document.getElementById('talkpanel');
-  if(talkT && talkP){
-    talkP.setAttribute('inert','');
-    talkT.addEventListener('click', function(){
-      var open = talkP.classList.toggle('open');
-      talkT.setAttribute('aria-expanded', open ? 'true' : 'false');
-      if(open) talkP.removeAttribute('inert'); else talkP.setAttribute('inert','');
-    });
-  }
 
   /* a forward step to the next panel */
   [].forEach.call(document.querySelectorAll('[data-next]'), function(b){
