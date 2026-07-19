@@ -259,10 +259,16 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .textcard-x:focus-visible{outline:1.5px solid var(--ink);outline-offset:2px}
 
 /* 7.5 · the fortune cookie: ink and watercolor, cracks on tap */
-.cookiemod{margin-top:clamp(60px,9vh,110px);display:flex;align-items:center;
-  gap:clamp(18px,3vw,30px);flex-wrap:wrap}
+.cookiemod{margin-top:clamp(34px,5vh,60px);display:flex;flex-direction:column;
+  align-items:flex-start;gap:clamp(14px,2.4vw,22px)}
+/* the stage is the cookie's own footprint and the positioning context for the
+   slip. The slip is absolutely positioned inside it (beside / overlapping the
+   cookie), so cracking the cookie NEVER adds page height: closed and open are
+   the same height, and the ending stays compact on a phone. */
+.cookiestage{position:relative;display:inline-block;flex:none;
+  width:clamp(170px,24vw,224px)}
 .cookie{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;flex:none;
-  position:relative;width:clamp(170px,24vw,224px)}
+  position:relative;width:100%}
 .cookie img{display:block;width:100%;height:auto;mix-blend-mode:multiply;pointer-events:none}
 .cookie .ck1{position:absolute;inset:0;opacity:0}
 .cookie:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
@@ -279,8 +285,16 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    edges (clip-path, never a crisp rectangle), two fold creases from being folded in
    thirds, and a soft UNEVEN lift shadow so it reads flimsy and floating, not printed
    flat. Narrow and short so every fortune lands in at most two lines. Red text kept. */
-.slipwrap{display:flex;flex-direction:column;align-items:flex-start;
-  gap:clamp(12px,2vw,16px)}
+/* the slip + its nudge sit BESIDE the cookie, emerging from its right, partly
+   overlapping the cracked shell. Absolutely positioned and vertically centered
+   on the cookie, so revealing the fortune reflows nothing. pointer-events:none
+   lets clicks fall through to the cookie in the overlap; the "Say hello" button
+   re-enables its own clicks. Width is capped to the viewport so it never spills
+   off a narrow phone. */
+.slipwrap{position:absolute;top:50%;left:58%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:flex-start;
+  gap:clamp(10px,1.8vw,14px);width:max-content;max-width:min(54vw,240px);
+  pointer-events:none;z-index:2}
 .slip{position:relative;font-family:"Courier New",Courier,"American Typewriter","Courier 10 Pitch",monospace;
   font-size:12.5px;letter-spacing:.01em;line-height:1.5;font-weight:700;
   color:#B4241C;text-align:center;
@@ -308,8 +322,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .cookiemod.open .slip{opacity:1;visibility:visible;translate:0 0}
 
 /* the nudge under the fortune: the cookie is not a dead end, it points to hello */
-.slipcta{display:flex;align-items:baseline;gap:clamp(8px,1.6vw,14px);flex-wrap:wrap;
+.slipcta{display:flex;flex-direction:column;align-items:flex-start;gap:4px;
   font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--soft);
+  pointer-events:auto;
   opacity:0;visibility:hidden;translate:0 6px}
 .slipcta-line{color:var(--soft)}
 .slipcta-go{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;
@@ -330,8 +345,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .rainbow{-webkit-text-fill-color:transparent;color:transparent}
 }
 
-/* 8 · colophon: a quiet credit line */
-.colophon{margin-top:clamp(70px,11vh,130px);padding:0 0 44px;
+/* 8 · colophon: a quiet credit line. A hairline rule and a clear spacing shift
+   set the small credits off from the cookie zone above, so the page reads as a
+   deliberate end, not content that just runs out. Kept compact so the footer
+   sits close under the last content instead of floating low on a phone. */
+.colophon{margin-top:clamp(38px,6vh,72px);padding:0 0 clamp(28px,4vh,44px);
   border-top:1px solid var(--hair)}
 .credit{margin:14px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
   line-height:1.9;color:var(--dim)}
@@ -414,15 +432,17 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   <!-- 7.5 · the fortune cookie -->
   <section class="cookiemod" id="cookiemod" aria-label="Fortune cookie">
     <p class="cookienote">This site uses no cookies. <span class="rainbow">Have one anyway.</span></p>
-    <button class="cookie" id="cookie" type="button" aria-expanded="false" aria-label="A fortune cookie. Crack it open.">
-      <img class="ck0" src="cookie-closed.webp" width="560" height="413" alt="">
-      <img class="ck1" src="cookie-cracked.webp" width="560" height="413" alt="" loading="lazy">
-    </button>
-    <div class="slipwrap">
-      <p class="slip" id="slip" aria-live="polite"></p>
-      <div class="slipcta" id="slipcta">
-        <span class="slipcta-line">Fortune favors a reply.</span>
-        <button class="slipcta-go" id="sayhello" type="button">Say hello</button>
+    <div class="cookiestage">
+      <button class="cookie" id="cookie" type="button" aria-expanded="false" aria-label="A fortune cookie. Crack it open.">
+        <img class="ck0" src="cookie-closed.webp" width="560" height="413" alt="">
+        <img class="ck1" src="cookie-cracked.webp" width="560" height="413" alt="" loading="lazy">
+      </button>
+      <div class="slipwrap">
+        <p class="slip" id="slip" aria-live="polite"></p>
+        <div class="slipcta" id="slipcta">
+          <span class="slipcta-line">Fortune favors a reply.</span>
+          <button class="slipcta-go" id="sayhello" type="button">Say hello</button>
+        </div>
       </div>
     </div>
   </section>
@@ -604,11 +624,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     mod.classList.add('open');
     btn.setAttribute('aria-expanded','true');
     btn.setAttribute('aria-label','The cookie is open. Your fortune is beside it.');
-    /* on a phone the fortune renders below the cookie, off-screen. Bring it into
-       the middle of the viewport the instant it appears so it is always seen. */
+    /* the fortune now sits BESIDE the cookie, in the same view the reader just
+       tapped, so it is already on screen. Only nudge if an edge is clipped. */
     var target = wrap || slip;
     setTimeout(function(){
-      target.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'});
+      target.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'nearest'});
     }, 60);
   });
 })();
