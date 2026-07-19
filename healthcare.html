@@ -101,6 +101,10 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .panel p{margin:0;font-size:clamp(16.5px,1.5vw,19.5px);line-height:1.65;max-width:56ch;
   color:var(--ink);text-wrap:pretty}
 .panel p+p{margin-top:1em}
+/* slide-with-zoom: panels scale and soften with scroll progress (JS-driven);
+   a reduced-motion visit gets a plain cut with no zoom */
+.pin{will-change:transform,opacity;transform-origin:50% 50%}
+@media (prefers-reduced-motion:reduce){.pin{transform:none!important;opacity:1!important}}
 
 /* the work rows */
 .rows{margin-top:clamp(10px,2vh,18px);border-bottom:1px solid var(--hair);max-width:600px}
@@ -134,8 +138,12 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .lw-cell img.ar-montage{aspect-ratio:577.18/150.29}
 .lw-cell img.ar-dubai{aspect-ratio:166.4/60}
 .lw-cell img.ar-etz{aspect-ratio:161.19/87.24}
-.lw-sublab{margin:clamp(14px,2.4vh,20px) 0 clamp(10px,1.8vh,14px);font-family:var(--mono);
-  font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+/* the international group reads as its own block: a clear gap and a hairline
+   break separate it from the domestic wall above */
+.lw-sublab{margin:clamp(26px,4.6vh,46px) 0 clamp(12px,2vh,16px);
+  padding-top:clamp(16px,3vh,26px);border-top:1px solid var(--hair);
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--dim)}
 @media (max-width:600px){
   .logowall{max-width:100%}
   .lw-grid{grid-template-columns:repeat(3,1fr);gap:15px 14px}
@@ -437,18 +445,52 @@ document.documentElement.classList.add('js');
     axis:'x', loop:false, align:'start', containScroll:'trimSnaps',
     dragFree:false, skipSnaps:false, duration: reduce ? 0 : 28, watchDrag: false
   });
-  function next(){ if(embla) embla.scrollNext(); }
-  function prev(){ if(embla) embla.scrollPrev(); }
+  /* one deliberate gesture = at most one panel. Every advance routes through
+     go(), which enforces a cooldown (the transition plus a margin) so a fast
+     flick's momentum, a stray edge click, or a second wheel tick cannot chain a
+     second step. Direct jumps (ticks, Home/End) bypass the gate. */
+  var navLockUntil = 0, NAV_COOL = reduce ? 90 : 480;
+  function go(dir){
+    if(!embla) return;
+    var now = performance.now();
+    if(now < navLockUntil) return;
+    navLockUntil = now + NAV_COOL;
+    if(dir > 0) embla.scrollNext(); else embla.scrollPrev();
+  }
+  function next(){ go(1); }
+  function prev(){ go(-1); }
   function toIndex(i){ if(embla) embla.scrollTo(Math.max(0, Math.min(panels.length - 1, i))); }
   if(embla){
     var sync = function(){ setPos(embla.selectedScrollSnap()); };
     embla.on('select', sync); embla.on('reInit', sync); sync();
   }
 
-  /* wheel: one gesture advances exactly one panel; a short cooldown absorbs a
-     fast flick's momentum tail. A tall panel scrolls its own content first and
-     only hands off at its scroll edge. Zoom (ctrl/meta) stays native. */
-  var acc = 0, coolUntil = 0, lastWheel = 0;
+  /* slide-with-zoom: tie each panel's scale and opacity to Embla's scroll
+     progress so the outgoing panel eases down and softens while the incoming one
+     grows into place (the mesura.eu / rauno.me feel). It tracks the movement
+     frame by frame. Reduced motion gets a plain cut, no zoom. */
+  var pins = panels.map(function(p){ return p.querySelector('.pin'); });
+  function applyZoom(){
+    var prog = embla.scrollProgress();
+    var snaps = embla.scrollSnapList();
+    var span = snaps.length > 1 ? snaps.length - 1 : 1;
+    snaps.forEach(function(snap, i){
+      var pin = pins[i];
+      if(!pin) return;
+      var norm = Math.min(Math.abs((snap - prog) * span), 1);
+      pin.style.transform = 'scale(' + (1 - norm * 0.08).toFixed(4) + ')';
+      pin.style.opacity = (1 - norm * 0.4).toFixed(3);
+    });
+  }
+  if(embla && !reduce){
+    embla.on('scroll', applyZoom); embla.on('reInit', applyZoom); applyZoom();
+  }
+
+  /* wheel/trackpad: one burst advances at most one panel. Delta accumulates
+     until it clears a threshold, fires once, then locks until the wheel goes
+     quiet (~200ms) so a trackpad's momentum tail cannot chain a second step. A
+     tall panel scrolls its own content first. Zoom (ctrl/meta) stays native. */
+  var wheelAcc = 0, wheelLock = false, wheelIdle = null;
   viewport.addEventListener('wheel', function(e){
     if(e.ctrlKey || e.metaKey) return;
     if(sheet && !sheet.hidden) return;
@@ -459,15 +501,14 @@ document.documentElement.classList.add('js');
     var delta = vertical ? dy : dx;
     if(!delta) return;
     e.preventDefault();
-    var now = performance.now();
-    if(now - lastWheel > 140) acc = 0;
-    lastWheel = now;
-    if(now < coolUntil) return;
-    acc += delta;
-    if(Math.abs(acc) > 40){
-      (acc > 0 ? next() : prev());
-      acc = 0;
-      coolUntil = now + (reduce ? 200 : 640);
+    clearTimeout(wheelIdle);
+    wheelIdle = setTimeout(function(){ wheelLock = false; wheelAcc = 0; }, 200);
+    if(wheelLock) return;
+    wheelAcc += delta;
+    if(Math.abs(wheelAcc) > 40){
+      (wheelAcc > 0 ? next() : prev());
+      wheelAcc = 0;
+      wheelLock = true;
     }
   }, {passive:false});
 

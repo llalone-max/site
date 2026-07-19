@@ -58,9 +58,8 @@
 }
 *{box-sizing:border-box}
 figure{margin:0}
-/* overflow-x:clip (not hidden) prevents horizontal overflow WITHOUT turning the
-   page into a scroll container, so the hero's position:sticky pin still works and
-   the portrait's face stays in view on scroll */
+/* overflow-x:clip prevents horizontal overflow without making the page a scroll
+   container; the hero scrolls in normal document flow (no sticky pin) */
 html,body{margin:0;overflow-x:clip}
 body{background:var(--paper);color:var(--ink);font-family:var(--grot);
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -86,8 +85,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 
 /* 3 · hero; the I draws itself once, one confident pen stroke */
 .hero{margin-top:clamp(56px,9vh,110px)}
-.hero h1{margin:0;font-weight:700;font-size:clamp(34px,6.2vw,88px);line-height:1.05;
-  letter-spacing:-.032em;max-width:17ch;text-wrap:balance}
+/* THESIS: the big, bold statement. Enlarged and weighted so it dominates the
+   first screen; sits low enough that the practice nav falls below the fold. */
+.hero h1{margin:0;font-weight:700;font-size:clamp(46px,6.4vw,96px);line-height:1.04;
+  letter-spacing:-.034em;max-width:16ch;text-wrap:balance}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .dcap{display:inline-block;width:.28em;height:.715em;vertical-align:0}
 .dcap svg{display:block;width:100%;height:100%;overflow:visible}
@@ -102,8 +103,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* the practice sentence IS the navigation: bigger, editorial, with an
    unmistakable hairline underline at rest and the inverted ink-highlight on
    hover / press. Monochrome ink on paper; the lane-color flood fires on click. */
-.practice{margin:clamp(24px,3.6vw,44px) 0 0;font-weight:600;
+.practice{margin:0;font-weight:600;
   font-size:clamp(22px,3.2vw,40px);letter-spacing:-.016em;line-height:1.28;color:var(--soft)}
+/* the practice nav is deliberately pushed DOWN so it sits below the fold at load
+   and reveals itself as you scroll; placement is set per-breakpoint below */
+.practicewrap{position:relative;z-index:2}
 .lane{color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;
   text-underline-offset:.18em;text-decoration-color:var(--strong);
   padding:.02em .1em;margin:-.02em -.1em;
@@ -132,20 +136,20 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    ----------------------------------------------------------------------------
    The header band and a thin black rail down the right edge read as ONE
    continuous reversed-L stroke of black. The framed headshot floats in the
-   cream with its right edge kissing the rail. On scroll the headshot FORMS
-   into the full six-armed figure (a one-way ratchet), settles down along the
-   rail, and the caption stays below it. A sticky right column keeps the face
-   in view the whole time. --sp (0..1) is the scroll progress the script writes
-   onto .portrait; every layer reads off it. The figure art carries a cream
-   background (matching the page), so it blends onto the cream with a normal
-   blend and is kept clear of the black rail as it forms. */
+   cream with its right edge kissing the rail. The WHOLE hero scrolls in normal
+   document flow (nothing is pinned): as the portrait rides up the viewport it
+   FORMS from the clean headshot into the full six-armed figure, timed so the
+   full figure lands while the face is comfortably in view, then it scrolls up
+   and away naturally. --sp (0..1) is the scroll progress the script writes onto
+   .portrait; every layer reads off it. The figure art carries a cream
+   background (matching the page), so it blends onto the cream and is kept clear
+   of the black rail as it forms. */
 .herostage{position:relative;
   --rail:clamp(84px,12vw,150px);
   --overlap:clamp(18px,2.4vw,34px);
   --pw:clamp(220px,22vw,320px);
-  --ptop:clamp(60px,12vh,120px);
-  --railH:clamp(340px,56vh,560px);
-  --track:60vh;
+  --ptop:clamp(150px,26vh,300px);
+  --railH:clamp(340px,52vh,540px);
   --slide:clamp(24px,4vh,52px)}
 
 .herocopy{position:relative;z-index:2;
@@ -192,34 +196,42 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .portrait{--sp:1}
 }
 
-/* DESKTOP: two columns. Left = thesis + practice (normal flow, scrolls away).
-   Right = a tall track holding a sticky pin, so the rail + figure stay in view
-   while you scroll and the figure forms. The rail joins the header at the
-   top-right corner and stops short of the viewport bottom (cream below). */
+/* DESKTOP: a two-column grid, everything in NORMAL FLOW (no pin, nothing sticky).
+   Left column, row 1 = the big thesis. Left column, row 2 = the practice nav,
+   pushed down with a tall lead so it starts below the fold and reveals on scroll.
+   Right column spans both rows and holds the rail + the framed portrait, which
+   sits low enough that the face is in view at load and rides up as you scroll,
+   forming into the figure. The rail joins the header at the top-right corner and
+   stops short (cream below). */
 @media (min-width:900px){
   .herostage{display:grid;
     grid-template-columns:minmax(0,1fr) var(--rail);
+    grid-template-areas:"copy rail" "prac rail";
     align-items:start}
-  .herocopy{grid-column:1;max-width:720px}
-  .herocopy .hero h1{font-size:clamp(40px,4.4vw,62px)}
-  .herorail{grid-column:2;min-height:calc(100vh + var(--track))}
-  .heropin{position:sticky;top:0;height:100vh}
+  .herocopy{grid-area:copy;max-width:760px}
+  .herorail{grid-area:rail;position:relative;min-height:var(--railH)}
+  /* the practice nav, dropped below the fold with a tall lead-in */
+  .practicewrap{grid-area:prac;max-width:760px;
+    padding:clamp(220px,42vh,420px) clamp(22px,6vw,60px) clamp(30px,6vh,72px) clamp(22px,6vw,76px)}
   .portrait{position:absolute;top:var(--ptop);
     right:calc(var(--rail) - var(--overlap));width:var(--pw)}
 }
 
-/* MOBILE: the rail becomes a centered black panel that holds the framed
-   portrait; the caption sits below it, cream fills the space beneath. The
-   panel is sticky so the face stays in view while the figure forms. The figure
-   is CONTAINED in the frame (no growing out, no ghosting): clean headshot
-   first, then it forms in place, face at the top. */
+/* MOBILE: one column in NORMAL FLOW (nothing sticky). Order is thesis -> portrait
+   -> practice nav, so at load the header + bold thesis + the face fill the screen
+   and the practice nav sits below the fold, revealing as you scroll. The portrait
+   lives in a centered black panel dropped low enough that the face is in view at
+   load; it rides up and forms as you scroll. The figure is CONTAINED to the frame
+   (no growing out, no ghosting): clean headshot first, then it forms in place with
+   the face at the top. */
 @media (max-width:899px){
-  .herostage{display:block}
-  .herocopy{padding:clamp(30px,7vh,56px) clamp(20px,6vw,40px) 0}
-  .herorail{min-height:calc(100vh + 40vh);padding-bottom:clamp(40px,10vh,90px)}
-  .heropin{position:sticky;top:clamp(10px,3vh,20px);
-    width:min(82vw,320px);margin:clamp(18px,5vh,40px) auto 0;
+  .herostage{display:flex;flex-direction:column}
+  .herocopy{order:1;padding:clamp(30px,7vh,56px) clamp(20px,6vw,40px) 0}
+  .herorail{order:2;position:relative;
+    width:min(82vw,320px);margin:clamp(120px,20vh,220px) auto 0;
     padding:clamp(20px,6vw,30px);background:var(--ink)}
+  .practicewrap{order:3;
+    padding:clamp(70px,16vh,150px) clamp(20px,6vw,40px) clamp(30px,6vh,60px)}
   .rail{display:none}
   .portrait{position:relative;width:100%;max-width:230px;margin:0 auto}
   .pframe{aspect-ratio:3/4;background:#F1F0EA;
@@ -403,38 +415,41 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 <main>
 
   <!-- HERO: the connected-L. The black header band and the thin black rail down
-       the right edge read as one continuous reversed-L stroke. Left: the thesis
-       and the practice nav (the way in). Right: the framed headshot that FORMS
-       into the full six-armed figure as you scroll, its face kept in view by a
-       sticky column, its caption always below it. Full-bleed (outside .wrap) so
-       the rail meets the true right edge of the page under the header. -->
+       the right edge read as one continuous reversed-L stroke. The whole hero
+       scrolls in normal document flow (nothing pinned). At load: the big thesis
+       (left) and the framed headshot (right, kissing the rail). The practice nav
+       sits below the fold and reveals on scroll; the headshot rides up and FORMS
+       into the full six-armed figure as it passes through view. Full-bleed
+       (outside .wrap) so the rail meets the true right edge under the header. -->
   <section class="herostage" id="herostage">
 
     <div class="herocopy">
-      <!-- 3 · hero -->
+      <!-- 3 · hero: the thesis -->
       <section class="hero">
         <h1><span class="dcap" aria-hidden="true"><svg viewBox="0 0 28 72" focusable="false"><path d="M14 0 V72"/></svg></span><span class="sr">I</span> build products, brands, and pipelines with AI, an opinion, and an eye.</h1>
-        <p class="practice">The practice:
-          <a class="lane" href="healthcare.html" data-lane="hc">healthcare</a> <span class="lq">(B2B)</span>,
-          <a class="lane" href="brands.html" data-lane="br">brands</a> <span class="lq">(B2C)</span>,
-          <a class="lane" href="ai.html" data-lane="ai">ai operations</a>.</p>
       </section>
     </div>
 
-    <!-- 5 · portrait: the track gives the scroll room; the pin stays in view -->
-    <div class="herorail" id="herotrack">
-      <div class="heropin" id="heropin">
-        <div class="rail" aria-hidden="true"></div>
-        <figure class="portrait">
-          <div class="pframe">
-            <img class="p0" src="portrait-oncream.jpg" width="640" height="640"
-                 alt="Portrait of Lazar LaLone, ink and watercolor.">
-          </div>
-          <img class="p1" src="portrait-full-oncream.webp" width="720" height="1290" alt="" loading="lazy">
-          <figcaption class="pcap">Everywhere at once. On purpose.</figcaption>
-        </figure>
-      </div>
+    <!-- 5 · portrait: scrolls in normal flow and forms as it rides up the view -->
+    <div class="herorail" id="herorail">
+      <div class="rail" aria-hidden="true"></div>
+      <figure class="portrait">
+        <div class="pframe">
+          <img class="p0" src="portrait-oncream.jpg" width="640" height="640"
+               alt="Portrait of Lazar LaLone, ink and watercolor.">
+        </div>
+        <img class="p1" src="portrait-full-oncream.webp" width="720" height="1290" alt="" loading="lazy">
+        <figcaption class="pcap">Everywhere at once. On purpose.</figcaption>
+      </figure>
     </div>
+
+    <!-- the practice nav: the way in, held below the fold and revealed on scroll -->
+    <nav class="practicewrap" aria-label="Practice areas">
+      <p class="practice">The practice:
+        <a class="lane" href="healthcare.html" data-lane="hc">healthcare</a> <span class="lq">(B2B)</span>,
+        <a class="lane" href="brands.html" data-lane="br">brands</a> <span class="lq">(B2C)</span>,
+        <a class="lane" href="ai.html" data-lane="ai">ai operations</a>.</p>
+    </nav>
 
   </section>
 
@@ -524,33 +539,28 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   });
 })();
 
-/* the portrait FORMS on scroll, a ONE-WAY RATCHET: --sp climbs from 0 (a clean
-   framed headshot) to 1 (the full six-armed figure), then HOLDS, so it never rests
-   in a stuck half-formed state. Progress is anchored to how far the hero's right-
-   column TRACK has scrolled past the sticky line, so the clean headshot always
-   shows first on every device (no ghosted double-exposure), and the sticky pin keeps
-   the head and FACE in view while the left copy scrolls and the figure settles down.
-   It only releases back toward the headshot if the whole hero drops below the fold
-   again. Reduced motion opts out: CSS shows the fully-formed figure. */
+/* the portrait FORMS as it scrolls, tied to its POSITION in the viewport. --sp
+   climbs from 0 (a clean framed headshot) to 1 (the full six-armed figure) as the
+   portrait's center rides UP the viewport: it holds the clean headshot while the
+   frame sits low (below START), forms across the middle of the screen, and is fully
+   the figure by the time its center reaches the upper third (END) - so the face is
+   clearly in view all through the transform. Nothing is pinned; the portrait then
+   scrolls up and away naturally. Reduced motion opts out (CSS shows the figure). */
 (function(){
-  var track = document.getElementById('herotrack');
-  var pin = document.getElementById('heropin');
   var portrait = document.querySelector('.portrait');
-  if(!track || !pin || !portrait) return;
+  if(!portrait) return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var START = 0.62;   /* center at 62% of viewport height: still a clean headshot */
+  var END   = 0.34;   /* center at 34%: fully formed, face comfortably in view    */
   var raf = 0;
-  var maxSp = 0;   /* the ratchet: highest --sp reached on this downward pass */
   function update(){
     raf = 0;
     var vh = window.innerHeight || document.documentElement.clientHeight;
-    var tr = track.getBoundingClientRect();
-    var stickyTop = parseFloat(getComputedStyle(pin).top) || 0;
-    var span = vh * 0.6;                       /* scroll distance to fully form */
-    var p = span > 0 ? (stickyTop - tr.top) / span : 0;
+    var r = portrait.getBoundingClientRect();
+    var center = r.top + r.height / 2;         /* portrait center, from viewport top */
+    var p = (START * vh - center) / ((START - END) * vh);
     p = p < 0 ? 0 : p > 1 ? 1 : p;
-    if(tr.top >= vh){ maxSp = 0; }             /* hero fully below the fold: reset */
-    else if(p > maxSp){ maxSp = p; }           /* otherwise only ever climb, then hold */
-    portrait.style.setProperty('--sp', maxSp.toFixed(3));
+    portrait.style.setProperty('--sp', p.toFixed(3));
   }
   function tick(){ if(!raf) raf = requestAnimationFrame(update); }
   window.addEventListener('scroll', tick, {passive:true});
