@@ -43,9 +43,9 @@ a{color:inherit}
 a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 ::selection{background:var(--lc);color:#F7F9FB}
 
-/* tracker: the site band. Left = Talk to me, center = tick pagination (one mark
-   per panel, current one emphasized), right = the lane name. The lalone wordmark
-   stays as the home link. */
+/* tracker: the site band. Left = the lalone wordmark (home link), center = tick
+   pagination (one mark per panel, current one emphasized), right = "Talk to me",
+   a thin divider, then the lane name. */
 .tracker{position:fixed;top:0;left:0;right:0;z-index:40;height:48px;background:#191814;
   display:flex;align-items:center;gap:clamp(14px,3vw,22px);overflow:hidden;
   padding:0 clamp(14px,3vw,24px);font-family:var(--mono);font-size:11px;letter-spacing:.14em}
@@ -70,13 +70,18 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .tick[aria-current="true"] i{height:15px;background:var(--lc)}
 .tick:hover i{background:rgba(244,242,234,.65)}
 .tick:focus-visible{outline:1.5px solid var(--lc);outline-offset:2px}
-.section{margin-left:auto;flex:none;color:rgba(244,242,234,.62);font-family:var(--mono);
+.section{flex:none;color:rgba(244,242,234,.62);font-family:var(--mono);
   font-size:11px;letter-spacing:.14em;white-space:nowrap}
+.bandright{display:inline-flex;align-items:center;gap:10px;flex:none;margin-left:auto}
+.bandsep{flex:none;color:rgba(244,242,234,.30);font-family:var(--mono);font-size:11px;
+  line-height:1;user-select:none;-webkit-user-select:none}
 @media (max-width:600px){
   .tracker{height:40px;gap:12px;padding:0 12px}
   .bandlink .wm{font-size:21px}
+  .bandright{gap:8px}
   .talklink{font-size:10px;letter-spacing:.06em}
   .section{font-size:10px;letter-spacing:.06em}
+  .bandsep{font-size:10px}
   .ticks{gap:5px}
   .tick i{height:8px}
   .tick[aria-current="true"] i{height:13px}
@@ -123,13 +128,17 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
    of logos floating at random weights. Colors are kept (color-coded). Order runs
    by how closely I worked with each, closest first. Centura is grey on purpose:
    the only defunct org here. The four international marks sit in their own
-   "Internationally" group. */
+   "Globally" group. A lone trailing mark is centered so the wall never ends on an
+   orphan stuck to the left. */
 .walllab{margin:clamp(14px,2.6vh,22px) 0 clamp(10px,1.8vh,14px);font-family:var(--mono);
   font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
 .logowall{max-width:660px}
 .lw-grid{display:grid;grid-template-columns:repeat(4,1fr);align-items:center;
-  justify-items:center;gap:clamp(14px,2.6vh,24px) clamp(14px,2.2vw,30px)}
+  justify-items:center;gap:clamp(20px,3.4vh,30px) clamp(24px,3.2vw,44px)}
 .lw-grid.intl{max-width:470px}
+/* a lone trailing mark spans the middle two columns so it sits dead-center under
+   the wall instead of orphaned in column one */
+.lw-cell.lw-last{grid-column:2 / 4}
 .lw-cell{display:flex;align-items:center;justify-content:center;width:100%;
   height:clamp(26px,3.6vh,34px)}
 .lw-cell img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block}
@@ -146,8 +155,9 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   text-transform:uppercase;color:var(--dim)}
 @media (max-width:600px){
   .logowall{max-width:100%}
-  .lw-grid{grid-template-columns:repeat(3,1fr);gap:15px 14px}
+  .lw-grid{grid-template-columns:repeat(3,1fr);gap:17px 16px}
   .lw-grid.intl{grid-template-columns:repeat(4,1fr)}
+  .lw-cell.lw-last{grid-column:2 / 3}
   .lw-cell{height:24px}
 }
 
@@ -158,17 +168,18 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .nextpanel:hover{color:var(--ink)}
 .nextpanel:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 
-/* the venture: one prominent doorway to fractionalaesthetics.com. The image IS
-   the link, sized up so it reads as a real door into the site, captioned with the
-   domain. Sharp corners to match the brand. The panel still holds the fold. */
-.fadoor{display:inline-flex;flex-direction:column;align-self:flex-start;
+/* the venture: one prominent doorway to fractionalaesthetics.com, centered in the
+   panel. The image IS the link, framed on the headline (a zoom into the top-left of
+   the live daily screenshot) so it reads clearly, captioned with the domain. Sharp
+   corners to match the brand. The panel still holds the fold. */
+.fadoor{display:inline-flex;flex-direction:column;align-self:center;
   width:clamp(280px,44vw,420px);margin-top:clamp(16px,3vh,26px);
   border:1px solid var(--hair);border-radius:0;background:#fff;overflow:hidden;
   text-decoration:none;box-shadow:0 1px 2px rgba(23,34,43,.06);
   transition:border-color .25s,box-shadow .25s}
-.fadoor-thumb{display:block;line-height:0;background:#0d0d0d}
-.fadoor-thumb img{display:block;width:100%;height:clamp(150px,24vh,220px);
-  object-fit:cover;object-position:top center}
+.fadoor-thumb{display:block;line-height:0;background:#0d0d0d;overflow:hidden}
+.fadoor-thumb img{display:block;width:100%;height:clamp(160px,25vh,225px);
+  object-fit:cover;object-position:12% 22%;transform:scale(1.72);transform-origin:12% 22%}
 .fadoor-tag{display:block;padding:10px 14px;font-family:var(--mono);font-size:11.5px;
   letter-spacing:.12em;color:var(--lc);border-top:1px solid var(--hair)}
 .fadoor:hover{border-color:var(--lc);box-shadow:0 8px 26px rgba(23,34,43,.16)}
@@ -176,14 +187,15 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .fadoor:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 
 /* the record: the full history in a fixed-height frame that scrolls its own
-   content. Hover and wheel (or touch-drag) scrolls the resume; the walk's wheel
-   handler hands off to it and does not advance. Open the PDF for the full-size,
-   printable copy. */
+   content. The frame is itself a link: a tap or click opens the full-size PDF in a
+   new tab, while wheel or touch-drag scrolls the preview in place (the walk's wheel
+   handler hands off to it and does not advance). The caption keeps a plain "Open
+   the PDF" link too. */
 .recviewer{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
   width:100%;max-width:440px;height:clamp(300px,42vh,440px);
   overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;border:1px solid var(--hair);background:#fff;
-  line-height:0;transition:border-color .25s}
+  line-height:0;text-decoration:none;cursor:pointer;color:inherit;transition:border-color .25s}
 .recviewer img{display:block;width:100%;height:auto}
 .recviewer:hover{border-color:var(--lc)}
 .recviewer:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
@@ -258,9 +270,12 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <button class="talklink" type="button" data-talk aria-haspopup="dialog">Talk to me</button>
   <div class="ticks" id="ticks" role="tablist" aria-label="Panels"></div>
-  <span class="section">Healthcare</span>
+  <div class="bandright">
+    <button class="talklink" type="button" data-talk aria-haspopup="dialog">Talk to me</button>
+    <span class="bandsep" aria-hidden="true">|</span>
+    <span class="section">Healthcare</span>
+  </div>
 </div>
 
 <main class="track" id="track" aria-label="Healthcare, a walk in four panels">
@@ -286,8 +301,8 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">02 &#183; The work</p>
       <h2>Where I&#8217;ve worked.</h2>
-      <p class="walllab">Systems I have worked with</p>
-      <div class="logowall" role="group" aria-label="Health systems I have worked with">
+      <p class="walllab">Systems I&#8217;ve worked with</p>
+      <div class="logowall" role="group" aria-label="Health systems I&#8217;ve worked with">
         <div class="lw-grid">
           <span class="lw-cell"><img src="healthcare-logos/highmark.svg" alt="Highmark" loading="lazy"></span>
           <span class="lw-cell"><img src="healthcare-logos/multicare-health-system.svg" alt="MultiCare Health System" loading="lazy"></span>
@@ -300,10 +315,10 @@ document.documentElement.classList.add('js');
           <span class="lw-cell"><img src="healthcare-logos/ardent-health.png" alt="Ardent Health" loading="lazy"></span>
           <span class="lw-cell"><img src="healthcare-logos/cedars-sinai.png" alt="Cedars-Sinai" loading="lazy"></span>
           <span class="lw-cell"><img src="healthcare-logos/advocate-health-care.svg" alt="Advocate Health Care" loading="lazy"></span>
-          <span class="lw-cell"><img class="ar-montage" src="healthcare-logos/montage-health.svg" alt="Montage Health" loading="lazy"></span>
           <span class="lw-cell"><img src="healthcare-logos/uhealth-university-of-miami.svg" alt="UHealth: University of Miami Health System" loading="lazy"></span>
+          <span class="lw-cell lw-last"><img class="ar-montage" src="healthcare-logos/montage-health.svg" alt="Montage Health" loading="lazy"></span>
         </div>
-        <p class="lw-sublab">Internationally</p>
+        <p class="lw-sublab">Globally</p>
         <div class="lw-grid intl">
           <span class="lw-cell"><img src="healthcare-logos/nhs.svg" alt="NHS" loading="lazy"></span>
           <span class="lw-cell"><img class="ar-dubai" src="healthcare-logos/dubai-health-authority.svg" alt="Dubai Health Authority" loading="lazy"></span>
@@ -334,9 +349,9 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">04 &#183; The record</p>
       <h2>The full history.</h2>
-      <div class="recviewer" tabindex="0" role="group" aria-label="The full history, scroll to read. Open the PDF for the full-size copy.">
+      <a class="recviewer" href="record-healthcare.pdf" target="_blank" rel="noopener" aria-label="The full history. Tap to open the full-size PDF in a new tab; scroll to preview it here.">
         <img src="record-healthcare-p1.webp" width="1000" height="1294" alt="The full history" loading="lazy">
-      </div>
+      </a>
       <p class="reccap"><a href="record-healthcare.pdf" target="_blank" rel="noopener">Open the PDF &#8599;</a></p>
     </div>
   </section>

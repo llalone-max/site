@@ -40,9 +40,9 @@ a{color:inherit}
 a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 ::selection{background:var(--lc);color:#F3EBDF}
 
-/* tracker: the site band. Left = Talk to me, center = tick pagination (one mark
-   per panel, current one emphasized), right = the lane name. The lalone wordmark
-   stays as the home link. */
+/* tracker: the site band. Left = the lalone wordmark (home link), center = tick
+   pagination (one mark per panel, current one emphasized), right = "Talk to me",
+   a thin divider, then the lane name. */
 .tracker{position:fixed;top:0;left:0;right:0;z-index:40;height:48px;background:#191814;
   display:flex;align-items:center;gap:clamp(14px,3vw,22px);overflow:hidden;
   padding:0 clamp(14px,3vw,24px);font-family:var(--mono);font-size:11px;letter-spacing:.14em}
@@ -67,13 +67,18 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .tick[aria-current="true"] i{height:15px;background:var(--lc)}
 .tick:hover i{background:rgba(244,242,234,.65)}
 .tick:focus-visible{outline:1.5px solid var(--lc);outline-offset:2px}
-.section{margin-left:auto;flex:none;color:rgba(244,242,234,.62);font-family:var(--mono);
+.section{flex:none;color:rgba(244,242,234,.62);font-family:var(--mono);
   font-size:11px;letter-spacing:.14em;white-space:nowrap}
+.bandright{display:inline-flex;align-items:center;gap:10px;flex:none;margin-left:auto}
+.bandsep{flex:none;color:rgba(244,242,234,.30);font-family:var(--mono);font-size:11px;
+  line-height:1;user-select:none;-webkit-user-select:none}
 @media (max-width:600px){
   .tracker{height:40px;gap:12px;padding:0 12px}
   .bandlink .wm{font-size:21px}
+  .bandright{gap:8px}
   .talklink{font-size:10px;letter-spacing:.06em}
   .section{font-size:10px;letter-spacing:.06em}
+  .bandsep{font-size:10px}
   .ticks{gap:5px}
   .tick i{height:8px}
   .tick[aria-current="true"] i{height:13px}
@@ -176,14 +181,15 @@ a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px
 a.link:hover{color:var(--ink)}
 .quiet{color:var(--soft)}
 /* the record: the full history in a fixed-height frame that scrolls its own
-   content. Hover and wheel (or touch-drag) scrolls the resume; the walk's wheel
-   handler hands off to it and does not advance. Open the PDF for the full-size,
-   printable copy. */
+   content. The frame is itself a link: a tap or click opens the full-size PDF in a
+   new tab, while wheel or touch-drag scrolls the preview in place (the walk's wheel
+   handler hands off to it and does not advance). The caption keeps a plain "Open
+   the PDF" link too. */
 .recviewer{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
   width:100%;max-width:440px;height:clamp(300px,42vh,440px);
   overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;border:1px solid var(--hair);background:#fff;
-  line-height:0;transition:border-color .25s}
+  line-height:0;text-decoration:none;cursor:pointer;color:inherit;transition:border-color .25s}
 .recviewer img{display:block;width:100%;height:auto}
 .recviewer:hover{border-color:var(--lc)}
 .recviewer:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
@@ -270,9 +276,12 @@ document.documentElement.classList.add('js');
 
 <div class="tracker">
   <a class="bandlink" href="index.html" aria-label="lalone, home"><span class="wm" aria-hidden="true">lalone</span></a>
-  <button class="talklink" type="button" data-talk aria-haspopup="dialog">Talk to me</button>
   <div class="ticks" id="ticks" role="tablist" aria-label="Panels"></div>
-  <span class="section">Brands</span>
+  <div class="bandright">
+    <button class="talklink" type="button" data-talk aria-haspopup="dialog">Talk to me</button>
+    <span class="bandsep" aria-hidden="true">|</span>
+    <span class="section">Brands</span>
+  </div>
 </div>
 
 <main class="track" id="track" aria-label="Brands, a walk in four panels">
@@ -377,9 +386,9 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">04 &#183; The record</p>
       <h2>The full history.</h2>
-      <div class="recviewer" tabindex="0" role="group" aria-label="The full history, scroll to read. Open the PDF for the full-size copy.">
+      <a class="recviewer" href="record-brands.pdf" target="_blank" rel="noopener" aria-label="The full history. Tap to open the full-size PDF in a new tab; scroll to preview it here.">
         <img src="record-brands-p1.webp" width="1000" height="1294" alt="The full history" loading="lazy">
-      </div>
+      </a>
       <p class="reccap"><a href="record-brands.pdf" target="_blank" rel="noopener">Open the PDF &#8599;</a></p>
     </div>
   </section>
