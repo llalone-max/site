@@ -67,12 +67,11 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .reclow{font-size:9px;letter-spacing:.1em}
 }
 
-/* horizontal walk */
-.track{position:relative;z-index:1;display:flex;height:100dvh;overflow-x:auto;overflow-y:hidden;
-  scroll-snap-type:x mandatory;overscroll-behavior-x:contain;
-  scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.track::-webkit-scrollbar{display:none}
-.panel{flex:0 0 100vw;width:100vw;height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;
+/* horizontal walk: Embla viewport / container / slides */
+.track{position:relative;z-index:1;height:100dvh;overflow:hidden}
+.walk{display:flex;height:100dvh;touch-action:pan-y pinch-zoom;
+  will-change:transform;backface-visibility:hidden}
+.panel{flex:0 0 100%;min-width:0;height:100dvh;
   overflow-y:auto;overflow-x:hidden;padding:calc(48px + clamp(18px,4vh,44px)) clamp(22px,6vw,90px) clamp(24px,5vh,56px)}
 .pin{max-width:760px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
 .plab{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
@@ -197,6 +196,7 @@ document.documentElement.classList.add('js');
 <a class="reclow" href="record-brands.pdf" target="_blank" rel="noopener">The record (PDF)</a>
 
 <main class="track" id="track" aria-label="Brands, a walk in five panels">
+ <div class="walk" id="walk">
 
   <section class="panel" data-name="hello" aria-label="Hello">
     <div class="pin">
@@ -293,12 +293,14 @@ document.documentElement.classList.add('js');
     </div>
   </section>
 
+ </div>
 </main>
 
 <div class="wel" id="wel" aria-hidden="true">
   <p class="wcard">brands</p>
 </div>
 
+<script src="/assets/embla-carousel.umd.js"></script>
 <script>
 (function(){
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -313,9 +315,12 @@ document.documentElement.classList.add('js');
     setTimeout(function(){ wel.remove(); }, 1020);
   }
 
-  /* panel walk */
-  var track = document.getElementById('track');
-  var panels = [].slice.call(track.querySelectorAll('.panel'));
+  /* the walk: one engine drives it. Embla makes the strip follow the finger
+     1:1 while dragging, then settles to the nearest panel by how far and how
+     fast you moved. Wheel, a vertical swipe, edge taps and the keyboard all
+     feed that same engine, so nothing fights. */
+  var viewport = document.getElementById('track');
+  var panels = [].slice.call(viewport.querySelectorAll('.panel'));
   var pos = document.getElementById('pos');
   var cur = 0;
   function pad(n){ return (n < 10 ? '0' : '') + n; }
@@ -323,50 +328,32 @@ document.documentElement.classList.add('js');
     cur = i;
     pos.textContent = pad(i+1) + ' / ' + pad(panels.length) + ' · ' + panels[i].getAttribute('data-name');
   }
-  function animateTo(target){
-    var start = track.scrollLeft, dist = target - start;
-    if(reduce || Math.abs(dist) < 1){ track.scrollLeft = target; return; }
-    track.style.scrollSnapType = 'none';
-    var t0 = performance.now(), dur = 560, s = 0.75;
-    function ease(p){ return 1 + (s + 1) * Math.pow(p - 1, 3) + s * Math.pow(p - 1, 2); }
-    (function frame(now){
-      var p = Math.min(1, (now - t0) / dur);
-      track.scrollLeft = start + dist * ease(p);
-      if(p < 1){ requestAnimationFrame(frame); }
-      else { track.scrollLeft = target; track.style.scrollSnapType = ''; }
-    })(performance.now());
-  }
-  function goTo(i){
-    i = Math.max(0, Math.min(panels.length - 1, i));
-    animateTo(i * track.clientWidth);
-  }
   setPos(0);
 
-  var io = new IntersectionObserver(function(es){
-    es.forEach(function(en){
-      if(en.isIntersecting) setPos(panels.indexOf(en.target));
-    });
-  }, {root: track, threshold: .6});
-  panels.forEach(function(p){ io.observe(p); });
-  track.addEventListener('scroll', function(){
-    var i = Math.round(track.scrollLeft / track.clientWidth);
-    if(i !== cur && i >= 0 && i < panels.length) setPos(i);
-  }, {passive:true});
+  var embla = window.EmblaCarousel && EmblaCarousel(viewport, {
+    axis:'x', loop:false, align:'start', containScroll:'trimSnaps',
+    dragFree:false, skipSnaps:false, duration: reduce ? 0 : 25
+  });
+  function next(){ if(embla) embla.scrollNext(); }
+  function prev(){ if(embla) embla.scrollPrev(); }
+  function toIndex(i){ if(embla) embla.scrollTo(Math.max(0, Math.min(panels.length - 1, i))); }
+  if(embla){
+    var sync = function(){ setPos(embla.selectedScrollSnap()); };
+    embla.on('select', sync); embla.on('reInit', sync); sync();
+  }
 
-  /* wheel: one gesture advances exactly one panel, and you can scroll again right
-     after with no pause or mouse movement. A short cooldown after each advance
-     absorbs a fast flick's momentum tail so it only moves one panel; once the
-     cooldown passes the next gesture advances immediately. Down/right goes forward,
-     up/left steps back. Zoom and back gestures stay native. */
+  /* wheel: one gesture advances exactly one panel; a short cooldown absorbs a
+     fast flick's momentum tail. A tall panel scrolls its own content first and
+     only hands off at its scroll edge. Zoom (ctrl/meta) stays native. */
   var acc = 0, coolUntil = 0, lastWheel = 0;
-  track.addEventListener('wheel', function(e){
-    if(e.ctrlKey || e.metaKey) return;                       /* pinch zoom */
+  viewport.addEventListener('wheel', function(e){
+    if(e.ctrlKey || e.metaKey) return;
     var dx = e.deltaX, dy = e.deltaY;
     var vertical = Math.abs(dy) >= Math.abs(dx);
-    var delta = vertical ? dy : dx;                          /* dominant axis */
+    var delta = vertical ? dy : dx;
     if(!delta) return;
     var p = panels[cur];
-    if(vertical && p.scrollHeight > p.clientHeight + 4){     /* tall panel scrolls itself first */
+    if(vertical && p.scrollHeight > p.clientHeight + 4){
       var up = dy < 0;
       var atTop = p.scrollTop <= 0;
       var atBot = p.scrollTop + p.clientHeight >= p.scrollHeight - 1;
@@ -374,36 +361,59 @@ document.documentElement.classList.add('js');
     }
     e.preventDefault();
     var now = performance.now();
-    if(now - lastWheel > 140) acc = 0;                       /* a pause starts a fresh gesture */
+    if(now - lastWheel > 140) acc = 0;
     lastWheel = now;
-    if(now < coolUntil) return;                              /* pacing window: absorb the flick tail */
+    if(now < coolUntil) return;
     acc += delta;
     if(Math.abs(acc) > 90){
-      goTo(cur + (acc > 0 ? 1 : -1));
+      (acc > 0 ? next() : prev());
       acc = 0;
-      coolUntil = now + 680;                                 /* re-armed automatically after this */
+      coolUntil = now + (reduce ? 200 : 620);
     }
   }, {passive:false});
 
-  /* touch: a vertical swipe advances the walk when the panel has nothing left to
-     scroll, so "scrolling down" on a phone moves to the next panel like the wheel does */
+  /* touch: a clear vertical swipe advances the walk (finger up = go next),
+     handing off only at a tall panel's scroll edge. Horizontal drags are the
+     engine's job, so they never reach this advance test. */
   var txs = 0, tys = 0;
-  track.addEventListener('touchstart', function(e){
+  viewport.addEventListener('touchstart', function(e){
     if(e.touches.length === 1){ txs = e.touches[0].clientX; tys = e.touches[0].clientY; }
   }, {passive:true});
-  track.addEventListener('touchend', function(e){
+  viewport.addEventListener('touchend', function(e){
     if(!e.changedTouches.length) return;
     var dx = e.changedTouches[0].clientX - txs;
     var dy = e.changedTouches[0].clientY - tys;
-    if(Math.abs(dy) < 55 || Math.abs(dy) < Math.abs(dx) * 1.25) return;  /* need a clear vertical swipe */
+    if(Math.abs(dy) < 55 || Math.abs(dy) < Math.abs(dx) * 1.25) return;
     var p = panels[cur];
-    var fwd = dy < 0;                          /* finger up = scroll-down intent = go right */
-    if(p.scrollHeight > p.clientHeight + 4){   /* tall panel: only hand off at its scroll edge */
+    var fwd = dy < 0;
+    if(p.scrollHeight > p.clientHeight + 4){
       if(fwd && p.scrollTop + p.clientHeight < p.scrollHeight - 2) return;
       if(!fwd && p.scrollTop > 2) return;
     }
-    goTo(cur + (fwd ? 1 : -1));
+    (fwd ? next() : prev());
   }, {passive:true});
+
+  /* edge taps: a quick tap on the outer margin turns the page, but only on
+     empty space. A tap on any link or control does that control's action, and
+     a drag (pointer moved past a few px) never counts as a tap. */
+  var EDGE = 0.22, psx = 0, psy = 0, pt0 = 0, pmax = 0, pdown = false;
+  viewport.addEventListener('pointerdown', function(e){
+    pdown = true; psx = e.clientX; psy = e.clientY; pt0 = performance.now(); pmax = 0;
+  }, {passive:true});
+  viewport.addEventListener('pointermove', function(e){
+    if(!pdown) return;
+    var m = Math.max(Math.abs(e.clientX - psx), Math.abs(e.clientY - psy));
+    if(m > pmax) pmax = m;
+  }, {passive:true});
+  viewport.addEventListener('pointerup', function(){ pdown = false; }, {passive:true});
+  viewport.addEventListener('pointercancel', function(){ pdown = false; }, {passive:true});
+  viewport.addEventListener('click', function(e){
+    if(pmax > 10 || performance.now() - pt0 > 500) return;   /* a drag or hold, not a tap */
+    if(e.target.closest && e.target.closest('a,button,input,textarea,select,summary,label,[role="button"]')) return;
+    var w = viewport.clientWidth, x = e.clientX;
+    if(x < w * EDGE) prev();
+    else if(x > w * (1 - EDGE)) next();
+  });
 
   /* let's talk: a single trigger expands to the three ways to reach me */
   var talkT = document.getElementById('talktrigger');
@@ -417,14 +427,18 @@ document.documentElement.classList.add('js');
     });
   }
 
+  /* a forward step to the next panel */
+  [].forEach.call(document.querySelectorAll('[data-next]'), function(b){
+    b.addEventListener('click', function(){ next(); });
+  });
+
   addEventListener('keydown', function(e){
     if(e.altKey || e.metaKey || e.ctrlKey) return;
-    if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown'){
-      e.preventDefault(); goTo(cur + 1);
-    } else if(e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp'){
-      e.preventDefault(); goTo(cur - 1);
-    } else if(e.key === 'Home'){ e.preventDefault(); goTo(0); }
-    else if(e.key === 'End'){ e.preventDefault(); goTo(panels.length - 1); }
+    var k = e.key;
+    if(k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown'){ e.preventDefault(); next(); }
+    else if(k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp'){ e.preventDefault(); prev(); }
+    else if(k === 'Home'){ e.preventDefault(); toIndex(0); }
+    else if(k === 'End'){ e.preventDefault(); toIndex(panels.length - 1); }
   });
 })();
 </script>
