@@ -157,6 +157,12 @@ html.js:not(.nowel) .wel path{stroke-dasharray:1000;stroke-dashoffset:1000;
 @media (prefers-reduced-motion:reduce){
   html.js:not(.nowel) .wel{display:none}
 }
+/* mobile fit: the tracker is 40px on phones, so reclaim the top padding the panels
+   over-reserve. Placed after the base rules so it actually wins. Keeps most panels
+   within the viewport, so a vertical swipe advances the walk instead of scrolling. */
+@media (max-width:600px){
+  .panel{padding-top:calc(40px + clamp(14px,3vh,26px))}
+}
 </style>
 <script>
 document.documentElement.classList.add('js');
@@ -188,9 +194,9 @@ document.documentElement.classList.add('js');
       <p>Most of my career has lived in healthcare. Much of the work I've done isn't mine to
         share, but my work covers product strategy, clinical and consumer experiences, health
         data and analytics, and go-to-market at scale.</p>
-      <p class="deep">My deepest understanding is in capacity management across the inpatient
+      <p class="deep">My expertise is in capacity management across the inpatient
         and outpatient spaces, front-to-mid revenue cycle, and clinical AI tooling at the point
-        of care and after.</p>
+        of care and beyond.</p>
       <p class="hint" aria-hidden="true">scroll &#8594;</p>
     </div>
   </section>

@@ -81,8 +81,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .lane{color:var(--ink);text-decoration:none;padding:.02em .09em;margin:-.02em -.09em}
 .lane:hover,.lane:focus-visible{background:var(--ink);color:var(--paper)}
 .lane:focus-visible{outline:none}
-.lq{font-family:var(--mono);font-size:.4em;font-weight:400;letter-spacing:.06em;
-  color:var(--dim);vertical-align:super;margin-left:.1em}
+.lq{font-family:var(--mono);font-size:.5em;font-weight:400;letter-spacing:.05em;
+  color:var(--dim)}
 
 /* 4 · three doors */
 .doors{margin-top:clamp(60px,9vh,120px);border-bottom:1px solid var(--strong)}
@@ -119,29 +119,39 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* 5 · portrait */
 /* the portrait: framed at rest; on hover or tap the frame dissolves
    and the whole operator stands on the page, arms and all */
+/* --sp is scroll progress 0..1, set by the scrub script on the figure so both the
+   portrait and its caption inherit it; frame, headshot, full figure and caption are
+   all driven off it as the portrait forms on scroll. Hover / tap / focus force the
+   full figure (fallback + intent). */
+.portrait{--sp:0}
 .pswap{appearance:none;display:block;position:relative;padding:0;margin:0;
-  border:1px solid var(--hair);background:#fff;cursor:pointer;
+  border:1px solid color-mix(in srgb,var(--hair) calc((1 - var(--sp))*100%),transparent);
+  background:color-mix(in srgb,#fff calc((1 - var(--sp))*100%),transparent);cursor:pointer;
   width:100%;max-width:260px;aspect-ratio:1/1}
-.pswap .p0{display:block;position:absolute;inset:0;width:100%;height:100%}
+.pswap .p0{display:block;position:absolute;inset:0;width:100%;height:100%;
+  opacity:calc(1 - var(--sp))}
 .pswap .p1{display:block;position:absolute;left:50%;bottom:-1px;height:185%;width:auto;
-  translate:-50% 14px;mix-blend-mode:multiply;pointer-events:none;opacity:0}
+  transform-origin:50% 100%;mix-blend-mode:multiply;pointer-events:none;
+  opacity:var(--sp);translate:-50% calc(14px * (1 - var(--sp)));
+  scale:calc(.9 + .1 * var(--sp))}
 .pswap:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (prefers-reduced-motion:no-preference){
-  .pswap{transition:border-color .4s ease,background-color .4s ease}
-  .pswap .p0{transition:opacity .35s ease}
-  .pswap .p1{transition:opacity .45s ease,translate .6s cubic-bezier(.3,0,.25,1)}
+  .pswap{transition:border-color .25s ease,background-color .25s ease}
+  .pswap .p0{transition:opacity .2s linear}
+  .pswap .p1{transition:opacity .2s linear,translate .35s ease,scale .35s ease}
 }
 @media (hover:hover){
   .pswap:hover{border-color:transparent;background:transparent}
   .pswap:hover .p0{opacity:0}
-  .pswap:hover .p1{opacity:1;translate:-50% 0}
+  .pswap:hover .p1{opacity:1;translate:-50% 0;scale:1}
 }
 .pswap.arms,.pswap:focus-visible{border-color:transparent;background:transparent}
 .pswap.arms .p0,.pswap:focus-visible .p0{opacity:0}
-.pswap.arms .p1,.pswap:focus-visible .p1{opacity:1;translate:-50% 0}
+.pswap.arms .p1,.pswap:focus-visible .p1{opacity:1;translate:-50% 0;scale:1}
 .capswap{display:grid}
 .capswap span{grid-area:1/1;transition:opacity .35s ease}
-.capswap .c1{opacity:0}
+.capswap .c0{opacity:calc(1 - var(--sp))}
+.capswap .c1{opacity:var(--sp)}
 @media (hover:hover){
   .portrait:has(.pswap:hover) .c0{opacity:0}
   .portrait:has(.pswap:hover) .c1{opacity:1}
@@ -190,10 +200,18 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .cookie.open{cursor:default}
 .cookie.open .ck0{opacity:0}
 .cookie.open .ck1{opacity:1}
+/* the fortune slip: real folded fortune-cookie paper. Uneven corners (clip-path),
+   two faint fold creases so it clearly "was folded once", only a light shadow. */
 .slip{font-family:"Courier New",Courier,"American Typewriter","Courier 10 Pitch",monospace;
   font-size:13px;letter-spacing:.02em;line-height:1.55;font-weight:700;
-  color:#B4241C;background:#FBFAF4;border:1px solid var(--hair);
-  padding:10px 15px;max-width:34ch;transform:rotate(-1.2deg);
+  color:#B4241C;
+  background:
+    linear-gradient(90deg,transparent calc(36% - .6px),rgba(25,24,20,.07) 36%,transparent calc(36% + .6px)),
+    linear-gradient(90deg,transparent calc(69% - .6px),rgba(25,24,20,.05) 69%,transparent calc(69% + .6px)),
+    #FBFAF4;
+  padding:13px 18px;max-width:34ch;transform:rotate(-1.2deg);
+  clip-path:polygon(0.6% 3%, 98.6% 0.4%, 100% 95%, 1.4% 99%);
+  filter:drop-shadow(0 1.5px 1.5px rgba(25,24,20,.12));
   opacity:0;visibility:hidden;translate:0 8px}
 @media (prefers-reduced-motion:no-preference){
   .slip{transition:opacity .35s ease .15s,translate .35s cubic-bezier(.2,.7,.3,1) .15s}
@@ -239,8 +257,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   <section class="hero">
     <h1><span class="dcap" aria-hidden="true"><svg viewBox="0 0 28 72" focusable="false"><path d="M14 0 V72"/></svg></span><span class="sr">I</span> build products, brands, and pipelines with AI, an opinion, and an eye.</h1>
     <p class="practice">The practice:
-      <a class="lane" href="healthcare.html" data-lane="hc">healthcare</a><sup class="lq">B2B</sup>,
-      <a class="lane" href="brands.html" data-lane="br">brands</a><sup class="lq">B2C</sup>,
+      <a class="lane" href="healthcare.html" data-lane="hc">healthcare</a> <span class="lq">(B2B)</span>,
+      <a class="lane" href="brands.html" data-lane="br">brands</a> <span class="lq">(B2C)</span>,
       <a class="lane" href="ai.html" data-lane="ai">ai operations</a>.</p>
   </section>
 
@@ -344,6 +362,34 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     var on = b.classList.toggle('arms');
     b.setAttribute('aria-pressed', on ? 'true' : 'false');
   });
+})();
+
+/* scroll scrub: as the portrait rises into view it dissolves the framed headshot
+   and grows into the six-armed figure, tied to scroll progress. Hover/tap stay a
+   fallback; reduced motion opts out entirely (still headshot, tap still works). */
+(function(){
+  var b = document.getElementById('pswap');
+  if(!b) return;
+  var fig = b.closest('.portrait') || b;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var raf = 0;
+  function update(){
+    raf = 0;
+    var r = b.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var mid = r.top + r.height / 2;
+    var p = (vh * 0.9 - mid) / (vh * 0.9 - vh * 0.42);   /* 0 as it enters, 1 near centered */
+    p = p < 0 ? 0 : p > 1 ? 1 : p;
+    if(!b.classList.contains('arms')) fig.style.setProperty('--sp', p.toFixed(3));
+  }
+  function tick(){ if(!raf) raf = requestAnimationFrame(update); }
+  var io = new IntersectionObserver(function(es){
+    if(es[0].isIntersecting){ window.addEventListener('scroll', tick, {passive:true}); tick(); }
+    else { window.removeEventListener('scroll', tick); }
+  }, {threshold:0});
+  io.observe(b);
+  window.addEventListener('resize', tick, {passive:true});
+  update();
 })();
 
 /* let's talk: a single trigger expands to the three ways to reach me */

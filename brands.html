@@ -124,12 +124,16 @@ a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px
   transition:color .25s}
 a.link:hover{color:var(--ink)}
 .quiet{color:var(--soft)}
-a.pdfgo{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);
-  font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
-  background:var(--lc);color:#2A1713;padding:13px 22px;text-decoration:none;
-  transition:background-color .25s}
-a.pdfgo:hover{background:#E08A6A}
-a.pdfgo:focus-visible{outline-offset:3px}
+/* the record: a real preview of the PDF's first page, framed, scrollable, click to open */
+.recview{display:block;align-self:flex-start;margin-top:clamp(16px,3vh,24px);
+  max-width:520px;max-height:58vh;overflow:auto;border:1px solid var(--hair);background:#fff;
+  text-decoration:none;transition:border-color .25s;-webkit-overflow-scrolling:touch}
+.recview img{display:block;width:100%;height:auto}
+.recview:hover{border-color:var(--lc)}
+.recview:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+.reccap{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--lc)}
+.reccap a{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap}
 
 /* let's talk: a trigger expands to the three ways to reach me */
@@ -169,6 +173,16 @@ html.js:not(.nowel) .wcard{animation:bump .4s steps(3,end) both .12s}
 .wel.bye{opacity:0;transition:opacity .28s ease}
 @media (prefers-reduced-motion:reduce){
   html.js:not(.nowel) .wel{display:none}
+}
+/* mobile fit: reclaim the over-reserved top padding (tracker is 40px on phones) and
+   tighten the reviews list so every panel fits the viewport and a vertical swipe
+   advances the walk. Placed after the base rules so these overrides actually win. */
+@media (max-width:600px){
+  .panel{padding-top:calc(40px + clamp(14px,3vh,26px))}
+  .rev{padding:clamp(9px,1.5vh,14px) 0}
+  .rev .q{font-size:15px;line-height:1.45}
+  .rev .by{margin-top:6px}
+  .revhead{margin-bottom:clamp(10px,2vh,16px)}
 }
 </style>
 <script>
@@ -266,8 +280,10 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">04 &#183; The record</p>
       <h2>The record.</h2>
-      <p>A short written record of the brand work, if you want it on file.</p>
-      <a class="pdfgo" href="record-brands.pdf" target="_blank" rel="noopener">The record (PDF) &#8599;</a>
+      <a class="recview" href="record-brands.pdf" target="_blank" rel="noopener" aria-label="Open the record as a PDF">
+        <img src="record-brands-p1.webp" width="1000" height="1294" alt="First page of the record" loading="lazy">
+      </a>
+      <p class="reccap"><a href="record-brands.pdf" target="_blank" rel="noopener">Open the PDF &#8599;</a></p>
     </div>
   </section>
 

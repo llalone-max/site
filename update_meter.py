@@ -157,15 +157,16 @@ def build_chart(days, vals):
     step = (avail - bar_w) / (n - 1) if n > 1 else 0.0
     spike_i = vals.index(max(vals))
 
-    svg = ['<svg class="chart" viewBox="0 0 640 150" role="img"',
-           f'               aria-label="Daily bars of metered AI spend since {days[0].strftime("%B")} {days[0].day}; peak {money(max(vals))}">']
+    svg = ['          <svg class="chart" viewBox="0 0 640 150" role="img"',
+           f'               aria-label="Daily bars of metered AI spend in US dollars since {days[0].strftime("%B")} {days[0].day}; peak {money(max(vals))}">']
     for gd in GRID_DOLLARS:
         y = y_of(gd)
         svg.append(f'            <line class="g" x1="0" y1="{y:.0f}" x2="{PLOT_W:.0f}" y2="{y:.0f}"/>')
     svg.append(f'            <line class="base" x1="0" y1="{BASE_Y:.0f}" x2="{PLOT_W:.0f}" y2="{BASE_Y:.0f}"/>')
-    for gd in GRID_DOLLARS:                         # bare axis figures in the right gutter; $ shows once, on the total
+    for gd in GRID_DOLLARS:                         # bare axis figures in the right gutter; the axis label names the unit
         y = y_of(gd) - 4
         svg.append(f'            <text x="640" y="{y:.0f}" text-anchor="end">{gd}</text>')
+    svg.append('            <text class="axu" x="640" y="10" text-anchor="end">$ / day</text>')
     svg.append(f'            <text x="0" y="146">{days[0].strftime("%b %d").upper()}</text>')
     svg.append(f'            <text x="{PLOT_W:.0f}" y="146" text-anchor="end">{days[-1].strftime("%b %d").upper()}</text>')
 
@@ -196,6 +197,12 @@ def build_chart(days, vals):
     return "\n".join(svg)
 
 
+def build_title():
+    """Plain title above the chart, with a dollars unit chip."""
+    return ('          <span class="metertitle">Metered AI spend, by day'
+            ' <span class="u">USD</span></span>')
+
+
 def build_stat(days, vals, rows, today):
     month = today.strftime("%Y-%m")
     shown_total = sum(v for d, v in zip(days, vals) if d.strftime("%Y-%m") == month)
@@ -204,10 +211,11 @@ def build_stat(days, vals, rows, today):
         d = (f.get("Date") or "")[:10]
         if d.startswith(month) and (f.get("Unit_Type") or "tokens") == "tokens":
             month_tokens += PUBLIC_MULT_TOKENS * int(f.get("Units") or 0)
-    label = f'Metered AI spend since {days[0].strftime("%b")} {days[0].day}'
-    return (f'          <span class="opsstat"><span class="live"></span><span class="t">'
-            f'{label} &#183; {money(shown_total)} this month &#183; '
-            f'{tokens_fmt(month_tokens)} tokens</span></span>')
+    since = f'{days[0].strftime("%b")} {days[0].day}'
+    # the headline number reads first; the meta line is dimmer context
+    return ('          <span class="opsstat"><span class="live"></span>'
+            f'<span class="ostot"><em>{money(shown_total)}</em> metered this month</span>'
+            f'<span class="osmeta">since {since} &#183; {tokens_fmt(month_tokens)} tokens</span></span>')
 
 
 def build_split(rows):
@@ -225,7 +233,8 @@ def build_split(rows):
     present = [g for g in GROUP_ORDER if by_group.get(g, 0) > 0]
     present += [g for g in by_group if g not in GROUP_ORDER and by_group[g] > 0]
     if total <= 0 or not present:
-        return ('          <span class="split"><span class="segbar" aria-hidden="true"></span>\n'
+        return ('          <span class="split"><span class="splithead">Where the spend goes</span>\n'
+                '          <span class="segbar" aria-hidden="true"></span>\n'
                 '          <span class="splitrow"></span>\n'
                 f'          <span class="depth">{DEPTH_LINE}</span></span>')
 
@@ -240,9 +249,10 @@ def build_split(rows):
     present.sort(key=lambda g: pct[g], reverse=True)
 
     segs = "".join(f'<i class="s{i+1}" style="flex-grow:{pct[g]}"></i>' for i, g in enumerate(present))
-    labels = " ".join(f'<span class="sl"><i class="sw s{i+1}"></i>{g} {pct[g]}%</span>'
+    labels = " ".join(f'<span class="sl"><i class="sw s{i+1}"></i>{g} <b>{pct[g]}%</b></span>'
                       for i, g in enumerate(present))
-    return ('          <span class="split"><span class="segbar" aria-hidden="true">' + segs + '</span>\n'
+    return ('          <span class="split"><span class="splithead">Where the spend goes</span>\n'
+            '          <span class="segbar" aria-hidden="true">' + segs + '</span>\n'
             '          <span class="splitrow">' + labels + '</span>\n'
             f'          <span class="depth">{DEPTH_LINE}</span></span>')
 
@@ -283,14 +293,15 @@ def main():
     log_processes(rows)
 
     days, vals = build_series(rows, today)
+    title = build_title()
     chart = build_chart(days, vals)
     stat = build_stat(days, vals, rows, today)
     split = build_split(rows)
 
-    block = chart + "\n" + stat + "\n" + split
+    block = title + "\n" + chart + "\n" + stat + "\n" + split
 
     changed = splice(os.path.join(HERE, "ai.html"),
-                     "<!--METER-->", "<!--/METER-->", block, "\n          ", "\n        ")
+                     "<!--METER-->", "<!--/METER-->", block, "\n", "\n        ")
     print("meter updated" if changed else "no change")
 
 
