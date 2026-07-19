@@ -14,7 +14,11 @@
           text-transform:uppercase; color:#999; margin:0 0 6px; }
   h1 { font-size:26px; font-weight:600; margin:0 0 4px; letter-spacing:-.01em; }
   .note { color:#999; font-size:13.5px; margin:0 0 26px; max-width:62ch; }
-  .pg { width:100%; display:block; margin:0 0 14px; }
+  .pages { -webkit-user-select:none; -moz-user-select:none; user-select:none;
+           -webkit-touch-callout:none; }
+  .pg { width:100%; display:block; margin:0 0 14px; -webkit-user-drag:none;
+        user-drag:none; pointer-events:none; }
+  .taste { color:#999; font-size:13px; margin:2px 0 0; }
   .gate { border-top:1px solid #333; margin-top:34px; padding-top:26px; }
   .gate p { color:#999; font-size:13.5px; max-width:62ch; }
   input { background:#1a1a1a; border:1px solid #333; color:#eee; padding:10px 13px;
@@ -29,39 +33,16 @@
 <div class="wrap">
   <p class="plab">Brand guidelines</p>
   <h1>Lazarvision.</h1>
-  <p class="note">The full book, viewable here. The print-quality PDF is available with an
+  <p class="note">A first look, viewable here. The print-quality PDF is available with an
   access code. If we know each other, just ask me for it.</p>
-  <img class="pg" src="b/pages/lazarvision-01.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 1">
-  <img class="pg" src="b/pages/lazarvision-02.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 2">
-  <img class="pg" src="b/pages/lazarvision-03.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 3">
-  <img class="pg" src="b/pages/lazarvision-04.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 4">
-  <img class="pg" src="b/pages/lazarvision-05.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 5">
-  <img class="pg" src="b/pages/lazarvision-06.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 6">
-  <img class="pg" src="b/pages/lazarvision-07.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 7">
-  <img class="pg" src="b/pages/lazarvision-08.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 8">
-  <img class="pg" src="b/pages/lazarvision-09.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 9">
-  <img class="pg" src="b/pages/lazarvision-10.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 10">
-  <img class="pg" src="b/pages/lazarvision-11.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 11">
-  <img class="pg" src="b/pages/lazarvision-12.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 12">
-  <img class="pg" src="b/pages/lazarvision-13.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 13">
-  <img class="pg" src="b/pages/lazarvision-14.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 14">
-  <img class="pg" src="b/pages/lazarvision-15.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 15">
-  <img class="pg" src="b/pages/lazarvision-16.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 16">
-  <img class="pg" src="b/pages/lazarvision-17.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 17">
-  <img class="pg" src="b/pages/lazarvision-18.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 18">
-  <img class="pg" src="b/pages/lazarvision-19.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 19">
-  <img class="pg" src="b/pages/lazarvision-20.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 20">
-  <img class="pg" src="b/pages/lazarvision-21.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 21">
-  <img class="pg" src="b/pages/lazarvision-22.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 22">
-  <img class="pg" src="b/pages/lazarvision-23.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 23">
-  <img class="pg" src="b/pages/lazarvision-24.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 24">
-  <img class="pg" src="b/pages/lazarvision-25.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 25">
-  <img class="pg" src="b/pages/lazarvision-26.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 26">
-  <img class="pg" src="b/pages/lazarvision-27.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 27">
-  <img class="pg" src="b/pages/lazarvision-28.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 28">
-  <img class="pg" src="b/pages/lazarvision-29.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 29">
-  <img class="pg" src="b/pages/lazarvision-30.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 30">
-  <img class="pg" src="b/pages/lazarvision-31.jpg" loading="lazy" alt="Lazarvision brand guidelines, page 31">
+  <div class="pages" oncontextmenu="return false">
+    <img class="pg" src="b/pages/lazarvision-01-wm.jpg" draggable="false" loading="lazy" alt="Lazarvision brand guidelines, page 1">
+    <img class="pg" src="b/pages/lazarvision-02-wm.jpg" draggable="false" loading="lazy" alt="Lazarvision brand guidelines, page 2">
+    <img class="pg" src="b/pages/lazarvision-03-wm.jpg" draggable="false" loading="lazy" alt="Lazarvision brand guidelines, page 3">
+    <img class="pg" src="b/pages/lazarvision-04-wm.jpg" draggable="false" loading="lazy" alt="Lazarvision brand guidelines, page 4">
+    <img class="pg" src="b/pages/lazarvision-05-wm.jpg" draggable="false" loading="lazy" alt="Lazarvision brand guidelines, page 5">
+  </div>
+  <p class="taste">The first five pages. The full set is available on request.</p>
   <div class="gate">
     <p class="plab">The PDF</p>
     <p>Enter the access code to download the full-resolution book.</p>
