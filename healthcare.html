@@ -172,16 +172,28 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
    panel. The image IS the link, framed on the headline (a zoom into the top-left of
    the live daily screenshot) so it reads clearly, captioned with the domain. Sharp
    corners to match the brand. The panel still holds the fold. */
-.fadoor{display:inline-flex;flex-direction:column;align-self:center;
-  width:clamp(280px,44vw,420px);margin-top:clamp(16px,3vh,26px);
-  border:1px solid var(--hair);border-radius:0;background:#fff;overflow:hidden;
+/* the venture panel: the words on the left, the site itself on the right, so the
+   doorway can be a whole phone screen and the panel still holds the fold */
+.fasplit{display:grid;grid-template-columns:minmax(0,1fr) auto;
+  gap:clamp(20px,3.4vw,44px);align-items:start;margin-top:clamp(6px,1.4vh,14px)}
+.fasplit p{margin:0}
+/* the doorway is the live site AS SEEN ON A PHONE: the daily screenshot is taken
+   at a phone viewport and shown whole, at its own proportions. No CSS zoom, so
+   nothing is skewed and nothing is cut off the right edge. */
+.fadoor{display:flex;flex-direction:column;align-self:start;
+  width:clamp(140px,14.5vw,178px);container-type:inline-size;
+  border:1px solid var(--hair);border-radius:0;background:#0d0d0d;overflow:hidden;
   text-decoration:none;box-shadow:0 1px 2px rgba(23,34,43,.06);
   transition:border-color .25s,box-shadow .25s}
 .fadoor-thumb{display:block;line-height:0;background:#0d0d0d;overflow:hidden}
-.fadoor-thumb img{display:block;width:100%;height:clamp(160px,25vh,225px);
-  object-fit:cover;object-position:12% 22%;transform:scale(1.72);transform-origin:12% 22%}
-.fadoor-tag{display:block;padding:10px 14px;font-family:var(--mono);font-size:11.5px;
-  letter-spacing:.12em;color:var(--lc);border-top:1px solid var(--hair)}
+.fadoor-thumb img{display:block;width:100%;height:auto;aspect-ratio:390/844;object-fit:cover;
+  object-position:50% 0}
+.fadoor-tag{display:block;padding:8px 5px;font-family:var(--mono);
+  /* sized from the FRAME, not the viewport, so the domain never clips at an
+     in-between width */
+  font-size:clamp(7.6px,6cqw,10px);
+  letter-spacing:0;white-space:nowrap;color:var(--lc);background:var(--bg);
+  border-top:1px solid var(--hair);text-align:center}
 .fadoor:hover{border-color:var(--lc);box-shadow:0 8px 26px rgba(23,34,43,.16)}
 .fadoor:hover .fadoor-tag{color:var(--ink)}
 .fadoor:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
@@ -252,6 +264,10 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
    within the viewport, so a vertical swipe advances the walk instead of scrolling. */
 @media (max-width:600px){
   .panel{padding-top:calc(40px + clamp(14px,3vh,26px))}
+  /* the venture panel stacks: words first, then the phone, kept small enough
+     that the whole panel still fits the screen */
+  .fasplit{grid-template-columns:1fr;gap:clamp(12px,2vh,18px);justify-items:start}
+  .fadoor{width:clamp(138px,37vw,158px)}
 }
 </style>
 <script>
@@ -327,14 +343,16 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">03 &#183; The venture</p>
       <h2>Fractional Aesthetics.</h2>
-      <p>My newest venture in healthcare B2B is Fractional Aesthetics. My team audits aesthetic
-        practices, gives owners a clear read on where they stand, and hands them a plan they can
-        run. I work alongside practice owners as an operator and as a builder of bespoke automated
-        systems to fill the gaps we find.</p>
-      <a class="fadoor" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener" aria-label="Visit fractionalaesthetics.com">
-        <span class="fadoor-thumb"><img src="fa-home-preview.webp" width="1400" height="900" alt="Fractional Aesthetics home page" loading="lazy"></span>
-        <span class="fadoor-tag">fractionalaesthetics.com &#8599;</span>
-      </a>
+      <div class="fasplit">
+        <p>My newest venture in healthcare B2B is Fractional Aesthetics. My team audits aesthetic
+          practices, gives owners a clear read on where they stand, and hands them a plan they can
+          run. I work alongside practice owners as an operator and as a builder of bespoke automated
+          systems to fill the gaps we find.</p>
+        <a class="fadoor" href="https://www.fractionalaesthetics.com" target="_blank" rel="noopener" aria-label="Visit fractionalaesthetics.com">
+          <span class="fadoor-thumb"><img src="fa-home-preview.webp" width="390" height="844" alt="The Fractional Aesthetics home page on a phone" loading="lazy"></span>
+          <span class="fadoor-tag">fractionalaesthetics.com &#8599;</span>
+        </a>
+      </div>
     </div>
   </section>
 

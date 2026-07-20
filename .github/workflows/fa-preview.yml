@@ -1,7 +1,10 @@
 name: refresh FA preview
 
-# Screenshots the fractionalaesthetics.com homepage daily and rewrites
-# fa-home-preview.webp, so the preview on healthcare.html stays current.
+# Screenshots the fractionalaesthetics.com homepage daily at a PHONE viewport and
+# rewrites fa-home-preview.webp, so the preview on healthcare.html stays current.
+# It is shot at 390x844 because healthcare.html frames it as a phone screen: the
+# whole hero, at its own proportions, with no CSS zoom. Changing this viewport
+# means changing the aspect-ratio on .fadoor-thumb img to match.
 # Commits only when the image actually changed (same pattern as meter.yml).
 
 on:
@@ -37,16 +40,23 @@ jobs:
           const { chromium } = require('playwright');
           (async () => {
             const b = await chromium.launch();
-            const c = await b.newContext({ viewport: { width: 1400, height: 900 }, deviceScaleFactor: 2 });
+            const c = await b.newContext({
+              viewport: { width: 390, height: 844 },
+              deviceScaleFactor: 3,
+              isMobile: true,
+              hasTouch: true,
+              userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+            });
             const p = await c.newPage();
             await p.goto('https://www.fractionalaesthetics.com', { waitUntil: 'networkidle', timeout: 60000 });
-            await p.waitForTimeout(1200);
-            await p.screenshot({ path: 'fa-home.png', clip: { x: 0, y: 0, width: 1400, height: 900 } });
+            await p.waitForTimeout(2000);
+            /* the first screen only: the hero, exactly as a phone shows it */
+            await p.screenshot({ path: 'fa-home.png', clip: { x: 0, y: 0, width: 390, height: 844 } });
             await b.close();
           })().catch(e => { console.error(e); process.exit(1); });
           EOF
       - name: Compress to webp
-        run: cwebp -q 80 -resize 1400 0 fa-home.png -o fa-home-preview.webp
+        run: cwebp -q 82 -resize 780 0 fa-home.png -o fa-home-preview.webp
       - name: Commit if changed
         run: |
           git config user.name "fa-preview-bot"
