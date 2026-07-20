@@ -198,6 +198,11 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   line-height:0;text-decoration:none;cursor:pointer;color:inherit;transition:border-color .25s}
 .recviewer img{display:block;width:100%;height:auto}
 .recviewer:hover{border-color:var(--lc)}
+/* when there is more to read than the box shows, soften the bottom edge so it
+   reads as "keep going". The cue clears once you reach the end. */
+.scrolls.has-scroll{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 34px),transparent);
+  mask-image:linear-gradient(to bottom,#000 calc(100% - 34px),transparent)}
+.scrolls.has-scroll.at-end{-webkit-mask-image:none;mask-image:none}
 .recviewer:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .reccap{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--lc)}
@@ -349,7 +354,7 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">04 &#183; The record</p>
       <h2>The full history.</h2>
-      <a class="recviewer" href="record-healthcare.pdf" target="_blank" rel="noopener" aria-label="The full history. Tap to open the full-size PDF in a new tab; scroll to preview it here.">
+      <a class="recviewer scrolls" href="record-healthcare.pdf" target="_blank" rel="noopener" aria-label="The full history. Tap to open the full-size PDF in a new tab; scroll to preview it here.">
         <img src="record-healthcare-p1.webp" width="1000" height="1294" alt="The full history" loading="lazy">
       </a>
       <p class="reccap"><a href="record-healthcare.pdf" target="_blank" rel="noopener">Open the PDF &#8599;</a></p>
@@ -381,8 +386,6 @@ document.documentElement.classList.add('js');
 <script src="/assets/embla-carousel.umd.js"></script>
 <script>
 (function(){
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   /* welcome, once per visit */
   var wel = document.getElementById('wel');
   if(document.documentElement.classList.contains('nowel')){
@@ -392,209 +395,8 @@ document.documentElement.classList.add('js');
     setTimeout(function(){ wel.classList.add('bye'); }, 640);
     setTimeout(function(){ wel.remove(); }, 980);
   }
-
-  /* the walk: one engine drives it. Embla makes the strip follow the finger
-     1:1 while dragging, then settles to the nearest panel by how far and how
-     fast you moved. Wheel, a vertical swipe, edge taps and the keyboard all
-     feed that same engine, so nothing fights. */
-  var viewport = document.getElementById('track');
-  var panels = [].slice.call(viewport.querySelectorAll('.panel'));
-  var cur = 0;
-
-  /* contact overlay: "Talk to me" blurs the page and brings the ways to reach me
-     forward. Esc, the close control, or the scrim closes it and unblurs. Focus is
-     moved in on open and restored on close, and Tab is trapped inside. */
-  var sheet = document.getElementById('talksheet');
-  var talkBtn = document.querySelector('[data-talk]');
-  var lastFocus = null;
-  function openTalk(){
-    if(!sheet) return;
-    lastFocus = document.activeElement;
-    sheet.hidden = false;
-    var f = sheet.querySelector('a[href],button');
-    if(f) f.focus();
-  }
-  function closeTalk(){
-    if(!sheet || sheet.hidden) return;
-    sheet.hidden = true;
-    if(lastFocus && lastFocus.focus) lastFocus.focus();
-  }
-  if(talkBtn) talkBtn.addEventListener('click', function(e){ e.preventDefault(); openTalk(); });
-  if(sheet){
-    [].forEach.call(sheet.querySelectorAll('[data-talkclose]'), function(el){
-      el.addEventListener('click', closeTalk);
-    });
-    sheet.addEventListener('keydown', function(e){
-      if(e.key === 'Escape'){ e.preventDefault(); closeTalk(); return; }
-      if(e.key !== 'Tab') return;
-      var f = sheet.querySelectorAll('a[href],button');
-      if(!f.length) return;
-      var first = f[0], last = f[f.length - 1];
-      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-    });
-  }
-  addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && sheet && !sheet.hidden){ e.preventDefault(); closeTalk(); }
-  });
-
-  /* tick pagination: one mark per panel, the current one emphasized. Marks jump. */
-  var ticksWrap = document.getElementById('ticks');
-  var ticks = panels.map(function(p, i){
-    var b = document.createElement('button');
-    b.className = 'tick'; b.type = 'button';
-    b.setAttribute('role', 'tab');
-    b.setAttribute('aria-label', p.getAttribute('data-name'));
-    b.innerHTML = '<i></i>';
-    b.addEventListener('click', function(){ toIndex(i); });
-    if(ticksWrap) ticksWrap.appendChild(b);
-    return b;
-  });
-  function setPos(i){
-    cur = i;
-    ticks.forEach(function(b, j){ b.setAttribute('aria-current', j === i ? 'true' : 'false'); });
-  }
-  setPos(0);
-
-  var embla = window.EmblaCarousel && EmblaCarousel(viewport, {
-    axis:'x', loop:false, align:'start', containScroll:'trimSnaps',
-    dragFree:false, skipSnaps:false, duration: reduce ? 0 : 28, watchDrag: false
-  });
-  /* one deliberate gesture = at most one panel. Every advance routes through
-     go(), which enforces a cooldown (the transition plus a margin) so a fast
-     flick's momentum, a stray edge click, or a second wheel tick cannot chain a
-     second step. Direct jumps (ticks, Home/End) bypass the gate. */
-  var navLockUntil = 0, NAV_COOL = reduce ? 90 : 480;
-  function go(dir){
-    if(!embla) return;
-    var now = performance.now();
-    if(now < navLockUntil) return;
-    navLockUntil = now + NAV_COOL;
-    if(dir > 0) embla.scrollNext(); else embla.scrollPrev();
-  }
-  function next(){ go(1); }
-  function prev(){ go(-1); }
-  function toIndex(i){ if(embla) embla.scrollTo(Math.max(0, Math.min(panels.length - 1, i))); }
-  if(embla){
-    var sync = function(){ setPos(embla.selectedScrollSnap()); };
-    embla.on('select', sync); embla.on('reInit', sync); sync();
-  }
-
-  /* slide-with-zoom: tie each panel's scale and opacity to Embla's scroll
-     progress so the outgoing panel eases down and softens while the incoming one
-     grows into place (the mesura.eu / rauno.me feel). It tracks the movement
-     frame by frame. Reduced motion gets a plain cut, no zoom. */
-  var pins = panels.map(function(p){ return p.querySelector('.pin'); });
-  function applyZoom(){
-    var prog = embla.scrollProgress();
-    var snaps = embla.scrollSnapList();
-    var span = snaps.length > 1 ? snaps.length - 1 : 1;
-    snaps.forEach(function(snap, i){
-      var pin = pins[i];
-      if(!pin) return;
-      var norm = Math.min(Math.abs((snap - prog) * span), 1);
-      pin.style.transform = 'scale(' + (1 - norm * 0.08).toFixed(4) + ')';
-      pin.style.opacity = (1 - norm * 0.4).toFixed(3);
-    });
-  }
-  if(embla && !reduce){
-    embla.on('scroll', applyZoom); embla.on('reInit', applyZoom); applyZoom();
-  }
-
-  /* wheel/trackpad: one burst advances at most one panel. Delta accumulates
-     until it clears a threshold, fires once, then locks until the wheel goes
-     quiet (~200ms) so a trackpad's momentum tail cannot chain a second step. A
-     tall panel scrolls its own content first. Zoom (ctrl/meta) stays native. */
-  var wheelAcc = 0, wheelLock = false, wheelIdle = null;
-  viewport.addEventListener('wheel', function(e){
-    if(e.ctrlKey || e.metaKey) return;
-    if(sheet && !sheet.hidden) return;
-    /* the record viewer scrolls its own content; let it, and never advance */
-    if(e.target.closest && e.target.closest('.recviewer')) return;
-    var dx = e.deltaX, dy = e.deltaY;
-    var vertical = Math.abs(dy) >= Math.abs(dx);
-    var delta = vertical ? dy : dx;
-    if(!delta) return;
-    e.preventDefault();
-    clearTimeout(wheelIdle);
-    wheelIdle = setTimeout(function(){ wheelLock = false; wheelAcc = 0; }, 200);
-    if(wheelLock) return;
-    wheelAcc += delta;
-    if(Math.abs(wheelAcc) > 40){
-      (wheelAcc > 0 ? next() : prev());
-      wheelAcc = 0;
-      wheelLock = true;
-    }
-  }, {passive:false});
-
-  /* touch: a clear vertical swipe advances the walk (finger up = go next),
-     handing off only at a tall panel's scroll edge. Horizontal drags are the
-     engine's job, so they never reach this advance test. */
-  var txs = 0, tys = 0;
-  viewport.addEventListener('touchstart', function(e){
-    if(e.touches.length === 1){ txs = e.touches[0].clientX; tys = e.touches[0].clientY; }
-  }, {passive:true});
-  viewport.addEventListener('touchend', function(e){
-    if(!e.changedTouches.length) return;
-    if(sheet && !sheet.hidden) return;
-    /* a drag on the record viewer scrolls it; it must not flick the walk */
-    if(e.target.closest && e.target.closest('.recviewer')) return;
-    var dx = e.changedTouches[0].clientX - txs;
-    var dy = e.changedTouches[0].clientY - tys;
-    var ax = Math.abs(dx), ay = Math.abs(dy);
-    /* a deliberate horizontal swipe turns the page; a small/accidental one does not */
-    if(ax > 55 && ax > ay * 1.2){ (dx < 0 ? next() : prev()); return; }
-    /* a clear vertical swipe advances too */
-    if(ay < 60 || ay < ax * 1.3) return;
-    (dy < 0 ? next() : prev());
-  }, {passive:true});
-
-  /* edge taps: a quick tap on the outer margin turns the page, but only on
-     empty space. A tap on any link or control does that control's action, and
-     a drag (pointer moved past a few px) never counts as a tap. */
-  var EDGE = 0.22, psx = 0, psy = 0, pt0 = 0, pmax = 0, pdown = false;
-  viewport.addEventListener('pointerdown', function(e){
-    pdown = true; psx = e.clientX; psy = e.clientY; pt0 = performance.now(); pmax = 0;
-  }, {passive:true});
-  viewport.addEventListener('pointermove', function(e){
-    if(!pdown) return;
-    var m = Math.max(Math.abs(e.clientX - psx), Math.abs(e.clientY - psy));
-    if(m > pmax) pmax = m;
-  }, {passive:true});
-  viewport.addEventListener('pointerup', function(e){
-    pdown = false;
-    if(e.pointerType === 'touch') return;            /* touch is handled on touchend */
-    if(sheet && !sheet.hidden) return;
-    if(e.target.closest && e.target.closest('.recviewer')) return;
-    var dx = e.clientX - psx, dy = e.clientY - psy;
-    /* a deliberate horizontal drag turns the page; a small one does not */
-    if(Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.2){ (dx < 0 ? next() : prev()); }
-  }, {passive:true});
-  viewport.addEventListener('pointercancel', function(){ pdown = false; }, {passive:true});
-  viewport.addEventListener('click', function(e){
-    if(sheet && !sheet.hidden) return;
-    if(pmax > 10 || performance.now() - pt0 > 500) return;   /* a drag or hold, not a tap */
-    if(e.target.closest && e.target.closest('a,button,input,textarea,select,summary,label,[role="button"],.recviewer')) return;
-    var w = viewport.clientWidth, x = e.clientX;
-    if(x < w * EDGE) prev();
-    else if(x > w * (1 - EDGE)) next();
-  });
-
-  /* a forward step to the next panel */
-  [].forEach.call(document.querySelectorAll('[data-next]'), function(b){
-    b.addEventListener('click', function(){ next(); });
-  });
-
-  addEventListener('keydown', function(e){
-    if(sheet && !sheet.hidden) return;
-    if(e.altKey || e.metaKey || e.ctrlKey) return;
-    var k = e.key;
-    if(k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown'){ e.preventDefault(); next(); }
-    else if(k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp'){ e.preventDefault(); prev(); }
-    else if(k === 'Home'){ e.preventDefault(); toIndex(0); }
-    else if(k === 'End'){ e.preventDefault(); toIndex(panels.length - 1); }
-  });
 })();
 </script>
+<script src="/assets/walk.js"></script>
 </body>
 </html>
