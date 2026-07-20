@@ -142,7 +142,19 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .lw-cell.lw-last{grid-column:2 / 4}
 .lw-cell{display:flex;align-items:center;justify-content:center;width:100%;
   height:clamp(26px,3.6vh,34px)}
-.lw-cell img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block}
+.lw-cell img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;
+  /* seventeen logos in seventeen brand palettes read as noise on a calm page, and
+     the loudest mark wins attention rather than the most relevant one. Held to one
+     ink, the wall reads as a list of systems; hovering one brings its colour back,
+     so the detail is still there for anyone who looks. */
+  filter:grayscale(1) brightness(.74);opacity:.9;transition:filter .3s ease,opacity .3s ease}
+.lw-cell:hover img{filter:none;opacity:1}
+@media (prefers-reduced-motion:reduce){.lw-cell img{transition:none}}
+/* optical sizing: a two-line stacked mark reads smaller than a single-line
+   wordmark at the same box height, and a few marks carry heavy padding in their
+   own artwork. These nudges even out the apparent weight across the wall. */
+.lw-cell img.o-up{height:124%}
+.lw-cell img.o-down{height:84%}
 /* a few marks ship width/height attrs that fight their viewBox; pin the true ratio */
 .lw-cell img.ar-trinity{aspect-ratio:263.36/76.33}
 .lw-cell img.ar-montage{aspect-ratio:577.18/150.29}
@@ -314,26 +326,26 @@ document.documentElement.classList.add('js');
       <p class="walllab">Systems I&#8217;ve worked with</p>
       <div class="logowall" role="group" aria-label="Health systems I&#8217;ve worked with">
         <div class="lw-grid">
-          <span class="lw-cell"><img src="healthcare-logos/highmark.svg" alt="Highmark" loading="lazy"></span>
-          <span class="lw-cell"><img src="healthcare-logos/multicare-health-system.svg" alt="MultiCare Health System" loading="lazy"></span>
-          <span class="lw-cell"><img src="healthcare-logos/kaiser-permanente.svg" alt="Kaiser Permanente" loading="lazy"></span>
-          <span class="lw-cell"><img src="healthcare-logos/texas-health-resources.svg" alt="Texas Health Resources" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-up" src="healthcare-logos/highmark.svg" alt="Highmark" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-down" src="healthcare-logos/multicare-health-system.svg" alt="MultiCare Health System" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-up" src="healthcare-logos/kaiser-permanente.svg" alt="Kaiser Permanente" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-down" src="healthcare-logos/texas-health-resources.svg" alt="Texas Health Resources" loading="lazy"></span>
           <span class="lw-cell"><img src="healthcare-logos/centura-health.png" alt="Centura Health" loading="lazy"></span>
-          <span class="lw-cell"><img src="healthcare-logos/allegheny-health-network.svg" alt="Allegheny Health Network" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-up" src="healthcare-logos/allegheny-health-network.svg" alt="Allegheny Health Network" loading="lazy"></span>
           <span class="lw-cell"><img src="healthcare-logos/northwestern-medicine.svg" alt="Northwestern Medicine" loading="lazy"></span>
-          <span class="lw-cell"><img class="ar-trinity" src="healthcare-logos/trinity-health.svg" alt="Trinity Health" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-up ar-trinity" src="healthcare-logos/trinity-health.svg" alt="Trinity Health" loading="lazy"></span>
           <span class="lw-cell"><img src="healthcare-logos/ardent-health.png" alt="Ardent Health" loading="lazy"></span>
           <span class="lw-cell"><img src="healthcare-logos/cedars-sinai.png" alt="Cedars-Sinai" loading="lazy"></span>
-          <span class="lw-cell"><img src="healthcare-logos/advocate-health-care.svg" alt="Advocate Health Care" loading="lazy"></span>
-          <span class="lw-cell"><img src="healthcare-logos/uhealth-university-of-miami.svg" alt="UHealth: University of Miami Health System" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-up" src="healthcare-logos/advocate-health-care.svg" alt="Advocate Health Care" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-up" src="healthcare-logos/uhealth-university-of-miami.svg" alt="UHealth: University of Miami Health System" loading="lazy"></span>
           <span class="lw-cell lw-last"><img class="ar-montage" src="healthcare-logos/montage-health.svg" alt="Montage Health" loading="lazy"></span>
         </div>
         <p class="lw-sublab">Globally</p>
         <div class="lw-grid intl">
-          <span class="lw-cell"><img src="healthcare-logos/nhs.svg" alt="NHS" loading="lazy"></span>
-          <span class="lw-cell"><img class="ar-dubai" src="healthcare-logos/dubai-health-authority.svg" alt="Dubai Health Authority" loading="lazy"></span>
-          <span class="lw-cell"><img src="healthcare-logos/cheo.svg" alt="CHEO: Children&#8217;s Hospital of Eastern Ontario" loading="lazy"></span>
-          <span class="lw-cell"><img class="ar-etz" src="healthcare-logos/etz.svg" alt="ETZ: Elisabeth-TweeSteden Ziekenhuis (Tilburg, Netherlands)" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-down" src="healthcare-logos/nhs.svg" alt="NHS" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-up ar-dubai" src="healthcare-logos/dubai-health-authority.svg" alt="Dubai Health Authority" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-down" src="healthcare-logos/cheo.svg" alt="CHEO: Children&#8217;s Hospital of Eastern Ontario" loading="lazy"></span>
+          <span class="lw-cell"><img class="o-down ar-etz" src="healthcare-logos/etz.svg" alt="ETZ: Elisabeth-TweeSteden Ziekenhuis (Tilburg, Netherlands)" loading="lazy"></span>
         </div>
       </div>
       <button class="nextpanel" type="button" data-next>The venture &#8594;</button>
