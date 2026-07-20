@@ -117,50 +117,76 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bwm{display:inline-block;align-self:flex-start;text-decoration:none;color:var(--ink);
   transition:color .25s}
 .bwm:hover{color:var(--lc)}
-/* the real marks now carry the two cards, each sized to read clearly on cream:
-   the Fanish path wordmark and the Lazarvision LV monogram (its name stays as a
-   label beside it, since the LV letters alone read ambiguously). */
-.bwm-fanrow,.bwm-lvrow{display:inline-flex;align-items:flex-start;gap:.14em}
-.bwm-lvrow{align-items:center;gap:12px}
-.bwm-mark{display:block;height:auto}
-.bwm-fan{width:138px}
-.bwm-lv{height:66px;width:auto;flex:none;align-self:center}
-.bwm-lvlabel{font-family:var(--grot);font-weight:500;
-  font-size:clamp(24px,2.9vw,34px);letter-spacing:.005em;line-height:1}
+/* the real marks carry the two cards. Each brand's own lockup, at its own size,
+   optically matched so neither card outranks the other: the Fanish wordmark and
+   the Lazarvision horizontal lockup (wordmark + laser eye) straight from the
+   brand deliverables. The lockup already contains the name, so no typed label
+   sits beside it. Both are given a fixed row height so the cards line up. */
+.bwm-fanrow,.bwm-lvrow{display:inline-flex;align-items:flex-start;gap:.35em;
+  min-height:clamp(52px,6.8vh,78px)}
+.bwm-fanrow{align-items:center}
+.bwm-lvrow{align-items:center}
+.bwm-mark{display:block;height:auto;width:auto}
+/* sized by WIDTH, since the two lockups have different proportions: matched so
+   the FANISH and LAZARVISION wordmarks read at the same weight side by side. */
+.bwm-fan{width:clamp(166px,17vw,216px)}
+.bwm-lv{width:clamp(168px,17.5vw,220px)}
 .bwm .ar{color:var(--lc);font-family:var(--mono);font-size:13px;display:inline-block;
   vertical-align:top;margin-left:.14em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
 .bwm:hover .ar{transform:translate(3px,-3px)}
 .bdesc{margin:9px 0 0;font-size:clamp(14px,1.35vw,17px);color:var(--soft);line-height:1.5}
 .blinks{display:flex;flex-direction:column;align-items:flex-start;gap:12px;
   margin-top:auto;padding-top:clamp(14px,2.2vh,20px)}
-/* the store badge: a compact dark pill in the App Store convention, on-brand */
-.badge{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
-  background:#191814;color:#F4F2EA;border-radius:0;padding:8px 14px;
-  border:1px solid rgba(255,255,255,.06);transition:background .25s,transform .2s}
-.badge:hover{background:#2a2621;transform:translateY(-1px)}
-.badge .glyph{font-size:19px;line-height:1;flex:none}
-.badge .lbl{display:flex;flex-direction:column;line-height:1.12;text-align:left}
-.badge .lbl .s{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;
-  text-transform:uppercase;opacity:.72}
-.badge .lbl .b{font-family:var(--grot);font-weight:600;font-size:15px;letter-spacing:-.01em}
+/* the store buttons: the OFFICIAL assets, the ones people recognise. Apple's
+   "Download on the App Store" badge is used whole and unaltered, as its terms
+   require. YouTube has no equivalent badge, so its official white logo sits on a
+   black button built to Apple's proportions, which keeps the two cards co-equal.
+   Both share one height so neither brand looks like the bigger one. */
+.badge{--badge-h:clamp(38px,4.8vh,46px);
+  display:inline-flex;align-items:center;height:var(--badge-h);
+  text-decoration:none;transition:transform .2s,filter .25s}
+.badge:hover{transform:translateY(-1px)}
+.badge img{display:block;height:100%;width:auto}
+.badge-yt{background:#000;border-radius:calc(var(--badge-h) * .213);
+  padding:0 calc(var(--badge-h) * .30)}
+.badge-yt img{height:calc(var(--badge-h) * .46)}
+.badge-yt:hover{filter:brightness(1.18)}
+.badge-app:hover{filter:brightness(1.12)}
 .badge:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .glink{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--soft);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;
   transition:color .25s,border-color .25s}
 .glink:hover{color:var(--lc);border-color:currentColor}
 
-/* reviews: App Store social proof, native cues but on-brand */
-.revsum{display:flex;align-items:center;gap:clamp(14px,2.4vw,26px);flex-wrap:wrap;
+/* reviews: laid out the way the App Store lays them out, so the social proof
+   reads as the thing people already know. The summary puts the score on the left
+   and the rating breakdown on the right; the reviews below are separated by
+   hairlines, not boxed. Apple's own type stack, our colours. */
+.revwrap{max-width:680px}
+.revhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  margin:0 0 clamp(10px,1.8vh,15px)}
+/* the App Store's own section header size, not the panel's display h2 */
+.panel h2.revtitle{margin:0;font-family:var(--grot);font-weight:700;
+  font-size:clamp(17px,1.7vw,21px);letter-spacing:-.015em;line-height:1.2;color:var(--ink)}
+.revsum{display:flex;align-items:center;gap:clamp(18px,3.4vw,40px);
   margin:0 0 clamp(13px,2.2vh,18px);padding-bottom:clamp(12px,2vh,16px);
-  border-bottom:1px solid var(--hair);max-width:680px}
-.rsscore{display:flex;align-items:center;gap:13px}
-.rsnum{font-family:var(--grot);font-weight:700;font-size:clamp(32px,4.2vw,50px);
-  letter-spacing:-.03em;line-height:1;color:var(--ink)}
-.rscol{display:flex;flex-direction:column;gap:5px}
-.rsstars{color:var(--lc);letter-spacing:.2em;font-size:15px}
-.rstag{align-self:flex-start;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--soft);border:1px solid var(--hair);
-  border-radius:0;padding:3px 9px}
+  border-bottom:1px solid var(--hair)}
+.rsscore{display:flex;flex-direction:column;flex:none}
+.rsnum{font-family:var(--grot);font-weight:700;font-size:clamp(40px,5.4vw,64px);
+  letter-spacing:-.04em;line-height:.92;color:var(--ink)}
+.rsoutof{margin-top:4px;font-family:var(--grot);font-size:12px;color:var(--soft);
+  letter-spacing:.01em}
+/* the rating breakdown: five rows of rail, the filled part showing the share of
+   ratings at that star count */
+.rsbars{flex:1;min-width:0;display:flex;flex-direction:column;gap:clamp(3px,.5vh,5px);
+  align-items:flex-end}
+.rsrow{display:flex;align-items:center;gap:8px;width:100%;max-width:280px}
+.rsrow .st{flex:none;color:var(--dim);letter-spacing:.02em;font-size:9px;line-height:1;
+  width:52px;text-align:right;white-space:nowrap}
+.rsrow .rail{flex:1;height:5px;background:var(--hair);border-radius:3px;overflow:hidden}
+.rsrow .fill{display:block;height:100%;background:var(--lc);border-radius:3px}
+.rstag{align-self:flex-end;margin-top:7px;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
 .rscount{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--soft)}
 /* the reviews list scrolls its own content when there are more of them than the
    panel can hold, so it never traps the walk: up/down reads the reviews, a
@@ -168,20 +194,20 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
    up/down turns the page as usual. */
 .reviews{max-width:680px;margin:0;padding:0 4px 0 0;list-style:none;
   display:grid;gap:clamp(8px,1.3vh,11px);
-  max-height:min(52vh,440px);overflow-y:auto;overscroll-behavior:contain;
+  max-height:min(44vh,392px);overflow-y:auto;overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;scrollbar-width:thin}
 /* when there is more to read than the box shows, soften the bottom edge so it
    reads as "keep going". The cue clears once you reach the end. */
 .scrolls.has-scroll{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 34px),transparent);
   mask-image:linear-gradient(to bottom,#000 calc(100% - 34px),transparent)}
 .scrolls.has-scroll.at-end{-webkit-mask-image:none;mask-image:none}
-.rev{padding:clamp(10px,1.7vh,14px) clamp(13px,1.5vw,16px);
-  border:1px solid var(--hair);border-radius:0;background:rgba(255,255,255,.4)}
-.rev .by{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 6px;
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--soft)}
-.rev .by .who{color:var(--ink);font-weight:600}
-.rev .by .stars{color:var(--lc);letter-spacing:.14em}
-.rev .q{margin:0;font-size:clamp(14px,1.4vw,16.5px);line-height:1.45;color:var(--ink);text-wrap:pretty}
+.rev{padding:clamp(10px,1.7vh,14px) 0;border-top:1px solid var(--hair)}
+.rev:first-child{border-top:0;padding-top:2px}
+.rev .by{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 5px}
+.rev .by .stars{color:var(--lc);letter-spacing:.06em;font-size:12px;line-height:1}
+.rev .by .who{font-family:var(--grot);font-size:12px;font-weight:600;color:var(--soft)}
+.rev .by .dot{color:var(--dim);font-size:11px;line-height:1}
+.rev .q{margin:0;font-size:clamp(14px,1.4vw,16px);line-height:1.44;color:var(--ink);text-wrap:pretty}
 .revfoot{display:flex;align-items:center;gap:clamp(18px,3vw,30px);flex-wrap:wrap;
   margin-top:clamp(15px,2.5vh,22px)}
 .revfoot .link{margin-top:0}
@@ -297,9 +323,8 @@ document.documentElement.classList.add('js');
           </a>
           <p class="bdesc">Sports culture for people who don&#8217;t love sports.</p>
           <div class="blinks">
-            <a class="badge" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
-              <span class="glyph" aria-hidden="true">&#63743;</span>
-              <span class="lbl"><span class="s">Download on the</span><span class="b">App Store</span></span>
+            <a class="badge badge-app" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
+              <img src="brand-marks/appstore-badge.svg" alt="Download on the App Store" width="120" height="40">
             </a>
             <a class="glink" href="fanish-brand.html">Brand guidelines (PDF) &#8599;</a>
           </div>
@@ -307,16 +332,14 @@ document.documentElement.classList.add('js');
         <div class="bcard">
           <a class="bwm" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Lazarvision on YouTube">
             <span class="bwm-lvrow">
-              <img class="bwm-lv" src="brand-marks/lazarvision-eye-purple.png" alt="Lazarvision" width="2084" height="2084">
-              <span class="bwm-lvlabel">Lazarvision</span>
+              <img class="bwm-mark bwm-lv" src="brand-marks/lazarvision-horizontal.svg" alt="Lazarvision" width="934" height="330">
               <span class="ar" aria-hidden="true">&#8599;</span>
             </span>
           </a>
           <p class="bdesc">Cultural commentary.</p>
           <div class="blinks">
-            <a class="badge" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Watch Lazarvision on YouTube">
-              <span class="glyph" aria-hidden="true">&#9654;</span>
-              <span class="lbl"><span class="s">Watch on</span><span class="b">YouTube</span></span>
+            <a class="badge badge-yt" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Watch Lazarvision on YouTube">
+              <img src="brand-marks/youtube-logo-white.svg" alt="YouTube" width="492" height="110">
             </a>
             <a class="glink" href="lazarvision-brand.html">Brand guidelines (PDF) &#8599;</a>
           </div>
@@ -328,44 +351,53 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="reviews" aria-label="Reviews">
     <div class="pin">
       <p class="plab">03 &#183; Reviews</p>
+      <div class="revwrap">
+      <div class="revhead">
+        <h2 class="revtitle">Ratings and reviews</h2>
+        <span class="rscount">Fanish Sports</span>
+      </div>
       <div class="revsum">
         <div class="rsscore">
           <span class="rsnum">5.0</span>
-          <span class="rscol">
-            <span class="rsstars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-            <span class="rstag">App Store</span>
-          </span>
+          <span class="rsoutof">out of 5</span>
         </div>
-        <span class="rscount">Fanish Sports &#183; all five stars</span>
+        <div class="rsbars" aria-label="Every rating is five stars">
+          <div class="rsrow"><span class="st" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="rail"><i class="fill" style="width:100%"></i></span></div>
+          <div class="rsrow"><span class="st" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;</span><span class="rail"><i class="fill" style="width:0"></i></span></div>
+          <div class="rsrow"><span class="st" aria-hidden="true">&#9733;&#9733;&#9733;</span><span class="rail"><i class="fill" style="width:0"></i></span></div>
+          <div class="rsrow"><span class="st" aria-hidden="true">&#9733;&#9733;</span><span class="rail"><i class="fill" style="width:0"></i></span></div>
+          <div class="rsrow"><span class="st" aria-hidden="true">&#9733;</span><span class="rail"><i class="fill" style="width:0"></i></span></div>
+          <span class="rstag">All five stars</span>
+        </div>
       </div>
       <ul class="reviews scrolls">
         <li class="rev">
-          <p class="by"><span class="who">MicWilly</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+          <p class="by"><span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <span class="dot" aria-hidden="true">&#183;</span> <span class="who">MicWilly</span></p>
           <p class="q">&#8220;OBSESSED. Gives me only the important info of what&#8217;s going on so I can stay in the loop!&#8221;</p>
         </li>
         <li class="rev">
-          <p class="by"><span class="who">wwojoo</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+          <p class="by"><span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <span class="dot" aria-hidden="true">&#183;</span> <span class="who">wwojoo</span></p>
           <p class="q">&#8220;I basically look like a lifelong soccer fan to my friends. Easy to navigate and something I&#8217;ll return to frequently.&#8221;</p>
         </li>
         <li class="rev">
-          <p class="by"><span class="who">sanchiii</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+          <p class="by"><span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <span class="dot" aria-hidden="true">&#183;</span> <span class="who">sanchiii</span></p>
           <p class="q">&#8220;Actually taught me more about the game and provided interesting tidbits to share with friends!&#8221;</p>
         </li>
         <li class="rev">
-          <p class="by"><span class="who">Buff of sports</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+          <p class="by"><span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <span class="dot" aria-hidden="true">&#183;</span> <span class="who">Buff of sports</span></p>
           <p class="q">&#8220;The in-match events keep me up to speed on what&#8217;s happening, just the moments that matter, in plain language.&#8221;</p>
         </li>
         <li class="rev">
-          <p class="by"><span class="who">Tylerhopf</span> <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></p>
+          <p class="by"><span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <span class="dot" aria-hidden="true">&#183;</span> <span class="who">Tylerhopf</span></p>
           <p class="q">&#8220;I love the innovative Fanish toggle, makes it super easy to navigate and fun to use.&#8221;</p>
         </li>
       </ul>
       <div class="revfoot">
-        <a class="badge" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
-          <span class="glyph" aria-hidden="true">&#63743;</span>
-          <span class="lbl"><span class="s">Download on the</span><span class="b">App Store</span></span>
+        <a class="badge badge-app" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
+          <img src="brand-marks/appstore-badge.svg" alt="Download on the App Store" width="120" height="40">
         </a>
         <a class="link" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">Read them on the App Store &#8599;</a>
+      </div>
       </div>
     </div>
   </section>
