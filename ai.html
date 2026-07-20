@@ -116,10 +116,6 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .panel h1,.panel h2{margin:0 0 clamp(16px,3vh,26px);font-weight:700;letter-spacing:-.01em;line-height:1.08}
 .panel h1{font-size:clamp(30px,5.2vw,64px)}
 .panel h2{font-size:clamp(24px,3.6vw,44px)}
-/* a small up-arrow accent on the meter heading: a cue that this is the high-level
-   view. Decorative only, not a link. Sized to the heading, in the amber. */
-.uptick{color:var(--lc);font-size:.44em;font-weight:700;line-height:0;
-  vertical-align:.42em;margin-left:.04em}
 .panel p{margin:0;font-size:clamp(14px,1.3vw,16.5px);line-height:1.75;max-width:58ch;text-wrap:pretty;color:#F4F2EA}
 /* the walk drags on press-and-move; unselectable body text keeps a text
    highlight from hijacking that drag. Real text, just not selectable. */
@@ -141,11 +137,9 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 
 /* the live meter: this lane's centerpiece, refreshed daily by update_meter.py */
 .ops{display:block;min-width:0;max-width:640px;margin-top:clamp(6px,1.5vh,14px)}
-/* the title says plainly what the chart is, with a dollars unit chip */
+/* the title says plainly what the chart is, and names the unit in words */
 .metertitle{display:flex;align-items:baseline;gap:9px;margin:0 0 11px;
   font-size:13px;font-weight:700;letter-spacing:.01em;color:var(--ink)}
-.metertitle .u{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--bg);background:var(--lc);padding:2px 6px}
 .chart{display:block;width:100%;height:auto}
 .chart .g{stroke:rgba(255,176,0,.10);stroke-width:1}
 .chart .base{stroke:var(--hair);stroke-width:1}
@@ -249,12 +243,12 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="the meter" aria-label="The meter">
     <div class="pin">
       <p class="plab">02 &#183; the work</p>
-      <h2>The meter. <span class="uptick" aria-hidden="true">&#8593;</span></h2>
+      <h2>The meter.</h2>
       <p>Every call meters its own cost the moment it returns. This public chart is a
         snapshot of that meter, refreshed once a day.</p>
       <div class="ops">
         <!--METER-->
-          <span class="metertitle">Metered AI spend, by day <span class="u">USD</span></span>
+          <span class="metertitle">Metered AI spend by day, in US dollars</span>
           <svg class="chart" viewBox="0 0 640 150" role="img"
                aria-label="Daily bars of metered AI spend in US dollars since July 1; peak $52">
             <line class="g" x1="0" y1="96" x2="598" y2="96"/>

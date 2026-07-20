@@ -182,7 +182,7 @@ def build_chart(days, vals):
         y = y_of(gd, axis_max)
         svg.append(f'            <line class="g" x1="0" y1="{y:.0f}" x2="{PLOT_W:.0f}" y2="{y:.0f}"/>')
     svg.append(f'            <line class="base" x1="0" y1="{BASE_Y:.0f}" x2="{PLOT_W:.0f}" y2="{BASE_Y:.0f}"/>')
-    for gd in grids:                                # bare axis figures in the right gutter; the title chip ("USD") names the unit
+    for gd in grids:                                # bare axis figures in the right gutter; the title names the unit
         y = y_of(gd, axis_max) - 4
         svg.append(f'            <text x="640" y="{y:.0f}" text-anchor="end">{gd}</text>')
     svg.append(f'            <text x="0" y="146">{days[0].strftime("%b %d").upper()}</text>')
@@ -216,9 +216,14 @@ def build_chart(days, vals):
 
 
 def build_title():
-    """Plain title above the chart, with a dollars unit chip."""
-    return ('          <span class="metertitle">Metered AI spend, by day'
-            ' <span class="u">USD</span></span>')
+    """Plain title above the chart, naming the unit in words.
+
+    This used to end in a small filled amber chip reading "USD". A filled warning
+    colour on a chip is the visual language of an error badge, and that is exactly
+    how it read: as though the pipeline had thrown something. The unit belongs in
+    the sentence.
+    """
+    return '          <span class="metertitle">Metered AI spend by day, in US dollars</span>' 
 
 
 def build_stat(days, vals, rows, today):

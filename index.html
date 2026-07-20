@@ -168,12 +168,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   --hdr:clamp(150px,19vw,360px);
   --rail:clamp(84px,12vw,150px);
   --overlap:clamp(18px,2.4vw,34px);
-  --pw:clamp(184px,17.6vw,272px);
+  --pw:clamp(168px,16vw,248px);
   /* the portrait STARTS HIGH but must NOT cover the header name: its top only
      LIGHTLY kisses the bottom edge of the header band, so the giant "lalone"
-     wordmark stays fully readable. --ptop is a small negative offset (measured
-     up from the herostage top, i.e. the header's bottom edge). */
-  --ptop:calc(var(--hdr) * -0.05);
+     wordmark stays fully readable. --ptop drops the frame BELOW the header band
+     so a clean line of cream shows above it. */
+  --ptop:clamp(18px,2.2vw,40px);
   --railH:clamp(340px,52vh,540px);
   --slide:clamp(24px,4vh,52px)}
 
@@ -211,9 +211,14 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    grows with the same progress that unfolds the figure, never overlaid on it */
 /* PERF: this used to animate `top`, which relays out the page every frame.
    translate moves it the same distance without touching layout. */
+/* the frame overlaps the black rail by --overlap on purpose; the caption must
+   NOT, or its last few letters end up dark-on-black and unreadable */
 .pcap{position:absolute;left:0;top:calc(100% + 14px);
-  translate:0 calc((1.2 * var(--pw) + var(--slide)) * var(--sp));
-  width:var(--pw);font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+  /* it labels the HEADSHOT, so it fades out as the figure forms rather than
+     travelling down with it. Travelling put it under the footer at the dock, and
+     by then the six-armed figure needs no caption anyway. */
+  translate:0;opacity:calc(1 - var(--sp) * 2.2);
+  width:calc(var(--pw) - var(--overlap));font-family:var(--mono);font-size:11px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--soft);line-height:1.7}
 
 /* PERF: these properties are driven directly by scroll position, so a transition
@@ -286,7 +291,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     object-fit:contain;transform:none;translate:0;scale:1}
   /* the caption sits under the frame in normal flow here; it must also cancel
      the desktop travel, or it drifts down onto the cookie */
-  .pcap{position:relative;left:auto;top:auto;translate:0;width:100%;max-width:230px;
+  .pcap{position:relative;left:auto;top:auto;translate:0;opacity:1;width:100%;max-width:230px;
     margin:14px auto 0;text-align:center;color:rgba(244,242,234,.72)}
 }
 
@@ -630,8 +635,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 
   var FORM_START = 0.05;   /* scroll progress where the figure begins forming    */
   var FORM_END   = 0.42;   /* fully the figure, its face still comfortably in view */
-  var MID_SCALE  = 0.56;   /* scale once formed, so the WHOLE figure fits the view */
-  var DOCK_SCALE = 0.60;   /* final scale: the figure fills the closing view, only  */
+  var MID_SCALE  = 0.68;   /* scale once formed, so the WHOLE figure fits the view */
+  var DOCK_SCALE = 0.72;   /* final scale: the figure fills the closing view, only  */
                            /* a small cream bar above it, feet just above the footer */
   var DOCK_FEET  = 30;     /* nudge: the figure's feet land just past the cookie   */
 
