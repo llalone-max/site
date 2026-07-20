@@ -36,7 +36,7 @@
   "image": "https://lazarlalone.com/og-image.jpg",
   "description": "Lazar LaLone builds products, brands, and pipelines with AI, an opinion, and an eye.",
   "jobTitle": "Product and go-to-market strategist",
-  "email": "lazarlalone@gmail.com",
+  "email": "lalonelazar@gmail.com",
   "knowsAbout": ["Healthcare product strategy", "Brand building", "AI operations", "Go-to-market strategy"],
   "sameAs": [
     "https://www.linkedin.com/in/lazar-lalone/",
@@ -247,9 +247,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (max-width:899px){
   .herostage{display:flex;flex-direction:column}
   .herocopy{order:1;padding:clamp(30px,7vh,56px) clamp(20px,6vw,40px) 0}
+  /* the black runs edge to edge on a phone. It breaks out of .wrap's side padding
+     by cancelling exactly that padding, rather than using 100vw, which would
+     overflow by the scrollbar width on a narrow desktop window. */
   .herorail{order:2;position:relative;
-    width:min(82vw,320px);margin:clamp(50px,9vh,110px) auto 0;
-    padding:clamp(20px,6vw,30px);background:var(--ink)}
+    width:auto;margin:clamp(50px,9vh,110px) calc(-1 * clamp(22px,6vw,76px)) 0;
+    padding:clamp(30px,8vw,44px) clamp(20px,6vw,30px);background:var(--ink)}
   .practicewrap{order:3;
     padding:clamp(22px,4vh,42px) clamp(20px,6vw,40px) clamp(18px,3vh,34px)}
   .rail{display:none}
@@ -510,7 +513,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     <div class="talkreveal" id="talkpanel">
       <div class="talklinks">
         <a href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
-        <a href="mailto:lazarlalone@gmail.com?subject=Saw%20your%20site">Email</a>
+        <a href="mailto:lalonelazar@gmail.com?subject=Saw%20your%20site">Email</a>
         <a class="textlink" id="textlink" href="sms:+14129445506">Text +1 412 944 5506</a>
       </div>
       <p class="talknote">LinkedIn and email work. A text reaches me quickest.</p>
@@ -806,7 +809,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     var trigger = document.getElementById('talktrigger');
     var panel = document.getElementById('talkpanel');
     if(!talk || !trigger || !panel){
-      window.location.href = 'mailto:lazarlalone@gmail.com?subject=Saw%20your%20site';
+      window.location.href = 'mailto:lalonelazar@gmail.com?subject=Saw%20your%20site';
       return;
     }
     if(!panel.classList.contains('open')) trigger.click();

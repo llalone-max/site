@@ -132,9 +132,13 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
    "Globally" group. A lone trailing mark is centered so the wall never ends on an
    orphan stuck to the left. */
 /* the wall needs room to breathe under the headline, or the logos read as part
-   of the sentence above them rather than as their own block */
-.walllab{margin:clamp(26px,4.4vh,44px) 0 clamp(15px,2.5vh,21px);font-family:var(--mono);
-  font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+   of the sentence above them rather than as their own block.
+   NOTE the `.panel p` selector: it is more specific than a bare class, so it was
+   silently winning the font-size and rendering these labels at body copy size.
+   Both wall labels name themselves through .panel p so they read as labels. */
+.panel p.walllab{margin:clamp(26px,4.4vh,44px) 0 clamp(15px,2.5vh,21px);
+  max-width:none;font-family:var(--mono);
+  font-size:10.5px;line-height:1.5;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
 .logowall{max-width:660px}
 .lw-grid{display:grid;grid-template-columns:repeat(4,1fr);align-items:center;
   justify-items:center;gap:clamp(20px,3.4vh,30px) clamp(24px,3.2vw,44px)}
@@ -168,13 +172,16 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
    break is a short rule rather than a full-width line. A rule across the whole
    block read as a hard division between two unrelated things; these systems have
    far more in common than not. */
-.lw-sublab{position:relative;margin:clamp(22px,3.8vh,36px) 0 clamp(12px,2vh,16px);
-  padding-top:clamp(15px,2.6vh,22px);
-  font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+.panel p.lw-sublab{position:relative;margin:clamp(22px,3.8vh,36px) 0 clamp(12px,2vh,16px);
+  max-width:none;padding-top:clamp(15px,2.6vh,22px);
+  font-family:var(--mono);font-size:10px;line-height:1.5;letter-spacing:.2em;
   text-transform:uppercase;color:var(--dim)}
 .lw-sublab::before{content:"";position:absolute;top:0;left:0;
   width:clamp(40px,7vw,64px);height:1px;background:var(--hair)}
 @media (max-width:600px){
+  /* the wall label carries the whole "these were clients, not employers" point,
+     so it should read as one line rather than wrapping into a block of caps */
+  .panel p.walllab{font-size:9.5px;letter-spacing:.1em}
   .logowall{max-width:100%}
   .lw-grid{grid-template-columns:repeat(3,1fr);gap:17px 16px}
   .lw-grid.intl{grid-template-columns:repeat(4,1fr)}
@@ -335,8 +342,8 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="the work" aria-label="The work">
     <div class="pin">
       <p class="plab">02 &#183; The work</p>
-      <h2>Where I&#8217;ve worked.</h2>
-      <p class="walllab">Systems I&#8217;ve worked with</p>
+      <h2>Who I&#8217;ve built for.</h2>
+      <p class="walllab">Health systems I served as a technology partner</p>
       <div class="logowall" role="group" aria-label="Health systems I&#8217;ve worked with">
         <div class="lw-grid">
           <span class="lw-cell"><img class="o-up" src="healthcare-logos/highmark.svg" alt="Highmark" loading="lazy"></span>
@@ -361,14 +368,14 @@ document.documentElement.classList.add('js');
           <span class="lw-cell"><img class="o-down ar-etz" src="healthcare-logos/etz.svg" alt="ETZ: Elisabeth-TweeSteden Ziekenhuis (Tilburg, Netherlands)" loading="lazy"></span>
         </div>
       </div>
-      <button class="nextpanel" type="button" data-next>The venture &#8594;</button>
+      <button class="nextpanel" type="button" data-next>Present venture &#8594;</button>
     </div>
   </section>
 
-  <section class="panel" data-name="the venture" aria-label="Fractional Aesthetics">
+  <section class="panel" data-name="present venture" aria-label="Fractional Aesthetics">
     <div class="pin">
-      <p class="plab">03 &#183; The venture</p>
-      <h2>Fractional Aesthetics.</h2>
+      <p class="plab">03 &#183; Present venture</p>
+      <h2>Fractional Aesthetics</h2>
       <div class="fasplit">
         <p>My newest venture in healthcare B2B is Fractional Aesthetics. My team audits aesthetic
           practices, gives owners a clear read on where they stand, and hands them a plan they can
@@ -384,8 +391,7 @@ document.documentElement.classList.add('js');
 
   <section class="panel" data-name="the record" aria-label="The record">
     <div class="pin">
-      <p class="plab">04 &#183; The record</p>
-      <h2>The full history.</h2>
+      <p class="plab">04 &#183; The full history</p>
       <a class="recviewer scrolls" href="record-healthcare.pdf" target="_blank" rel="noopener" aria-label="The full history. Tap to open the full-size PDF in a new tab; scroll to preview it here.">
         <img src="record-healthcare-p1.webp" width="1000" height="1294" alt="The full history" loading="lazy">
       </a>
@@ -403,7 +409,7 @@ document.documentElement.classList.add('js');
     <p class="talkkicker" id="talkkick">Talk to me</p>
     <ul class="talklist">
       <li><a href="https://www.linkedin.com/in/lazar-lalone/" target="_blank" rel="noopener">LinkedIn <span class="lab">Connect</span></a></li>
-      <li><a href="mailto:lazarlalone@gmail.com">lazarlalone@gmail.com <span class="lab">Email</span></a></li>
+      <li><a href="mailto:lalonelazar@gmail.com">lalonelazar@gmail.com <span class="lab">Email</span></a></li>
       <li><a href="sms:+14129445506">+1 412 944 5506 <span class="lab">Text</span></a></li>
     </ul>
   </div>
