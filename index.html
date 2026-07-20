@@ -343,20 +343,22 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    off the surface (curl shading darkens the top and bottom edges, a soft lift shadow
    below), two fold creases from being folded in thirds, and roomy padding so text
    stays off the edges. Narrow and short so every fortune lands in at most two lines. */
-/* the slip + its nudge sit BESIDE the cookie, emerging from its right, partly
-   overlapping the cracked shell. Absolutely positioned and vertically centered
-   on the cookie, so revealing the fortune reflows nothing. pointer-events:none
-   lets clicks fall through to the cookie in the overlap; the "Say hello" button
-   re-enables its own clicks. Width is capped to the viewport so it never spills
-   off a narrow phone. */
-.slipwrap{position:absolute;top:50%;left:100%;transform:translateY(-50%);
-  margin-left:clamp(6px,1.4vw,16px);
+/* the slip comes out from INSIDE the cookie. Its left end starts in the gap
+   between the two cracked halves and is covered by the right shell, so it reads
+   as being pulled out of the opening rather than floating off the side; the rest
+   runs up and to the right where it can be read. It sits before the cookie in
+   the DOM, so the shells paint over its tucked-in end. (The cookie must NOT get a
+   z-index: that would make a stacking context and kill the multiply blend that
+   drops the artwork's white background.) Still absolutely positioned inside the
+   stage, so cracking the cookie adds no page height, and still capped in width so
+   it cannot spill off a narrow phone. */
+.slipwrap{position:absolute;top:33%;left:40%;
   display:flex;flex-direction:column;align-items:flex-start;
-  gap:clamp(10px,1.8vw,14px);width:max-content;max-width:min(52vw,260px);
-  pointer-events:none;z-index:2}
+  gap:clamp(10px,1.8vw,14px);width:max-content;max-width:min(58vw,280px);
+  pointer-events:none}
 .slip{position:relative;font-family:"Courier New",Courier,"American Typewriter","Courier 10 Pitch",monospace;
-  font-size:12.5px;letter-spacing:.01em;line-height:1.5;font-weight:700;
-  color:#B4241C;text-align:center;
+  font-size:11px;letter-spacing:.005em;line-height:1.45;font-weight:700;
+  color:#B4241C;text-align:left;
   background:
     /* faint gritty paper grain */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E") 0 0/90px 90px,
@@ -367,7 +369,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     linear-gradient(90deg,rgba(25,24,20,.17) 0%,rgba(25,24,20,0) 15%,rgba(255,255,255,.26) 50%,rgba(25,24,20,0) 85%,rgba(25,24,20,.17) 100%),
     /* warm paper stock */
     #FAF6EA;
-  width:min(40vw,220px);padding:16px 22px;transform:rotate(-1deg);border-radius:1px;
+  /* a long strip: its left end runs back INTO the gap and behind the right shell,
+     so the printed part starts only once it is clear of the cookie. That deep left
+     padding is what makes it read as pulled out from inside rather than laid beside. */
+  width:min(calc(100vw - 130px),306px);padding:9px 15px 9px clamp(100px,23vw,124px);
+  transform:rotate(-8deg);transform-origin:0 50%;border-radius:1px;
   /* a real slip: long and thin, straight cut edges, bowed. The realism is the
      length-wise bow shading above and the soft lift shadow below, not a wavy edge. */
   box-shadow:0 2px 3px rgba(25,24,20,.10), 0 11px 17px rgba(25,24,20,.15);
@@ -508,13 +514,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   <section class="cookiemod" id="cookiemod" aria-label="Fortune cookie">
     <p class="cookienote">This site uses no cookies. <span class="rainbow">Have one anyway.</span></p>
     <div class="cookiestage">
+      <div class="slipwrap">
+        <p class="slip" id="slip" aria-live="polite"></p>
+      </div>
       <button class="cookie" id="cookie" type="button" aria-expanded="false" aria-label="A fortune cookie. Crack it open.">
         <img class="ck0" src="cookie-closed.webp" width="560" height="413" alt="">
         <img class="ck1" src="cookie-cracked.webp" width="560" height="413" alt="" loading="lazy">
       </button>
-      <div class="slipwrap">
-        <p class="slip" id="slip" aria-live="polite"></p>
-      </div>
     </div>
   </section>
 
