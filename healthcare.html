@@ -131,7 +131,9 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
    the only defunct org here. The four international marks sit in their own
    "Globally" group. A lone trailing mark is centered so the wall never ends on an
    orphan stuck to the left. */
-.walllab{margin:clamp(14px,2.6vh,22px) 0 clamp(10px,1.8vh,14px);font-family:var(--mono);
+/* the wall needs room to breathe under the headline, or the logos read as part
+   of the sentence above them rather than as their own block */
+.walllab{margin:clamp(26px,4.4vh,44px) 0 clamp(15px,2.5vh,21px);font-family:var(--mono);
   font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
 .logowall{max-width:660px}
 .lw-grid{display:grid;grid-template-columns:repeat(4,1fr);align-items:center;
@@ -143,11 +145,13 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .lw-cell{display:flex;align-items:center;justify-content:center;width:100%;
   height:clamp(26px,3.6vh,34px)}
 .lw-cell img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;
-  /* seventeen logos in seventeen brand palettes read as noise on a calm page, and
-     the loudest mark wins attention rather than the most relevant one. Held to one
-     ink, the wall reads as a list of systems; hovering one brings its colour back,
-     so the detail is still there for anyone who looks. */
-  filter:grayscale(1) brightness(.74);opacity:.9;transition:filter .3s ease,opacity .3s ease}
+  /* the marks keep their own colour, held back so seventeen palettes read as one
+     wall rather than seventeen brands competing. Hovering one returns it to full
+     strength. Straight greyscale was calmer still, but the noise was never only
+     the colour: it was the ragged optical weight and the tight spacing, and both
+     of those are fixed above. */
+  filter:saturate(.45) brightness(.92);opacity:.95;
+  transition:filter .3s ease,opacity .3s ease}
 .lw-cell:hover img{filter:none;opacity:1}
 @media (prefers-reduced-motion:reduce){.lw-cell img{transition:none}}
 /* optical sizing: a two-line stacked mark reads smaller than a single-line
@@ -160,12 +164,16 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .lw-cell img.ar-montage{aspect-ratio:577.18/150.29}
 .lw-cell img.ar-dubai{aspect-ratio:166.4/60}
 .lw-cell img.ar-etz{aspect-ratio:161.19/87.24}
-/* the international group reads as its own block: a clear gap and a hairline
-   break separate it from the domestic wall above */
-.lw-sublab{margin:clamp(26px,4.6vh,46px) 0 clamp(12px,2vh,16px);
-  padding-top:clamp(16px,3vh,26px);border-top:1px solid var(--hair);
+/* "Globally" is a subheading WITHIN the wall, not a different subject, so the
+   break is a short rule rather than a full-width line. A rule across the whole
+   block read as a hard division between two unrelated things; these systems have
+   far more in common than not. */
+.lw-sublab{position:relative;margin:clamp(22px,3.8vh,36px) 0 clamp(12px,2vh,16px);
+  padding-top:clamp(15px,2.6vh,22px);
   font-family:var(--mono);font-size:10px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--dim)}
+.lw-sublab::before{content:"";position:absolute;top:0;left:0;
+  width:clamp(40px,7vw,64px);height:1px;background:var(--hair)}
 @media (max-width:600px){
   .logowall{max-width:100%}
   .lw-grid{grid-template-columns:repeat(3,1fr);gap:17px 16px}
@@ -279,8 +287,13 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .panel{padding-top:calc(40px + clamp(14px,3vh,26px))}
   /* the venture panel stacks: words first, then the phone, kept small enough
      that the whole panel still fits the screen */
-  .fasplit{grid-template-columns:1fr;gap:clamp(12px,2vh,18px);justify-items:start}
-  .fadoor{width:clamp(138px,37vw,158px)}
+  .fasplit{grid-template-columns:1fr;gap:clamp(12px,2vh,18px);justify-items:center}
+  .fasplit p{justify-self:start}
+  /* centred, and cropped to the top of the hero: the headline, the line under it
+     and the call to action. The bottom of the phone screen is just pedestal, and
+     carrying it made the panel read long on a phone. */
+  .fadoor{width:clamp(146px,40vw,168px)}
+  .fadoor-thumb img{aspect-ratio:390/620}
 }
 </style>
 <script>
