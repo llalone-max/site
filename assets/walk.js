@@ -151,19 +151,17 @@
     b.classList.toggle('at-end', b.scrollTop >= b.scrollHeight - b.clientHeight - 2);
   }, {passive:true}); });
 
-  /* wheel/trackpad: one deliberate gesture advances at most one panel.
-     This used to lock after a step and only unlock once the wheel went quiet for
-     200ms. A trackpad keeps emitting for a second or more after you let go, and
-     every event pushed that deadline further out, so anyone who kept swiping
-     could never satisfy the unlock and the walk simply stopped responding.
-     Nudging the mouse appeared to help only because it interrupted the momentum
-     stream.
-     Instead: a momentum TAIL is recognised by its shape. Deltas decay as a flick
-     dies, so anything well below the strongest delta of the current gesture is
-     treated as tail and ignored, while a genuine new push spikes back up and is
-     taken immediately. go() still enforces one panel per gesture, so nothing can
-     chain even if this is generous. */
-  var wheelAcc = 0, wheelIdle = null, boxUntil = 0, gestureMax = 0;
+  /* wheel/trackpad: one deliberate gesture advances exactly one panel.
+     The hard part is telling a NEW push from the momentum tail of the last one,
+     because a trackpad keeps firing for well over a second after you let go.
+     Waiting for silence fails both ways: the walk locks up if you keep swiping
+     (every event pushes the deadline out), and a long tail sails past any
+     timeout and steals a second and third panel.
+     So: once a gesture has moved a panel it is SPENT, and it stays spent until
+     either the wheel genuinely goes quiet, or the magnitude climbs back well
+     above the floor it has been decaying towards. Momentum only ever decays, so
+     a climb means your fingers are back on the glass. */
+  var wheelAcc = 0, wheelIdle = null, boxUntil = 0, spent = false, minSince = Infinity;
   viewport.addEventListener('wheel', function(e){
     if(e.ctrlKey || e.metaKey) return;
     if(sheet && !sheet.hidden) return;
@@ -184,17 +182,28 @@
     }
     e.preventDefault();
     clearTimeout(wheelIdle);
-    /* a real pause ends the gesture: forget both the running total and how hard
-       the last one was pushed, so the next swipe is judged on its own */
-    wheelIdle = setTimeout(function(){ wheelAcc = 0; gestureMax = 0; }, 180);
+    /* a real pause ends the gesture outright */
+    wheelIdle = setTimeout(function(){
+      wheelAcc = 0; spent = false; minSince = Infinity;
+    }, 180);
+
     var mag = Math.abs(delta);
-    if(mag > gestureMax) gestureMax = mag;
-    if(gestureMax && mag < gestureMax * 0.45) return;   /* momentum dying away */
+    if(spent){
+      if(mag < minSince) minSince = mag;
+      /* momentum only decays. A magnitude climbing back above the floor it has
+         been sinking towards is a fresh push, so start listening again. */
+      if(mag > 8 && mag > Math.max(minSince * 2.5, 12)){
+        spent = false; wheelAcc = 0; minSince = Infinity;
+      } else {
+        return;                       /* still the last flick dying out */
+      }
+    }
     wheelAcc += delta;
     if(Math.abs(wheelAcc) > 40){
       (wheelAcc > 0 ? next() : prev());
       wheelAcc = 0;
-      gestureMax = 0;
+      spent = true;
+      minSince = mag;
     }
   }, {passive:false});
 
