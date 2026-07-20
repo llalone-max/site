@@ -401,6 +401,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (prefers-reduced-motion:no-preference){
   .slip{transition:opacity .35s ease .15s,translate .35s cubic-bezier(.2,.7,.3,1) .15s}
 }
+/* restoring an already-cracked cookie on load: no transition, or it would replay
+   the crack as if the reader had just done it again */
+.cookiemod.nocrackanim .slip,
+.cookiemod.nocrackanim .cookie img{transition:none}
 /* on a phone there is not enough width for both a deep tuck and two readable
    lines, so the slip rises further out of the gap and tucks only its corner. */
 @media (max-width:600px){
@@ -771,10 +775,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   if(!mod || !btn || !slip) return;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* the cookie loads CLOSED every visit so the reader gets to crack it open.
-     The fortune persists per session so it does not swap mid-view, but the
-     cracked state is NOT persisted: a fresh page load always starts closed.
-     Once cracked in a view it stays cracked (nothing here re-closes it). */
+  /* the cookie starts CLOSED on a fresh visit so the reader gets to crack it,
+     then STAYS cracked for the rest of that visit. Leaving for a lane and coming
+     back, by the wordmark or by swiping back, must not re-seal it: you already
+     opened it, and re-sealing reads as the site forgetting what you did. Both
+     the fortune and the cracked state live in sessionStorage, so a new visit
+     starts fresh. */
   function store(read, key, val){
     try{ return read ? sessionStorage.getItem(key) : sessionStorage.setItem(key, val); }
     catch(e){ return null; }
@@ -792,9 +798,21 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     btn.setAttribute('aria-expanded','true');
     btn.setAttribute('aria-label','The cookie is open. Your fortune is beside it.');
   }
+
+  /* coming back to an already-cracked cookie: show it open with no animation, so
+     it reads as still open rather than cracking itself a second time */
+  if(store(true, 'llCracked') === '1'){
+    mod.classList.add('nocrackanim');
+    crack();
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ mod.classList.remove('nocrackanim'); });
+    });
+  }
+
   btn.addEventListener('click', function(){
     if(btn.classList.contains('open')) return;
     crack();
+    store(false, 'llCracked', '1');
     /* the fortune now sits BESIDE the cookie, in the same view the reader just
        tapped, so it is already on screen. Only nudge if an edge is clipped. */
     var target = wrap || slip;

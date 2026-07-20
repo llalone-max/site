@@ -245,6 +245,39 @@
     b.addEventListener('click', function(){ next(); });
   });
 
+  /* going home: the same colour flood that brought you into this lane, run again
+     on the way out, so leaving matches arriving. Swiping back already felt right
+     because the browser handles it; clicking the wordmark used to be a plain
+     navigation with nothing in between. */
+  var homeLink = document.querySelector('.bandlink');
+  var leaving = false;
+  if(homeLink && !reduce){
+    var floodColor = getComputedStyle(document.documentElement)
+      .getPropertyValue('--flood').trim() || '#191814';
+    homeLink.addEventListener('click', function(e){
+      if(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if(leaving) return;
+      e.preventDefault();
+      leaving = true;
+      var d = document.createElement('div');
+      d.className = 'flood';
+      d.style.background = floodColor;
+      var x = e.clientX || innerWidth / 2, y = e.clientY || innerHeight / 2;
+      d.style.left = x + 'px'; d.style.top = y + 'px';
+      var r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      d.style.width = d.style.height = (r * 2) + 'px';
+      document.body.appendChild(d);
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ d.classList.add('go'); }); });
+      setTimeout(function(){ location.href = homeLink.getAttribute('href'); }, 360);
+    });
+  }
+  /* clear a leftover flood when this page is shown again, including a restore
+     from the back-forward cache, or an expanded circle would cover the lane */
+  window.addEventListener('pageshow', function(){
+    leaving = false;
+    [].forEach.call(document.querySelectorAll('.flood'), function(f){ f.remove(); });
+  });
+
   addEventListener('keydown', function(e){
     if(sheet && !sheet.hidden) return;
     if(e.altKey || e.metaKey || e.ctrlKey) return;
