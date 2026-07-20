@@ -29,8 +29,6 @@
   --bg:#0F0D08; --ink:#F2B24C; --soft:#C08A3E; --dim:#7A5A2E;
   --hair:rgba(255,176,0,.16); --strong:rgba(255,176,0,.42);
   --lc:#FFB000;
-  --card:#17110A;--cardsh:rgba(0,0,0,.5);
-  --tracker:48px;--inset:clamp(12px,2.4vh,22px);--gutter:clamp(14px,2.2vw,28px);--cardw:88%;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
 }
 *{box-sizing:border-box}
@@ -61,20 +59,14 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .talklink:hover,.talklink:focus-visible{color:var(--lc)}
 .talklink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .ticks{position:absolute;left:50%;top:0;height:100%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:7px;z-index:1}
+  display:flex;align-items:center;gap:6px;z-index:1}
 .tick{appearance:none;background:none;border:0;cursor:pointer;padding:8px 2px;
   display:block;line-height:0}
-.tick i{display:block;width:2px;height:10px;background:rgba(244,242,234,.30);
-  transition:opacity .25s,background .25s}
-.tick[aria-current="true"] i{opacity:0}
-.tick:hover i{background:rgba(244,242,234,.7)}
+.tick i{display:block;width:2px;height:9px;background:rgba(244,242,234,.30);
+  transition:height .25s,background .25s}
+.tick[aria-current="true"] i{height:15px;background:var(--lc)}
+.tick:hover i{background:rgba(244,242,234,.65)}
 .tick:focus-visible{outline:1.5px solid var(--lc);outline-offset:2px}
-/* rauno-style current-slide marker: a small box outline that slides along the
-   ticks to the active card (JS positions it), replacing the tall filled bar */
-.tickbox{position:absolute;top:50%;left:0;width:18px;height:15px;border:1px solid var(--lc);
-  pointer-events:none;transform:translate(0,-50%);
-  transition:transform .32s cubic-bezier(.22,.8,.2,1)}
-@media (prefers-reduced-motion:reduce){.tickbox{transition:none}}
 .section{flex:none;color:rgba(244,242,234,.62);font-family:var(--mono);
   font-size:11px;letter-spacing:.14em;white-space:nowrap}
 .bandright{display:inline-flex;align-items:center;gap:10px;flex:none;margin-left:auto}
@@ -87,21 +79,17 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .talklink{font-size:10px;letter-spacing:.06em}
   .section{font-size:10px;letter-spacing:.06em}
   .bandsep{font-size:10px}
-  .ticks{gap:6px}
-  .tick i{height:9px}
-  .tickbox{width:16px;height:13px}
+  .ticks{gap:5px}
+  .tick i{height:8px}
+  .tick[aria-current="true"] i{height:13px}
 }
 
-/* horizontal card slideshow: Embla drives it. Each panel is an inset CARD on the
-   page ground; center-aligned so the previous/next card peeks at the left and
-   right edges, making the drag affordance obvious (the rauno.me feel). */
-.track{position:relative;z-index:1;height:100dvh;overflow:hidden}
-.walk{display:flex;align-items:center;height:100dvh;gap:var(--gutter);
-  padding:calc(var(--tracker) + var(--inset)) 0 var(--inset);
-  touch-action:pan-y pinch-zoom;will-change:transform;backface-visibility:hidden}
-.panel{flex:0 0 var(--cardw);min-width:0;height:100%;overflow:hidden;
-  border:1px solid var(--hair);background:var(--card);box-shadow:0 6px 34px var(--cardsh);
-  padding:clamp(18px,3.4vh,38px) clamp(20px,4.2vw,52px)}
+/* horizontal walk: Embla viewport / container / slides */
+.track{height:100dvh;overflow:hidden}
+.walk{display:flex;height:100dvh;touch-action:pan-y pinch-zoom;
+  will-change:transform;backface-visibility:hidden}
+.panel{flex:0 0 100%;min-width:0;height:100dvh;overflow:hidden;
+  padding:calc(48px + clamp(16px,3.4vh,34px)) clamp(22px,6vw,90px) clamp(20px,4vh,42px)}
 .pin{max-width:720px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
 .plab{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--lc);
   margin:0 0 clamp(18px,3.6vh,32px)}
@@ -116,10 +104,10 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 /* the walk drags on press-and-move; unselectable body text keeps a text
    highlight from hijacking that drag. Real text, just not selectable. */
 .pin{-webkit-user-select:none;user-select:none}
-/* card focus: the active card sits full-strength while the peeking neighbours
-   soften (JS ties opacity to Embla's scroll progress); reduced motion keeps
-   every card at full strength and just slides plainly */
-@media (prefers-reduced-motion:reduce){.panel{opacity:1!important}}
+/* slide-with-zoom: panels scale and soften with scroll progress (JS-driven);
+   a reduced-motion visit gets a plain cut with no zoom */
+.pin{will-change:transform,opacity;transform-origin:50% 50%}
+@media (prefers-reduced-motion:reduce){.pin{transform:none!important;opacity:1!important}}
 
 /* readout table */
 .readout{margin-top:clamp(6px,1.5vh,14px);border-bottom:1px solid var(--hair);max-width:560px;
@@ -212,11 +200,11 @@ html.js:not(.nowel) .wel{position:fixed;inset:0;z-index:60;background:var(--bg);
 @media (prefers-reduced-motion:reduce){
   html.js:not(.nowel) .wel{display:none}
 }
-/* mobile fit: a shorter tracker and tighter insets, so the cards fill more of the
-   phone viewport while the neighbours still peek at the left and right edges */
+/* mobile fit: the tracker is 40px on phones, so reclaim the top padding the panels
+   over-reserve. Placed after the base rules so it actually wins. Keeps the panels
+   within the viewport, so a vertical swipe advances the walk instead of scrolling. */
 @media (max-width:600px){
-  :root{--tracker:40px;--inset:10px;--gutter:12px;--cardw:88%}
-  .panel{padding:clamp(16px,3vh,24px) clamp(16px,5vw,26px)}
+  .panel{padding-top:calc(40px + clamp(14px,3vh,26px))}
 }
 </style>
 <script>
@@ -427,27 +415,14 @@ document.documentElement.classList.add('js');
     if(ticksWrap) ticksWrap.appendChild(b);
     return b;
   });
-  /* rauno-style marker: a small box outline that slides to the current tick */
-  var tickbox = document.createElement('span');
-  tickbox.className = 'tickbox'; tickbox.setAttribute('aria-hidden', 'true');
-  if(ticksWrap) ticksWrap.appendChild(tickbox);
-  function positionBox(){
-    var t = ticks[cur];
-    if(!tickbox || !t) return;
-    var cx = t.offsetLeft + t.offsetWidth / 2;
-    var bw = tickbox.offsetWidth || 18;
-    tickbox.style.transform = 'translate(' + (cx - bw / 2).toFixed(1) + 'px,-50%)';
-  }
   function setPos(i){
     cur = i;
     ticks.forEach(function(b, j){ b.setAttribute('aria-current', j === i ? 'true' : 'false'); });
-    positionBox();
   }
   setPos(0);
-  addEventListener('resize', positionBox);
 
   var embla = window.EmblaCarousel && EmblaCarousel(viewport, {
-    axis:'x', loop:false, align:'center', containScroll:false,
+    axis:'x', loop:false, align:'start', containScroll:'trimSnaps',
     dragFree:false, skipSnaps:false, duration: reduce ? 0 : 28, watchDrag: false
   });
   /* one deliberate gesture = at most one panel. Every advance routes through
@@ -470,22 +445,25 @@ document.documentElement.classList.add('js');
     embla.on('select', sync); embla.on('reInit', sync); sync();
   }
 
-  /* card focus: tie each card's opacity to Embla's scroll progress so the active
-     card sits full-strength while the peeking neighbours soften as they slide by
-     (the rauno.me feel). Reduced motion keeps every card at full strength. */
-  function applyFocus(){
+  /* slide-with-zoom: tie each panel's scale and opacity to Embla's scroll
+     progress so the outgoing panel eases down and softens while the incoming one
+     grows into place (the mesura.eu / rauno.me feel). It tracks the movement
+     frame by frame. Reduced motion gets a plain cut, no zoom. */
+  var pins = panels.map(function(p){ return p.querySelector('.pin'); });
+  function applyZoom(){
     var prog = embla.scrollProgress();
     var snaps = embla.scrollSnapList();
     var span = snaps.length > 1 ? snaps.length - 1 : 1;
     snaps.forEach(function(snap, i){
-      var p = panels[i];
-      if(!p) return;
+      var pin = pins[i];
+      if(!pin) return;
       var norm = Math.min(Math.abs((snap - prog) * span), 1);
-      p.style.opacity = (1 - norm * 0.5).toFixed(3);
+      pin.style.transform = 'scale(' + (1 - norm * 0.08).toFixed(4) + ')';
+      pin.style.opacity = (1 - norm * 0.4).toFixed(3);
     });
   }
   if(embla && !reduce){
-    embla.on('scroll', applyFocus); embla.on('reInit', applyFocus); applyFocus();
+    embla.on('scroll', applyZoom); embla.on('reInit', applyZoom); applyZoom();
   }
 
   /* wheel/trackpad: one burst advances at most one panel. Delta accumulates
