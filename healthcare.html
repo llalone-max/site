@@ -237,20 +237,6 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .talkcard,.talkscrim{animation:none}
 }
 
-/* welcome: the EKG draws itself, then settles into the header rule */
-.wel{display:none}
-html.js:not(.nowel) .wel{position:fixed;inset:0;z-index:60;background:var(--bg);
-  display:grid;place-items:center}
-.wel svg{width:min(86vw,900px);height:120px;color:var(--lc)}
-.wel path{stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-html.js:not(.nowel) .wel path{stroke-dasharray:1000;stroke-dashoffset:1000;
-  animation:draw .62s cubic-bezier(.4,0,.3,1) forwards}
-@keyframes draw{to{stroke-dashoffset:0}}
-.wel.bye{opacity:0;transform:translateY(calc(-50vh + 48px)) scaleY(.12);
-  transition:opacity .3s ease,transform .3s cubic-bezier(.5,0,.6,1)}
-@media (prefers-reduced-motion:reduce){
-  html.js:not(.nowel) .wel{display:none}
-}
 /* mobile fit: the tracker is 40px on phones, so reclaim the top padding the panels
    over-reserve. Placed after the base rules so it actually wins. Keeps most panels
    within the viewport, so a vertical swipe advances the walk instead of scrolling. */
@@ -260,14 +246,6 @@ html.js:not(.nowel) .wel path{stroke-dasharray:1000;stroke-dashoffset:1000;
 </style>
 <script>
 document.documentElement.classList.add('js');
-(function(){
-  try{
-    if(sessionStorage.getItem('v2wel-hc') ||
-       matchMedia('(prefers-reduced-motion: reduce)').matches){
-      document.documentElement.classList.add('nowel');
-    }
-  }catch(e){}
-})();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "faa52c1304e644d7a972cf62bce222eb"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
@@ -364,12 +342,6 @@ document.documentElement.classList.add('js');
  </div>
 </main>
 
-<div class="wel" id="wel" aria-hidden="true">
-  <svg viewBox="0 0 900 120" preserveAspectRatio="none">
-    <path pathLength="1000" d="M0 60 H310 l14 0 9 -14 10 24 12 -52 13 62 11 -32 8 8 H520 H900"/>
-  </svg>
-</div>
-
 <div class="talksheet" id="talksheet" hidden>
   <div class="talkscrim" data-talkclose></div>
   <div class="talkcard" role="dialog" aria-modal="true" aria-labelledby="talkkick">
@@ -384,19 +356,6 @@ document.documentElement.classList.add('js');
 </div>
 
 <script src="/assets/embla-carousel.umd.js"></script>
-<script>
-(function(){
-  /* welcome, once per visit */
-  var wel = document.getElementById('wel');
-  if(document.documentElement.classList.contains('nowel')){
-    if(wel) wel.remove();
-  } else if(wel){
-    try{ sessionStorage.setItem('v2wel-hc','1'); }catch(e){}
-    setTimeout(function(){ wel.classList.add('bye'); }, 640);
-    setTimeout(function(){ wel.remove(); }, 980);
-  }
-})();
-</script>
 <script src="/assets/walk.js"></script>
 </body>
 </html>

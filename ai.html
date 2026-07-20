@@ -190,16 +190,6 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .talkcard,.talkscrim{animation:none}
 }
 
-/* welcome: three lines of boot log type themselves, then yield */
-.wel{display:none}
-html.js:not(.nowel) .wel{position:fixed;inset:0;z-index:60;background:var(--bg);
-  display:grid;place-items:center}
-.wel pre{margin:0;font-family:var(--mono);font-size:clamp(13px,1.6vw,17px);line-height:2;
-  color:var(--ink);min-width:min(80vw,340px);min-height:6em;white-space:pre}
-.wel.bye{opacity:0;transition:opacity .28s ease}
-@media (prefers-reduced-motion:reduce){
-  html.js:not(.nowel) .wel{display:none}
-}
 /* mobile fit: the tracker is 40px on phones, so reclaim the top padding the panels
    over-reserve. Placed after the base rules so it actually wins. Keeps the panels
    within the viewport, so a vertical swipe advances the walk instead of scrolling. */
@@ -209,14 +199,6 @@ html.js:not(.nowel) .wel{position:fixed;inset:0;z-index:60;background:var(--bg);
 </style>
 <script>
 document.documentElement.classList.add('js');
-(function(){
-  try{
-    if(sessionStorage.getItem('v2wel-ai') ||
-       matchMedia('(prefers-reduced-motion: reduce)').matches){
-      document.documentElement.classList.add('nowel');
-    }
-  }catch(e){}
-})();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "faa52c1304e644d7a972cf62bce222eb"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
@@ -300,10 +282,6 @@ document.documentElement.classList.add('js');
  </div>
 </main>
 
-<div class="wel" id="wel" aria-hidden="true">
-  <pre id="boot" aria-hidden="true"></pre>
-</div>
-
 <div class="talksheet" id="talksheet" hidden>
   <div class="talkscrim" data-talkclose></div>
   <div class="talkcard" role="dialog" aria-modal="true" aria-labelledby="talkkick">
@@ -318,46 +296,6 @@ document.documentElement.classList.add('js');
 </div>
 
 <script src="/assets/embla-carousel.umd.js"></script>
-<script>
-(function(){
-  /* welcome: boot log types itself, once per visit */
-  var wel = document.getElementById('wel');
-  if(document.documentElement.classList.contains('nowel')){
-    if(wel) wel.remove();
-  } else if(wel){
-    try{ sessionStorage.setItem('v2wel-ai','1'); }catch(e){}
-    var out = document.getElementById('boot');
-    var lines = ['meter: live', 'pipelines: 6', 'spend today: $0.41'];
-    var li = 0, ci = 0, gone = false;
-    /* the boot log types itself, holds briefly, then yields. Any scroll, tap or
-       key dismisses it at once so it never sits on top swallowing the first
-       gesture: that overlay hold was the "stuck between 01 and 02" feel. */
-    function dismiss(){
-      if(gone) return; gone = true;
-      clearInterval(t); clearTimeout(hold);
-      if(!wel) return;
-      wel.classList.add('bye');
-      setTimeout(function(){ if(wel){ wel.remove(); wel = null; } }, 320);
-    }
-    var hold = setTimeout(dismiss, 900);
-    ['wheel','touchstart','pointerdown','keydown'].forEach(function(ev){
-      window.addEventListener(ev, dismiss, {once:true, passive:true, capture:true});
-    });
-    var t = setInterval(function(){
-      if(li >= lines.length){
-        clearInterval(t);
-        out.textContent = lines.join('\n');
-        return;
-      }
-      ci++;
-      if(ci > lines[li].length){ li++; ci = 0; }
-      var doneLines = lines.slice(0, li);
-      var partial = li < lines.length ? lines[li].slice(0, ci) + '▌' : '';
-      out.textContent = doneLines.join('\n') + (doneLines.length && partial ? '\n' : '') + partial;
-    }, 14);
-  }
-})();
-</script>
 <script src="/assets/walk.js"></script>
 </body>
 </html>
