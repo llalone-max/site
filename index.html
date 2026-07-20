@@ -261,7 +261,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      in place with the face at the top and never overflows the panel */
   .p1{position:absolute;top:0;left:0;width:100%;height:auto;aspect-ratio:3/4;
     object-fit:contain;transform:none;translate:0;scale:1}
-  .pcap{position:relative;left:auto;top:auto;width:100%;max-width:230px;
+  /* the caption sits under the frame in normal flow here; it must also cancel
+     the desktop travel, or it drifts down onto the cookie */
+  .pcap{position:relative;left:auto;top:auto;translate:0;width:100%;max-width:230px;
     margin:14px auto 0;text-align:center;color:rgba(244,242,234,.72)}
 }
 
