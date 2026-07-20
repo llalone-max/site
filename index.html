@@ -148,11 +148,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   --hdr:clamp(150px,19vw,360px);
   --rail:clamp(84px,12vw,150px);
   --overlap:clamp(18px,2.4vw,34px);
-  --pw:clamp(310px,32vw,458px);
-  /* the portrait STARTS HIGH: its top overlaps the header band, around the
-     vertical mid-point of the giant "lalone" letters. --ptop is negative
-     (measured up from the herostage top, i.e. the header's bottom edge). */
-  --ptop:calc(var(--hdr) * -0.42);
+  --pw:clamp(230px,22vw,340px);
+  /* the portrait STARTS HIGH but must NOT cover the header name: its top only
+     LIGHTLY kisses the bottom edge of the header band, so the giant "lalone"
+     wordmark stays fully readable. --ptop is a small negative offset (measured
+     up from the herostage top, i.e. the header's bottom edge). */
+  --ptop:calc(var(--hdr) * -0.05);
   --railH:clamp(340px,52vh,540px);
   --slide:clamp(24px,4vh,52px)}
 
@@ -620,6 +621,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     var figScaledH = fig.offsetHeight * DOCK_SCALE;
     var dockVpTop = cookieVpBottomAtMax - figScaledH + DOCK_FEET;
     if(dockVpTop < 48) dockVpTop = 48;          /* keep the head on screen           */
+    /* CAP so the figure's rendered bottom never drops below the viewport bottom at
+       the dock: a figure that overran the last screen would translate BELOW the
+       footer and add phantom scroll height past it. Clamp the dock top so the whole
+       figure lands within the closing view (feet above the footer, never below). */
+    var maxDockTop = vh - figScaledH - 8;
+    if(dockVpTop > maxDockTop) dockVpTop = maxDockTop;
+    if(dockVpTop < 8) dockVpTop = 8;
     var vpTop = loadVpTop + prog * (dockVpTop - loadVpTop);
     var ty = (vpTop + scroll) - nat;
     portrait.style.setProperty('--ty', ty.toFixed(1) + 'px');
