@@ -185,7 +185,18 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 
 /* the vertical stroke of the L, joined to the header at the top-right corner
    and stopping short of the viewport bottom so cream shows beneath it */
-.rail{position:absolute;top:0;right:0;left:0;height:var(--railH);
+/* the vertical stroke of the L, joined to the header at the top-right corner.
+   Its bottom TAPERS OFF rather than stopping on a hard edge: at the bottom of the
+   page that edge landed inside the viewport and read as a stray black bar in the
+   corner. How far down it landed depended on viewport height, so shortening it
+   only moved the problem to a different screen size; running the ink out solves
+   it at every size. */
+.rail{position:absolute;top:0;right:0;left:0;
+  /* long enough to frame the portrait it sits behind, and short enough that its
+     bottom edge is well off screen once you reach the end of the page. Tied to
+     the portrait rather than to viewport height, so it stays put when the window
+     changes. A gradient fade was tried instead and read as a grey smear. */
+  height:calc(var(--ptop) + var(--pw) * 1.30);
   background:var(--ink);z-index:1}
 
 .portrait{--sp:0;z-index:3}
