@@ -332,7 +332,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   width:clamp(200px,27vw,264px)}
 .cookie{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;flex:none;
   position:relative;width:100%}
-.cookie img{display:block;width:100%;height:auto;mix-blend-mode:multiply;pointer-events:none}
+/* the artwork already carries real transparency, so it needs no blend mode. It
+   used to multiply, which left the shells translucent wherever the watercolour
+   was light: with the fortune tucked behind them you could read the slip THROUGH
+   the cookie. Compositing normally keeps the paper solid. */
+.cookie img{display:block;width:100%;height:auto;pointer-events:none}
 .cookie .ck1{position:absolute;inset:0;opacity:0}
 .cookie:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (prefers-reduced-motion:no-preference){
@@ -352,11 +356,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    between the two cracked halves and is covered by the right shell, so it reads
    as being pulled out of the opening rather than floating off the side; the rest
    runs up and to the right where it can be read. It sits before the cookie in
-   the DOM, so the shells paint over its tucked-in end. (The cookie must NOT get a
-   z-index: that would make a stacking context and kill the multiply blend that
-   drops the artwork's white background.) Still absolutely positioned inside the
-   stage, so cracking the cookie adds no page height, and still capped in width so
-   it cannot spill off a narrow phone. */
+   the DOM, so the shells paint over its tucked-in end, and the shells composite
+   normally (no blend mode) so the paper never shows through them. Still
+   absolutely positioned inside the stage, so cracking the cookie adds no page
+   height, and still capped in width so it cannot spill off a narrow phone. */
 .slipwrap{position:absolute;top:33%;left:40%;
   display:flex;flex-direction:column;align-items:flex-start;
   gap:clamp(10px,1.8vw,14px);width:max-content;max-width:min(58vw,280px);
