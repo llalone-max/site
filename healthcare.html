@@ -96,8 +96,12 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   padding:calc(48px + clamp(18px,4vh,44px)) clamp(22px,6vw,90px) clamp(24px,5vh,56px)}
 .pin{max-width:720px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center;
   user-select:none;-webkit-user-select:none}
-.plab{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
-  color:var(--lc);margin:0 0 6px;font-variant-numeric:tabular-nums}
+/* NOTE the `.panel p` selector below: one class plus one element beats a bare
+   class, so it was silently winning font-size and max-width over every mono
+   label in this lane and rendering them at body-copy size. Labels name
+   themselves through .panel p so they win it back. */
+.panel p.plab{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--lc);margin:0 0 6px;font-variant-numeric:tabular-nums;max-width:none;line-height:1.5}
 .plq{color:var(--dim);letter-spacing:.18em}
 .ekgrule{display:block;width:100%;max-width:340px;height:16px;margin:0 0 clamp(20px,4vh,38px);color:var(--lc)}
 .ekgrule path{stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
