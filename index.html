@@ -355,15 +355,14 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    off the surface (curl shading darkens the top and bottom edges, a soft lift shadow
    below), two fold creases from being folded in thirds, and roomy padding so text
    stays off the edges. Narrow and short so every fortune lands in at most two lines. */
-/* the slip comes out from INSIDE the cookie. Its left end starts in the gap
-   between the two cracked halves and is covered by the right shell, so it reads
-   as being pulled out of the opening rather than floating off the side; the rest
-   runs up and to the right where it can be read. It sits before the cookie in
-   the DOM, so the shells paint over its tucked-in end, and the shells composite
-   normally (no blend mode) so the paper never shows through them. Still
-   absolutely positioned inside the stage, so cracking the cookie adds no page
-   height, and still capped in width so it cannot spill off a narrow phone. */
-.slipwrap{position:absolute;top:33%;left:40%;
+/* the slip comes out of the cookie's opening and toward the reader. Its left
+   edge sits in the gap between the two cracked halves, so it reads as emerging
+   from in there, but it sits AFTER the cookie in the DOM and therefore paints on
+   top: nothing is allowed to cover the fortune, which is the one thing on this
+   page a visitor is meant to read. Still absolutely positioned inside the stage,
+   so cracking the cookie adds no page height, and still capped in width so it
+   cannot spill off a narrow phone. */
+.slipwrap{position:absolute;top:20%;left:47%;
   display:flex;flex-direction:column;align-items:flex-start;
   gap:clamp(10px,1.8vw,14px);width:max-content;max-width:min(58vw,280px);
   pointer-events:none}
@@ -384,9 +383,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      so the printed part starts only once it is clear of the cookie. That deep left
      padding is what makes it read as pulled out from inside rather than laid beside. */
   /* HARD RULE: the fortune must never run past TWO lines, so the readable width
-     is sized to the LONGEST fortune, not to the look. Phones get their own
-     arrangement below, where a deep tuck would leave too little room to read. */
-  width:min(calc(100vw - 130px),430px);padding:9px 16px 9px clamp(100px,23vw,132px);
+     is sized to the LONGEST fortune, not to the look. The deep left padding that
+     used to thread this behind the shell is gone now that the slip sits in
+     front, which makes it shorter and puts the text where the eye lands. */
+  width:min(calc(100vw - 150px),278px);padding:9px 15px;
   transform:rotate(-8deg);transform-origin:0 50%;border-radius:1px;
   /* a real slip: long and thin, straight cut edges, bowed. The realism is the
      length-wise bow shading above and the soft lift shadow below, not a wavy edge. */
@@ -398,8 +398,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* on a phone there is not enough width for both a deep tuck and two readable
    lines, so the slip rises further out of the gap and tucks only its corner. */
 @media (max-width:600px){
-  .slipwrap{top:16%;left:45%}
-  .slip{width:min(calc(100vw - 126px),248px);padding:8px 12px 8px 34px;font-size:10px}
+  .slipwrap{top:12%;left:47%}
+  .slip{width:min(calc(100vw - 142px),246px);padding:8px 12px;font-size:10px}
 }
 .cookiemod.open .slip{opacity:1;visibility:visible;translate:0 0}
 
@@ -535,13 +535,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   <section class="cookiemod" id="cookiemod" aria-label="Fortune cookie">
     <p class="cookienote">This site uses no cookies. <span class="rainbow">Have one anyway.</span></p>
     <div class="cookiestage">
-      <div class="slipwrap">
-        <p class="slip" id="slip" aria-live="polite"></p>
-      </div>
       <button class="cookie" id="cookie" type="button" aria-expanded="false" aria-label="A fortune cookie. Crack it open.">
         <img class="ck0" src="cookie-closed.webp" width="560" height="413" alt="">
         <img class="ck1" src="cookie-cracked.webp" width="560" height="413" alt="" loading="lazy">
       </button>
+      <div class="slipwrap">
+        <p class="slip" id="slip" aria-live="polite"></p>
+      </div>
     </div>
   </section>
 
