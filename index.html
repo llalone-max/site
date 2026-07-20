@@ -220,7 +220,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     min-height:calc(100vh - var(--hdr) + clamp(70px,11vh,150px))}
   .herorail{grid-area:rail;position:relative;min-height:var(--railH)}
   .practicewrap{grid-area:prac;max-width:760px;
-    padding:clamp(28px,6vh,64px) clamp(22px,6vw,60px) clamp(30px,6vh,72px) clamp(22px,6vw,76px)}
+    padding:clamp(20px,3.5vh,44px) clamp(22px,6vw,60px) clamp(18px,3vh,38px) clamp(22px,6vw,76px)}
   .portrait{position:absolute;top:var(--ptop);
     right:calc(var(--rail) - var(--overlap));width:var(--pw);
     /* the scroll script writes --ty (downward travel) and --dsc (dock scale);
@@ -247,7 +247,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     width:min(82vw,320px);margin:clamp(50px,9vh,110px) auto 0;
     padding:clamp(20px,6vw,30px);background:var(--ink)}
   .practicewrap{order:3;
-    padding:clamp(30px,7vh,70px) clamp(20px,6vw,40px) clamp(30px,6vh,60px)}
+    padding:clamp(22px,4vh,42px) clamp(20px,6vw,40px) clamp(18px,3vh,34px)}
   .rail{display:none}
   .portrait{position:relative;width:100%;max-width:230px;margin:0 auto}
   .pframe{aspect-ratio:3/4;background:#F1F0EA;
@@ -262,7 +262,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 }
 
 /* 7 · talk, tucked directly under the portrait */
-.talk{margin-top:clamp(18px,3vw,30px)}
+.talk{margin-top:clamp(12px,2vw,20px)}
 .talk h2{margin:0;font-weight:600;font-size:clamp(34px,5.4vw,64px);letter-spacing:-.028em;line-height:1}
 .talktrigger{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;
   font-family:inherit;font-weight:inherit;font-size:inherit;letter-spacing:inherit;
@@ -316,7 +316,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .textcard-x:focus-visible{outline:1.5px solid var(--ink);outline-offset:2px}
 
 /* 7.5 · the fortune cookie: ink and watercolor, cracks on tap */
-.cookiemod{margin-top:clamp(34px,5vh,60px);display:flex;flex-direction:column;
+.cookiemod{margin-top:clamp(22px,3vh,38px);display:flex;flex-direction:column;
   align-items:flex-start;gap:clamp(14px,2.4vw,22px)}
 /* the stage is the cookie's own footprint and the positioning context for the
    slip. The slip is absolutely positioned inside it (beside / overlapping the
@@ -404,8 +404,15 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    set the small credits off from the cookie zone above, so the page reads as a
    deliberate end, not content that just runs out. Kept compact so the footer
    sits close under the last content instead of floating low on a phone. */
-.colophon{margin-top:clamp(38px,6vh,72px);padding:0 0 clamp(28px,4vh,44px);
+/* the desktop top margin is kept tall enough that the docked figure's feet clear
+   the footer rule (the figure bottom is glued to the cookie, just above here) */
+.colophon{margin-top:clamp(40px,6vh,58px);padding:0 0 clamp(18px,2.4vh,28px);
   border-top:1px solid var(--hair)}
+/* mobile has no docked figure, so no feet-clearance is needed: pull the footer up
+   close under the cookie for a compact ending */
+@media (max-width:899px){
+  .colophon{margin-top:clamp(24px,3.4vh,34px)}
+}
 .credit{margin:14px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
   line-height:1.9;color:var(--dim)}
 .credit a{color:inherit;text-decoration:none;border-bottom:1px solid var(--hair);transition:color .25s}
@@ -572,7 +579,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   var FORM_START = 0.05;   /* scroll progress where the figure begins forming    */
   var FORM_END   = 0.42;   /* fully the figure, its face still comfortably in view */
   var MID_SCALE  = 0.56;   /* scale once formed, so the WHOLE figure fits the view */
-  var DOCK_SCALE = 0.44;   /* final scale, sized to sit beside the little cookie   */
+  var DOCK_SCALE = 0.60;   /* final scale: the figure fills the closing view, only  */
+                           /* a small cream bar above it, feet just above the footer */
   var DOCK_FEET  = 30;     /* nudge: the figure's feet land just past the cookie   */
 
   var raf = 0;
