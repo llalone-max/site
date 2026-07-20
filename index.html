@@ -372,7 +372,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   /* a long strip: its left end runs back INTO the gap and behind the right shell,
      so the printed part starts only once it is clear of the cookie. That deep left
      padding is what makes it read as pulled out from inside rather than laid beside. */
-  width:min(calc(100vw - 130px),306px);padding:9px 15px 9px clamp(100px,23vw,124px);
+  /* HARD RULE: the fortune must never run past TWO lines, so the readable width
+     is sized to the LONGEST fortune, not to the look. Phones get their own
+     arrangement below, where a deep tuck would leave too little room to read. */
+  width:min(calc(100vw - 130px),430px);padding:9px 16px 9px clamp(100px,23vw,132px);
   transform:rotate(-8deg);transform-origin:0 50%;border-radius:1px;
   /* a real slip: long and thin, straight cut edges, bowed. The realism is the
      length-wise bow shading above and the soft lift shadow below, not a wavy edge. */
@@ -380,6 +383,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   opacity:0;visibility:hidden;translate:0 8px}
 @media (prefers-reduced-motion:no-preference){
   .slip{transition:opacity .35s ease .15s,translate .35s cubic-bezier(.2,.7,.3,1) .15s}
+}
+/* on a phone there is not enough width for both a deep tuck and two readable
+   lines, so the slip rises further out of the gap and tucks only its corner. */
+@media (max-width:600px){
+  .slipwrap{top:16%;left:45%}
+  .slip{width:min(calc(100vw - 126px),248px);padding:8px 12px 8px 34px;font-size:10px}
 }
 .cookiemod.open .slip{opacity:1;visibility:visible;translate:0 0}
 
