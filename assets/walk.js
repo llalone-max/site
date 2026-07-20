@@ -151,11 +151,19 @@
     b.classList.toggle('at-end', b.scrollTop >= b.scrollHeight - b.clientHeight - 2);
   }, {passive:true}); });
 
-  /* wheel/trackpad: one burst advances at most one panel. Delta accumulates
-     until it clears a threshold, fires once, then locks until the wheel goes
-     quiet (~200ms) so a trackpad's momentum tail cannot chain a second step.
-     Zoom (ctrl/meta) stays native. */
-  var wheelAcc = 0, wheelLock = false, wheelIdle = null, boxUntil = 0;
+  /* wheel/trackpad: one deliberate gesture advances at most one panel.
+     This used to lock after a step and only unlock once the wheel went quiet for
+     200ms. A trackpad keeps emitting for a second or more after you let go, and
+     every event pushed that deadline further out, so anyone who kept swiping
+     could never satisfy the unlock and the walk simply stopped responding.
+     Nudging the mouse appeared to help only because it interrupted the momentum
+     stream.
+     Instead: a momentum TAIL is recognised by its shape. Deltas decay as a flick
+     dies, so anything well below the strongest delta of the current gesture is
+     treated as tail and ignored, while a genuine new push spikes back up and is
+     taken immediately. go() still enforces one panel per gesture, so nothing can
+     chain even if this is generous. */
+  var wheelAcc = 0, wheelIdle = null, boxUntil = 0, gestureMax = 0;
   viewport.addEventListener('wheel', function(e){
     if(e.ctrlKey || e.metaKey) return;
     if(sheet && !sheet.hidden) return;
@@ -176,13 +184,17 @@
     }
     e.preventDefault();
     clearTimeout(wheelIdle);
-    wheelIdle = setTimeout(function(){ wheelLock = false; wheelAcc = 0; }, 200);
-    if(wheelLock) return;
+    /* a real pause ends the gesture: forget both the running total and how hard
+       the last one was pushed, so the next swipe is judged on its own */
+    wheelIdle = setTimeout(function(){ wheelAcc = 0; gestureMax = 0; }, 180);
+    var mag = Math.abs(delta);
+    if(mag > gestureMax) gestureMax = mag;
+    if(gestureMax && mag < gestureMax * 0.45) return;   /* momentum dying away */
     wheelAcc += delta;
     if(Math.abs(wheelAcc) > 40){
       (wheelAcc > 0 ? next() : prev());
       wheelAcc = 0;
-      wheelLock = true;
+      gestureMax = 0;
     }
   }, {passive:false});
 
