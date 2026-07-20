@@ -169,9 +169,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   background:var(--ink);z-index:1}
 
 .portrait{--sp:0;z-index:3}
+/* PERF: --sp is rewritten every scroll frame, so everything that reads it has to
+   be cheap. color-mix() with a calc percentage is costly to recompute at that
+   rate, and mixing a colour with transparent is simply that colour at that
+   alpha, so these are plain rgba: identical pixels, far less style work. */
 .pframe{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;
-  background:color-mix(in srgb,#fff calc((1 - var(--sp))*100%),transparent);
-  border:1px solid color-mix(in srgb,var(--ink) calc((1 - var(--sp))*100%),transparent);
+  background:rgba(255,255,255,calc(1 - var(--sp)));
+  border:1px solid rgba(25,24,20,calc(1 - var(--sp)));
   box-shadow:0 18px 40px -22px rgba(25,24,20,calc(.5 * (1 - var(--sp))))}
 .pframe .p0{display:block;position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;opacity:calc(1 - var(--sp))}
@@ -185,17 +189,16 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   scale:calc(.94 + .06 * var(--sp))}
 /* caption sits below the figure's feet at EVERY scroll position: its offset
    grows with the same progress that unfolds the figure, never overlaid on it */
-.pcap{position:absolute;left:0;
-  top:calc(100% + 14px + (1.2 * var(--pw) + var(--slide)) * var(--sp));
+/* PERF: this used to animate `top`, which relays out the page every frame.
+   translate moves it the same distance without touching layout. */
+.pcap{position:absolute;left:0;top:calc(100% + 14px);
+  translate:0 calc((1.2 * var(--pw) + var(--slide)) * var(--sp));
   width:var(--pw);font-family:var(--mono);font-size:11px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--soft);line-height:1.7}
 
-@media (prefers-reduced-motion:no-preference){
-  .pframe{transition:border-color .3s ease,background-color .3s ease,box-shadow .3s ease}
-  .pframe .p0{transition:opacity .25s linear}
-  .p1{transition:opacity .3s linear,translate .4s cubic-bezier(.2,.7,.3,1),scale .4s ease}
-  .pcap{transition:top .4s cubic-bezier(.2,.7,.3,1)}
-}
+/* PERF: these properties are driven directly by scroll position, so a transition
+   on them restarts every single frame. That is what made the hero feel rubbery
+   and a step behind the finger. Scrubbed values now track the scroll 1:1. */
 /* reduced motion: no scrub, just the fully-formed figure with the caption below.
    --dsc scales the tall figure down to a sane size where it rests. */
 @media (prefers-reduced-motion:reduce){
@@ -474,10 +477,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
       <div class="rail" aria-hidden="true"></div>
       <figure class="portrait">
         <div class="pframe">
-          <img class="p0" src="portrait-oncream.jpg" width="640" height="640"
+          <img class="p0" src="portrait-oncream.webp" width="640" height="640"
+               fetchpriority="high" decoding="async"
                alt="Portrait of Lazar LaLone, ink and watercolor.">
         </div>
-        <img class="p1" src="portrait-full-oncream.webp" width="720" height="1290" alt="" loading="lazy">
+        <img class="p1" src="portrait-full-oncream.webp" width="720" height="1290" alt="" decoding="async">
         <figcaption class="pcap">Everywhere at once. On purpose.</figcaption>
       </figure>
     </div>
@@ -600,12 +604,27 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   var DOCK_FEET  = 30;     /* nudge: the figure's feet land just past the cookie   */
 
   var raf = 0;
-  function naturalTop(){ return host.offsetTop + portrait.offsetTop; }
   function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+
+  /* PERF: none of these change while you scroll, they only change when the page
+     is laid out again. Reading them inside the scroll handler forced the browser
+     to redo layout on every single frame, which is what made this feel clunky.
+     They are measured once, then re-measured on resize and after the images and
+     fonts land. The scroll handler is now pure arithmetic plus style writes. */
+  var vh = 0, max = 1, nat = 0, cookiePageBottom = 0, figH = 0;
+  function measure(){
+    vh  = window.innerHeight || document.documentElement.clientHeight;
+    max = Math.max(1, document.documentElement.scrollHeight - vh);
+    nat = host.offsetTop + portrait.offsetTop;      /* frame's page top at --ty 0 */
+    figH = fig.offsetHeight;
+    /* the cookie's page-absolute bottom: constant as you scroll, unlike its
+       viewport position, so it only needs measuring once per layout */
+    cookiePageBottom = cookie.getBoundingClientRect().bottom +
+                       (window.scrollY || window.pageYOffset || 0);
+  }
+
   function update(){
     raf = 0;
-    var vh = window.innerHeight || document.documentElement.clientHeight;
-    var max = Math.max(1, document.documentElement.scrollHeight - vh);
     var scroll = window.scrollY || window.pageYOffset || 0;
     var prog = clamp01(scroll / max);
 
@@ -629,11 +648,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     /* vertical travel: the frame's viewport TOP eases linearly from its natural
        load spot down to a docked spot beside the cookie. Linear in scroll keeps it
        in view the whole way (it never rises up and off). */
-    var nat = naturalTop();                    /* frame's page top when --ty = 0    */
     var loadVpTop = nat;                        /* == its viewport top at scroll 0   */
-    var ck = cookie.getBoundingClientRect();
-    var cookieVpBottomAtMax = (ck.bottom + scroll) - max;   /* cookie's screen y at the very bottom */
-    var figScaledH = fig.offsetHeight * DOCK_SCALE;
+    var cookieVpBottomAtMax = cookiePageBottom - max;  /* cookie's screen y at the very bottom */
+    var figScaledH = figH * DOCK_SCALE;
     var dockVpTop = cookieVpBottomAtMax - figScaledH + DOCK_FEET;
     if(dockVpTop < 48) dockVpTop = 48;          /* keep the head on screen           */
     /* CAP so the figure's rendered bottom never drops below the viewport bottom at
@@ -648,8 +665,15 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     portrait.style.setProperty('--ty', ty.toFixed(1) + 'px');
   }
   function tick(){ if(!raf) raf = requestAnimationFrame(update); }
+  function remeasure(){ measure(); tick(); }
   window.addEventListener('scroll', tick, {passive:true});
-  window.addEventListener('resize', tick, {passive:true});
+  window.addEventListener('resize', remeasure, {passive:true});
+  window.addEventListener('orientationchange', remeasure, {passive:true});
+  /* re-measure once the artwork and fonts have settled, since both change where
+     the cookie and the figure actually sit */
+  window.addEventListener('load', remeasure);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+  measure();
   update();
 })();
 
