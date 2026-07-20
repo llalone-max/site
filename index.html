@@ -566,7 +566,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 <script>
 /* lane-color flood: motion belongs to the chosen thing */
 (function(){
-  var colors = {hc:'#3E7CB1', br:'#C84B31', ai:'#3E6448'};
+  var colors = {hc:'#3E7CB1', br:'#C84B31', ai:'#FFB000'};   /* each lane's own accent */
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var leaving = false;
   document.querySelectorAll('[data-lane]').forEach(function(a){
