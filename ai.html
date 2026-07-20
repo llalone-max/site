@@ -32,6 +32,12 @@
   --lc:#FFB000;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
 }
+/* iOS paints a translucent grey rectangle over whatever you tap. On the cookie
+   that reads as a grey box flashing around it mid-crack, and on the lane links it
+   flashes over the words. Suppressed site-wide: every tappable thing here already
+   gives its own feedback (the cookie cracks, a lane floods with colour). Keyboard
+   focus rings are a separate property and are untouched. */
+html{-webkit-tap-highlight-color:transparent}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--mono);overflow:hidden;
