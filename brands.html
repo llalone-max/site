@@ -153,10 +153,7 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .badge-yt:hover{filter:brightness(1.18)}
 .badge-app:hover{filter:brightness(1.12)}
 .badge:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
-.glink{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--soft);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;
-  transition:color .25s,border-color .25s}
-.glink:hover{color:var(--lc);border-color:currentColor}
+
 
 /* reviews: laid out the way the App Store lays them out, so the social proof
    reads as the thing people already know. The summary puts the score on the left
@@ -210,12 +207,8 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .rev .q{margin:0;font-size:clamp(14px,1.4vw,16px);line-height:1.44;color:var(--ink);text-wrap:pretty}
 .revfoot{display:flex;align-items:center;gap:clamp(18px,3vw,30px);flex-wrap:wrap;
   margin-top:clamp(15px,2.5vh,22px)}
-.revfoot .link{margin-top:0}
-a.link{display:inline-block;align-self:flex-start;margin-top:clamp(22px,4vh,34px);font-family:var(--mono);
-  font-size:12px;letter-spacing:.16em;color:var(--lc);
-  text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;
-  transition:color .25s}
-a.link:hover{color:var(--ink)}
+.revfoot .outlink{margin-top:0}
+.outlink{align-self:flex-start}
 .quiet{color:var(--soft)}
 /* the record: the full history in a fixed-height frame that scrolls its own
    content. The frame is itself a link: a tap or click opens the full-size PDF in a
@@ -230,9 +223,19 @@ a.link:hover{color:var(--ink)}
 .recviewer img{display:block;width:100%;height:auto}
 .recviewer:hover{border-color:var(--lc)}
 .recviewer:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
-.reccap{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--lc)}
-.reccap a{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+.reccap{margin:12px 0 0}
+/* out-links: ONE style across the site. Sentence case, the lane colour, a
+   hairline underline, and a trailing arrow that nudges away on hover. Applies to
+   every link that leaves the panel: PDFs, brand books, the App Store. */
+.outlink{display:inline-flex;align-items:baseline;gap:.42em;font-family:var(--mono);
+  font-size:12px;letter-spacing:.06em;text-transform:none;color:var(--lc);
+  text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;
+  transition:color .25s,border-color .25s}
+.outlink:hover,.outlink:focus-visible{color:var(--ink)}
+.outlink .ar{font-size:.92em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
+.outlink:hover .ar{transform:translate(2px,-2px)}
+.outlink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap}
 
 /* contact overlay: blurs and dims the page, brings the ways to reach me forward */
@@ -326,7 +329,7 @@ document.documentElement.classList.add('js');
             <a class="badge badge-app" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
               <img src="brand-marks/appstore-badge.svg" alt="Download on the App Store" width="120" height="40">
             </a>
-            <a class="glink" href="fanish-brand.html">Brand guidelines (PDF) &#8599;</a>
+            <a class="outlink" href="fanish-brand.html">Brand guidelines (PDF) <span class="ar" aria-hidden="true">&#8599;</span></a>
           </div>
         </div>
         <div class="bcard">
@@ -341,7 +344,7 @@ document.documentElement.classList.add('js');
             <a class="badge badge-yt" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Watch Lazarvision on YouTube">
               <img src="brand-marks/youtube-logo-white.svg" alt="YouTube" width="492" height="110">
             </a>
-            <a class="glink" href="lazarvision-brand.html">Brand guidelines (PDF) &#8599;</a>
+            <a class="outlink" href="lazarvision-brand.html">Brand guidelines (PDF) <span class="ar" aria-hidden="true">&#8599;</span></a>
           </div>
         </div>
       </div>
@@ -396,7 +399,7 @@ document.documentElement.classList.add('js');
         <a class="badge badge-app" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
           <img src="brand-marks/appstore-badge.svg" alt="Download on the App Store" width="120" height="40">
         </a>
-        <a class="link" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">Read them on the App Store &#8599;</a>
+        <a class="outlink" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener">Read them on the App Store <span class="ar" aria-hidden="true">&#8599;</span></a>
       </div>
       </div>
     </div>
@@ -409,7 +412,7 @@ document.documentElement.classList.add('js');
       <a class="recviewer scrolls" href="record-brands.pdf" target="_blank" rel="noopener" aria-label="The full history. Tap to open the full-size PDF in a new tab; scroll to preview it here.">
         <img src="record-brands-p1.webp" width="1000" height="1294" alt="The full history" loading="lazy">
       </a>
-      <p class="reccap"><a href="record-brands.pdf" target="_blank" rel="noopener">Open the PDF &#8599;</a></p>
+      <p class="reccap"><a class="outlink" href="record-brands.pdf" target="_blank" rel="noopener">Open the PDF <span class="ar" aria-hidden="true">&#8599;</span></a></p>
     </div>
   </section>
 

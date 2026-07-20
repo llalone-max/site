@@ -204,9 +204,19 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   mask-image:linear-gradient(to bottom,#000 calc(100% - 34px),transparent)}
 .scrolls.has-scroll.at-end{-webkit-mask-image:none;mask-image:none}
 .recviewer:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
-.reccap{margin:12px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--lc)}
-.reccap a{text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+.reccap{margin:12px 0 0}
+/* out-links: ONE style across the site. Sentence case, the lane colour, a
+   hairline underline, and a trailing arrow that nudges away on hover. Applies to
+   every link that leaves the panel: PDFs, brand books, the App Store. */
+.outlink{display:inline-flex;align-items:baseline;gap:.42em;font-family:var(--mono);
+  font-size:12px;letter-spacing:.06em;text-transform:none;color:var(--lc);
+  text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:3px;
+  transition:color .25s,border-color .25s}
+.outlink:hover,.outlink:focus-visible{color:var(--ink)}
+.outlink .ar{font-size:.92em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
+.outlink:hover .ar{transform:translate(2px,-2px)}
+.outlink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
+
 
 /* contact overlay: blurs and dims the page, brings the ways to reach me forward */
 .talksheet[hidden]{display:none}
@@ -335,7 +345,7 @@ document.documentElement.classList.add('js');
       <a class="recviewer scrolls" href="record-healthcare.pdf" target="_blank" rel="noopener" aria-label="The full history. Tap to open the full-size PDF in a new tab; scroll to preview it here.">
         <img src="record-healthcare-p1.webp" width="1000" height="1294" alt="The full history" loading="lazy">
       </a>
-      <p class="reccap"><a href="record-healthcare.pdf" target="_blank" rel="noopener">Open the PDF &#8599;</a></p>
+      <p class="reccap"><a class="outlink" href="record-healthcare.pdf" target="_blank" rel="noopener">Open the PDF <span class="ar" aria-hidden="true">&#8599;</span></a></p>
     </div>
   </section>
 
