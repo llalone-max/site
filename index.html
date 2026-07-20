@@ -214,10 +214,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* the frame overlaps the black rail by --overlap on purpose; the caption must
    NOT, or its last few letters end up dark-on-black and unreadable */
 .pcap{position:absolute;left:0;top:calc(100% + 14px);
-  /* it labels the HEADSHOT, so it fades out as the figure forms rather than
-     travelling down with it. Travelling put it under the footer at the dock, and
-     by then the six-armed figure needs no caption anyway. */
-  translate:0;opacity:calc(1 - var(--sp) * 2.2);
+  /* it is meant to be READ once the figure has formed, so it stays fully opaque
+     and travels down with the figure to sit clear of its feet. The multiplier is
+     tuned so it lands below the feet and above the footer rule, on cream. */
+  translate:0 calc((1.2 * var(--pw) + var(--slide)) * var(--sp));
   width:calc(var(--pw) - var(--overlap));font-family:var(--mono);font-size:11px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--soft);line-height:1.7}
 
@@ -519,7 +519,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
                alt="Portrait of Lazar LaLone, ink and watercolor.">
         </div>
         <img class="p1" src="portrait-full-oncream.webp" width="720" height="1290" alt="" decoding="async">
-        <figcaption class="pcap">Everywhere at once. On purpose.</figcaption>
+        <figcaption class="pcap">Everywhere at once.<br>On purpose.</figcaption>
       </figure>
     </div>
 
@@ -639,6 +639,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   var DOCK_SCALE = 0.72;   /* final scale: the figure fills the closing view, only  */
                            /* a small cream bar above it, feet just above the footer */
   var DOCK_FEET  = 30;     /* nudge: the figure's feet land just past the cookie   */
+  var CAP_ROOM   = 48;     /* room kept under the feet for the caption, which is    */
+                           /* meant to be READ once the figure has formed and must  */
+                           /* not land on the footer rule                           */
 
   var raf = 0;
   function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
@@ -688,13 +691,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     var loadVpTop = nat;                        /* == its viewport top at scroll 0   */
     var cookieVpBottomAtMax = cookiePageBottom - max;  /* cookie's screen y at the very bottom */
     var figScaledH = figH * DOCK_SCALE;
-    var dockVpTop = cookieVpBottomAtMax - figScaledH + DOCK_FEET;
+    var dockVpTop = cookieVpBottomAtMax - figScaledH + DOCK_FEET - CAP_ROOM;
     if(dockVpTop < 48) dockVpTop = 48;          /* keep the head on screen           */
     /* CAP so the figure's rendered bottom never drops below the viewport bottom at
        the dock: a figure that overran the last screen would translate BELOW the
        footer and add phantom scroll height past it. Clamp the dock top so the whole
        figure lands within the closing view (feet above the footer, never below). */
-    var maxDockTop = vh - figScaledH - 8;
+    var maxDockTop = vh - figScaledH - 8 - CAP_ROOM;
     if(dockVpTop > maxDockTop) dockVpTop = maxDockTop;
     if(dockVpTop < 8) dockVpTop = 8;
     var vpTop = loadVpTop + prog * (dockVpTop - loadVpTop);
