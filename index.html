@@ -528,6 +528,15 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .cookiestage{width:clamp(150px,15vw,190px)}
   /* the figure walks in from the rail as it forms, closing the gap to the ask */
   .portrait{--drift:clamp(0px,11vw,210px)}
+
+  /* The closing screen is three things at three positions. The practice nav sits
+     in a full-width section, while the ask and the cookie sit in the centred
+     1180 wrap, which is why those two looked indented against the nav.
+     The cookie steps back OUT of that centring so it starts hard left on the
+     same line as the nav, and the ask moves toward the middle so it lands beside
+     the figure rather than stranded over on the left. */
+  .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2)}
+  .talk{margin-left:clamp(0px,12vw,240px)}
 }
 </style>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "faa52c1304e644d7a972cf62bce222eb"}'></script><!-- End Cloudflare Web Analytics -->
