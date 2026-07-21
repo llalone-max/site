@@ -290,7 +290,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
        scaled from the TOP so the frame's top stays the anchor as it settles */
     transform-origin:50% 0;
     transform:translate(calc(-1 * var(--sp,0) * var(--drift,0px)), var(--ty,0px))
-              scale(var(--dsc,1))}
+              scale(var(--dsc,1));
+    /* its own layer, so the artwork is rasterised once and then only moved,
+       rather than being redrawn at a new sub-pixel offset on every frame */
+    will-change:transform;backface-visibility:hidden}
   /* a taller framed headshot so the whole face fills the first screen above the
      fold; the source is centred so a slightly-high object-position keeps the face */
   .pframe{aspect-ratio:5/7}
@@ -535,8 +538,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      The cookie steps back OUT of that centring so it starts hard left on the
      same line as the nav, and the ask moves toward the middle so it lands beside
      the figure rather than stranded over on the left. */
-  .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2)}
-  .talk{margin-left:clamp(0px,12vw,240px)}
+  .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2);
+    margin-top:clamp(44px,7.5vh,96px)}
+  .cookiestage{width:clamp(128px,12vw,158px)}
+  .talk{margin-left:clamp(0px,24vw,420px)}
+  .talk h2{font-size:clamp(40px,5vw,70px)}
 }
 </style>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "faa52c1304e644d7a972cf62bce222eb"}'></script><!-- End Cloudflare Web Analytics -->
@@ -696,7 +702,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   var DOCK_SCALE = 0.72;   /* final scale: the figure fills the closing view, only  */
                            /* a small cream bar above it, feet just above the footer */
   var DOCK_FEET  = 30;     /* nudge: the figure's feet land just past the cookie   */
-  var CAP_ROOM   = 48;     /* room kept under the feet for the caption, which is    */
+  var CAP_ROOM   = 72;     /* room kept under the feet for the caption, which is    */
                            /* meant to be READ once the figure has formed and must  */
                            /* not land on the footer rule                           */
 
@@ -761,7 +767,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     if(dockVpTop < 8) dockVpTop = 8;
     var vpTop = loadVpTop + prog * (dockVpTop - loadVpTop);
     var ty = (vpTop + scroll) - nat;
-    portrait.style.setProperty('--ty', ty.toFixed(1) + 'px');
+    portrait.style.setProperty('--ty', Math.round(ty) + 'px');   /* whole pixels only */
   }
   function tick(){ if(!raf) raf = requestAnimationFrame(update); }
   function remeasure(){ measure(); tick(); }
