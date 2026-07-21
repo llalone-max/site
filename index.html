@@ -527,8 +527,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .slipcta{transition:opacity .35s ease .28s,translate .35s cubic-bezier(.2,.7,.3,1) .28s}
 }
 .cookiemod.open .slipcta{opacity:1;visibility:visible;translate:0 0}
-.cookienote{flex-basis:100%;max-width:clamp(150px,15.5vw,300px);margin:0 0 6px;
-  font-family:var(--mono);font-size:10.5px;
+.cookienote{flex-basis:100%;margin:clamp(12px,1.8vh,18px) 0 0;
+  font-family:var(--mono);font-size:10.5px;line-height:1.8;text-align:left;
   letter-spacing:.08em;color:var(--dim)}
 .rainbow{font-weight:600;
   background:linear-gradient(90deg,#e4572e,#f3a712,#3a9d6f,#4361ee,#8a2be2);
@@ -680,7 +680,6 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 
   <!-- 7.5 · the fortune cookie -->
   <section class="cookiemod" id="cookiemod" aria-label="Fortune cookie">
-    <p class="cookienote">This site uses no cookies. <span class="rainbow">Have one anyway.</span></p>
     <div class="cookiestage">
       <button class="cookie" id="cookie" type="button" aria-expanded="false" aria-label="A fortune cookie. Crack it open.">
         <img class="ck0" src="cookie-closed.webp" width="560" height="413" alt="">
@@ -690,6 +689,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
         <p class="slip" id="slip" aria-live="polite"></p>
       </div>
     </div>
+    <p class="cookienote">This site uses no cookies.<br><span class="rainbow">Have one anyway.</span></p>
   </section>
 
   <!-- 8 · colophon: a quiet credit line -->
