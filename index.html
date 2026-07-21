@@ -214,7 +214,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      the portrait rather than to viewport height, so it stays put when the window
      changes. A gradient fade was tried instead and read as a grey smear. */
   height:calc(var(--ptop) + var(--pw) * 1.30);
-  background:var(--ink);z-index:1}
+  background:var(--ink);z-index:1;
+  /* and it retires as you scroll. Its bottom edge landed inside the viewport at
+     the end of the page on some window shapes and read as a stray black bar;
+     where it landed depended on page height against viewport height, so no fixed
+     height fixed it everywhere. Tying it to scroll progress does, at any size. */
+  opacity:calc(1 - var(--sp,0) * 1.7)}
 
 .portrait{--sp:0;z-index:3}
 /* PERF: --sp is rewritten every scroll frame, so everything that reads it has to
@@ -256,6 +261,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    --dsc scales the tall figure down to a sane size where it rests. */
 @media (prefers-reduced-motion:reduce){
   .portrait{--sp:1;--dsc:.6}
+  .rail{opacity:1}
 }
 
 /* DESKTOP: a two-column grid, everything in NORMAL FLOW (no pin, nothing sticky).
@@ -713,6 +719,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     /* form */
     var sp = clamp01((prog - FORM_START) / (FORM_END - FORM_START));
     portrait.style.setProperty('--sp', sp.toFixed(3));
+    /* the rail is a sibling of the portrait, so it cannot inherit --sp from it */
+    document.documentElement.style.setProperty('--sp', sp.toFixed(3));
 
     if(!mqDesk.matches){                       /* mobile: form in place, no travel */
       portrait.style.setProperty('--ty','0px');
