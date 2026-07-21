@@ -590,13 +590,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   /* dead centre of the page, lined up with the O of the wordmark above. It sits
      low enough to read as a footnote, and low enough to clear the figure's
      caption over on the right. */
-  .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2 - clamp(22px,6vw,76px));
-    align-items:center;width:100vw;
-    padding-right:clamp(0px, 1400px - 100vw, 300px);
-    /* low enough that it sits BELOW the figure's caption, so the two never share
-       a line and the cookie can be centred without running into the portrait */
+  /* left, on the same line as the practice nav and the ask. Everything that
+     matters on this screen is left-oriented; the cookie is the same. */
+  .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2);
+    align-items:flex-start;width:auto;padding-right:0;
     margin-top:clamp(96px,13vh,170px)}
-  .cookienote{text-align:center}
   .cookiestage{width:clamp(99px,9.1vw,122px)}
 }
 </style>
@@ -623,7 +621,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     <div class="herocopy">
       <!-- 3 · hero: the thesis -->
       <section class="hero">
-        <h1><span class="line"><span class="con"><span class="dcap" aria-hidden="true"><svg viewBox="0 0 28 72" focusable="false"><path d="M14 0 V72"/></svg></span><span class="sr">I</span>&nbsp;build</span> <span class="b gs">products,</span> <span class="b gm">brands,</span> <span class="b gl">and&nbsp;pipelines</span></span> <span class="line"><span class="con">with</span> <span class="b gs">AI,</span> <span class="b gm">an&nbsp;opinion,</span> <span class="b gl">and&nbsp;an&nbsp;eye.</span></span></h1>
+        <h1><span class="line"><span class="b"><span class="dcap" aria-hidden="true"><svg viewBox="0 0 28 72" focusable="false"><path d="M14 0 V72"/></svg></span><span class="sr">I</span>&nbsp;build</span> <span class="b gs">products,</span> <span class="b gm">brands,</span> <span class="b gl"><span class="con">and</span>&nbsp;pipelines</span></span> <span class="line"><span class="con">with</span> <span class="b gs">AI,</span> <span class="b gm"><span class="con">an</span>&nbsp;opinion,</span> <span class="b gl"><span class="con">and</span>&nbsp;<span class="con">an</span>&nbsp;eye.</span></span></h1>
       </section>
     </div>
 
