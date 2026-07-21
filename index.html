@@ -290,10 +290,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
        scaled from the TOP so the frame's top stays the anchor as it settles */
     transform-origin:50% 0;
     transform:translate(calc(-1 * var(--sp,0) * var(--drift,0px)), var(--ty,0px))
-              scale(var(--dsc,1));
-    /* its own layer, so the artwork is rasterised once and then only moved,
-       rather than being redrawn at a new sub-pixel offset on every frame */
-    will-change:transform;backface-visibility:hidden}
+              scale(var(--dsc,1))}
   /* a taller framed headshot so the whole face fills the first screen above the
      fold; the source is centred so a slightly-high object-position keeps the face */
   .pframe{aspect-ratio:5/7}
@@ -336,13 +333,19 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* 7 · talk, tucked directly under the portrait */
 .talk{margin-top:clamp(12px,2vw,20px)}
 .talk h2{margin:0;font-weight:600;font-size:clamp(34px,5.4vw,64px);letter-spacing:-.028em;line-height:1}
-.talktrigger{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;
+/* the ask behaves exactly like a lane link: same underline, and the same
+   inverted-ink press. It used to turn its underline green on hover, which was
+   the one interaction on the page that behaved unlike anything else. */
+.talktrigger{appearance:none;background:none;border:0;margin:0;cursor:pointer;
   font-family:inherit;font-weight:inherit;font-size:inherit;letter-spacing:inherit;
-  line-height:inherit;color:inherit;text-align:left;
-  text-decoration:underline;text-decoration-thickness:.03em;text-underline-offset:.14em;
-  text-decoration-color:var(--hair);transition:text-decoration-color .3s}
-.talktrigger:hover{text-decoration-color:var(--ai)}
-.talktrigger:focus-visible{outline:1.5px solid var(--ink);outline-offset:6px}
+  line-height:inherit;color:var(--ink);text-align:inherit;
+  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.18em;
+  text-decoration-color:var(--strong);
+  padding:.02em .1em;margin:-.02em -.1em;
+  transition:background-color .2s ease,color .2s ease,text-decoration-color .2s ease}
+.talktrigger:hover,.talktrigger:focus-visible,.talktrigger:active{
+  background:var(--ink);color:var(--paper);text-decoration-color:transparent}
+.talktrigger:focus-visible{outline:none}
 .talkreveal{overflow:hidden;max-height:0;opacity:0;visibility:hidden;
   transition:max-height .42s cubic-bezier(.3,.7,.3,1),opacity .3s ease,visibility 0s .42s}
 .talkreveal.open{max-height:240px;opacity:1;visibility:visible;
@@ -539,10 +542,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      same line as the nav, and the ask moves toward the middle so it lands beside
      the figure rather than stranded over on the left. */
   .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2);
-    margin-top:clamp(44px,7.5vh,96px)}
-  .cookiestage{width:clamp(128px,12vw,158px)}
-  .talk{margin-left:clamp(0px,24vw,420px)}
+    margin-top:clamp(56px,9vh,116px)}
+  .cookiestage{width:clamp(116px,10.9vw,144px)}
+  .talk{margin-left:0;text-align:center;
+    padding-right:clamp(0px, 900px - 50vw, 300px)}
   .talk h2{font-size:clamp(40px,5vw,70px)}
+  .talkreveal{text-align:left}
 }
 </style>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "faa52c1304e644d7a972cf62bce222eb"}'></script><!-- End Cloudflare Web Analytics -->
@@ -767,7 +772,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     if(dockVpTop < 8) dockVpTop = 8;
     var vpTop = loadVpTop + prog * (dockVpTop - loadVpTop);
     var ty = (vpTop + scroll) - nat;
-    portrait.style.setProperty('--ty', Math.round(ty) + 'px');   /* whole pixels only */
+    portrait.style.setProperty('--ty', ty.toFixed(1) + 'px');
   }
   function tick(){ if(!raf) raf = requestAnimationFrame(update); }
   function remeasure(){ measure(); tick(); }
