@@ -425,8 +425,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    slip. The slip is absolutely positioned inside it (beside / overlapping the
    cookie), so cracking the cookie NEVER adds page height: closed and open are
    the same height, and the ending stays compact on a phone. */
+/* the same small size on a phone as on desktop: it is an aside either way, and
+   at 200px it was reading as a feature of the page rather than a footnote */
 .cookiestage{position:relative;display:inline-block;flex:none;
-  width:clamp(200px,27vw,264px)}
+  width:clamp(112px,32vw,128px)}
 .cookie{appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;flex:none;
   position:relative;width:100%}
 /* the artwork already carries real transparency, so it needs no blend mode. It
