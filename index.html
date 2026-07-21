@@ -64,9 +64,13 @@
 html{-webkit-tap-highlight-color:transparent}
 *{box-sizing:border-box}
 figure{margin:0}
-/* overflow-x:clip prevents horizontal overflow without making the page a scroll
-   container; the hero scrolls in normal document flow (no sticky pin) */
-html,body{margin:0;overflow-x:clip}
+/* overflow-x:clip belongs on html ONLY. On body it makes body a scroll container,
+   and a scroll container between the viewport and a position:sticky element stops
+   that element ever sticking. That single declaration is why the portrait had to
+   be pushed by a script in the first place. */
+html{overflow-x:clip}
+html,body{margin:0}
+main{position:relative}
 body{background:var(--paper);color:var(--ink);font-family:var(--grot);
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:inherit}
@@ -185,13 +189,16 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   --hdr:clamp(150px,19vw,360px);
   --rail:clamp(84px,12vw,150px);
   --overlap:clamp(18px,2.4vw,34px);
-  --pw:clamp(168px,16vw,248px);
+  /* width-driven, but capped by viewport height too: on a short window the
+     figure and its caption still have to land above the footer */
+  --pw:min(clamp(168px,16vw,248px), 28vh);
   /* the portrait STARTS HIGH but must NOT cover the header name: its top only
      LIGHTLY kisses the bottom edge of the header band, so the giant "lalone"
      wordmark stays fully readable. --ptop drops the frame BELOW the header band
      so a clean line of cream shows above it. */
   --ptop:clamp(18px,2.2vw,40px);
   --railH:clamp(340px,52vh,540px);
+  --railstop:clamp(210px,28vh,280px);
   --slide:clamp(24px,4vh,52px)}
 
 .herocopy{position:relative;z-index:2;
@@ -250,7 +257,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   /* it is meant to be READ once the figure has formed, so it stays fully opaque
      and travels down with the figure to sit clear of its feet. The multiplier is
      tuned so it lands below the feet and above the footer rule, on cream. */
-  translate:0 calc((1.2 * var(--pw) + var(--slide)) * var(--sp));
+  /* just past the figure's feet. The figure runs 1.85x the frame height and is
+     nudged down by --slide, and the caption is anchored to the frame box, so it
+     has to clear 0.85 of the frame height plus that nudge. */
+  translate:0 calc((1.19 * var(--pw) + var(--slide)) * var(--sp));
   width:calc(var(--pw) - var(--overlap));font-family:var(--mono);font-size:11px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--soft);line-height:1.7}
 
@@ -258,9 +268,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    on them restarts every single frame. That is what made the hero feel rubbery
    and a step behind the finger. Scrubbed values now track the scroll 1:1. */
 /* reduced motion: no scrub, just the fully-formed figure with the caption below.
-   --dsc scales the tall figure down to a sane size where it rests. */
+   the figure sits formed and still. */
 @media (prefers-reduced-motion:reduce){
-  .portrait{--sp:1;--dsc:.6}
+  .portrait{--sp:1}
   .rail{opacity:1}
 }
 
@@ -283,17 +293,32 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      dead air under the thesis before the practice nav. Halved. The nav now sits
      at or just above the fold on a short window rather than well below it. */
   .herocopy{grid-area:copy;max-width:760px;
-    min-height:calc(100vh - var(--hdr) - clamp(120px,22vh,240px))}
-  .herorail{grid-area:rail;position:relative;min-height:var(--railH)}
+    min-height:calc(100vh - var(--hdr) - clamp(190px,30vh,380px))}
+  /* THE PORTRAIT COLUMN. It leaves the hero grid and spans the whole page, from
+     under the header band to just above the footer, so the portrait inside it
+     can be position:sticky. That is the whole point: sticky is held by the
+     browser on the compositor, in perfect step with the scroll, where the old
+     script had to re-push the portrait down every frame to counteract the scroll
+     and was a fraction of a frame late each time. That lateness was the wobble.
+     The grid still reserves the rail column's width, so the copy column is
+     unchanged. */
+  /* NOTE: .herostage is position:relative, so it would be this column's
+     containing block and the column would stop at the bottom of the hero. It is
+     released here so the column measures against <main>, which is the full page. */
+  .herostage{position:static}
+  .herorail{position:absolute;top:0;right:0;bottom:var(--railstop);
+    width:calc(var(--pw) + var(--rail));min-height:0;pointer-events:none}
+  .rail{left:auto;right:0;width:var(--rail)}
   .practicewrap{grid-area:prac;max-width:760px;
     padding:clamp(20px,3.5vh,44px) clamp(22px,6vw,60px) clamp(18px,3vh,38px) clamp(22px,6vw,76px)}
-  .portrait{position:absolute;top:var(--ptop);
-    right:calc(var(--rail) - var(--overlap));width:var(--pw);
-    /* the scroll script writes --ty (downward travel) and --dsc (dock scale);
-       scaled from the TOP so the frame's top stays the anchor as it settles */
+  /* it scrolls normally until it reaches the sticky offset, then the browser
+     holds it there until the column runs out near the footer, where it settles.
+     No script touches its position at all now. --sp still drives the FORM, which
+     is a slow change and safe to be a frame behind. */
+  .portrait{position:sticky;top:clamp(56px,8vh,110px);
+    width:var(--pw);margin:var(--ptop) calc(var(--rail) - var(--overlap)) 0 auto;
     transform-origin:50% 0;
-    transform:translate(calc(-1 * var(--sp,0) * var(--drift,0px)), var(--ty,0px))
-              scale(var(--dsc,1))}
+    transform:translateX(calc(-1 * var(--sp,0) * var(--drift,0px)))}
   /* a taller framed headshot so the whole face fills the first screen above the
      fold; the source is centred so a slightly-high object-position keeps the face */
   .pframe{aspect-ratio:5/7}
@@ -544,13 +569,19 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      The cookie steps back OUT of that centring so it starts hard left on the
      same line as the nav, and the ask moves toward the middle so it lands beside
      the figure rather than stranded over on the left. */
-  .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2);
-    margin-top:clamp(56px,9vh,116px)}
-  .cookiestage{width:clamp(116px,10.9vw,144px)}
-  .talk{margin-left:0;text-align:center;
-    padding-right:clamp(0px, 900px - 50vw, 300px)}
-  .talk h2{font-size:clamp(40px,5vw,70px)}
-  .talkreveal{display:inline-block;text-align:left;vertical-align:top}
+  /* the ask is the one thing on this screen that matters, so it is big and hard
+     left like everything else that matters. The cookie is the exception: it sits
+     centred, as an aside you find rather than one you are handed. */
+  .talk{margin-left:calc((min(100vw,1180px) - 100vw) / 2);text-align:left;padding-right:0}
+  /* cancel the trigger inset so the text edge lines up with the nav */
+  .talk h2{font-size:clamp(48px,6.6vw,96px);margin-left:.1em}
+  /* centred, but centred in the space LEFT of the figure, or the note runs under
+     it. The figure owns the right of this screen. */
+  .cookiemod{margin-left:0;align-items:center;
+    margin-top:clamp(64px,10vh,132px);
+    padding-right:clamp(120px, 40vw - 180px, 520px)}
+  .cookienote{text-align:center}
+  .cookiestage{width:clamp(104px,9.6vw,128px)}
 }
 </style>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "faa52c1304e644d7a972cf62bce222eb"}'></script><!-- End Cloudflare Web Analytics -->
@@ -686,104 +717,39 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   });
 })();
 
-/* the portrait FORMS and TRAVELS as you scroll, driven by scroll progress (0..1).
-   At load it sits HIGH (top overlapping the header, the whole face above the fold).
-   As you scroll it slides DOWN the page - staying in view, never scrolling up and
-   off - and FORMS from the clean headshot into the six-armed figure across the
-   middle of the journey (--sp 0 to 1). Over the back half it settles to a smaller
-   scale (--dsc) and comes to rest DOCKED BESIDE THE COOKIE at the bottom (figure on
-   the right, cookie on the left). Nothing is pinned: --sp / --ty / --dsc are written
-   each frame. On mobile it just forms in place (no travel). Reduced motion opts out
-   (CSS shows the formed figure at rest). */
+/* the portrait FORMS as you scroll. It no longer TRAVELS by script: the browser
+   holds it with position:sticky, which is why it is now perfectly steady. All
+   this does is write --sp (0..1), the progress of the morph from clean headshot
+   into the six-armed figure. That is a slow, purely visual change, so it is
+   harmless if it lands a frame late. Reduced motion opts out (CSS shows the
+   formed figure at rest). */
 (function(){
   var portrait = document.querySelector('.portrait');
   if(!portrait) return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var host   = document.getElementById('herostage');
-  var fig    = portrait.querySelector('.p1');
-  var cookie = document.querySelector('.cookie');
-  var mqDesk = window.matchMedia('(min-width:900px)');
 
-  var FORM_START = 0.05;   /* scroll progress where the figure begins forming    */
-  var FORM_END   = 0.42;   /* fully the figure, its face still comfortably in view */
-  var MID_SCALE  = 0.68;   /* scale once formed, so the WHOLE figure fits the view */
-  var DOCK_SCALE = 0.72;   /* final scale: the figure fills the closing view, only  */
-                           /* a small cream bar above it, feet just above the footer */
-  var DOCK_FEET  = 30;     /* nudge: the figure's feet land just past the cookie   */
-  var CAP_ROOM   = 72;     /* room kept under the feet for the caption, which is    */
-                           /* meant to be READ once the figure has formed and must  */
-                           /* not land on the footer rule                           */
+  var FORM_START = 0.02;   /* scroll progress where the figure begins forming  */
+  var FORM_END   = 0.34;   /* fully the figure, well before the page runs out  */
 
-  var raf = 0;
+  var raf = 0, max = 1;
   function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-
-  /* PERF: none of these change while you scroll, they only change when the page
-     is laid out again. Reading them inside the scroll handler forced the browser
-     to redo layout on every single frame, which is what made this feel clunky.
-     They are measured once, then re-measured on resize and after the images and
-     fonts land. The scroll handler is now pure arithmetic plus style writes. */
-  var vh = 0, max = 1, nat = 0, cookiePageBottom = 0, figH = 0;
+  /* the only layout read left, and it is not in the scroll path */
   function measure(){
-    vh  = window.innerHeight || document.documentElement.clientHeight;
-    max = Math.max(1, document.documentElement.scrollHeight - vh);
-    nat = host.offsetTop + portrait.offsetTop;      /* frame's page top at --ty 0 */
-    figH = fig.offsetHeight;
-    /* the cookie's page-absolute bottom: constant as you scroll, unlike its
-       viewport position, so it only needs measuring once per layout */
-    cookiePageBottom = cookie.getBoundingClientRect().bottom +
-                       (window.scrollY || window.pageYOffset || 0);
+    max = Math.max(1, document.documentElement.scrollHeight -
+      (window.innerHeight || document.documentElement.clientHeight));
   }
-
   function update(){
     raf = 0;
-    var scroll = window.scrollY || window.pageYOffset || 0;
-    var prog = clamp01(scroll / max);
-
-    /* form */
-    var sp = clamp01((prog - FORM_START) / (FORM_END - FORM_START));
-    portrait.style.setProperty('--sp', sp.toFixed(3));
-    /* the rail is a sibling of the portrait, so it cannot inherit --sp from it */
-    document.documentElement.style.setProperty('--sp', sp.toFixed(3));
-
-    if(!mqDesk.matches){                       /* mobile: form in place, no travel */
-      portrait.style.setProperty('--ty','0px');
-      portrait.style.setProperty('--dsc','1');
-      return;
-    }
-
-    /* scale: full size at load -> MID_SCALE by the time it is fully formed (so the
-       whole figure fits the screen mid-journey) -> DOCK_SCALE at the bottom */
-    var dsc;
-    if(prog <= FORM_END){ dsc = 1 - (1 - MID_SCALE) * (prog / FORM_END); }
-    else { dsc = MID_SCALE - (MID_SCALE - DOCK_SCALE) * ((prog - FORM_END) / (1 - FORM_END)); }
-    portrait.style.setProperty('--dsc', dsc.toFixed(3));
-
-    /* vertical travel: the frame's viewport TOP eases linearly from its natural
-       load spot down to a docked spot beside the cookie. Linear in scroll keeps it
-       in view the whole way (it never rises up and off). */
-    var loadVpTop = nat;                        /* == its viewport top at scroll 0   */
-    var cookieVpBottomAtMax = cookiePageBottom - max;  /* cookie's screen y at the very bottom */
-    var figScaledH = figH * DOCK_SCALE;
-    var dockVpTop = cookieVpBottomAtMax - figScaledH + DOCK_FEET - CAP_ROOM;
-    if(dockVpTop < 48) dockVpTop = 48;          /* keep the head on screen           */
-    /* CAP so the figure's rendered bottom never drops below the viewport bottom at
-       the dock: a figure that overran the last screen would translate BELOW the
-       footer and add phantom scroll height past it. Clamp the dock top so the whole
-       figure lands within the closing view (feet above the footer, never below). */
-    var maxDockTop = vh - figScaledH - 8 - CAP_ROOM;
-    if(dockVpTop > maxDockTop) dockVpTop = maxDockTop;
-    if(dockVpTop < 8) dockVpTop = 8;
-    var vpTop = loadVpTop + prog * (dockVpTop - loadVpTop);
-    var ty = (vpTop + scroll) - nat;
-    portrait.style.setProperty('--ty', ty.toFixed(1) + 'px');
+    var prog = clamp01((window.scrollY || window.pageYOffset || 0) / max);
+    var sp = clamp01((prog - FORM_START) / (FORM_END - FORM_START)).toFixed(3);
+    portrait.style.setProperty('--sp', sp);
+    document.documentElement.style.setProperty('--sp', sp);
   }
   function tick(){ if(!raf) raf = requestAnimationFrame(update); }
   function remeasure(){ measure(); tick(); }
   window.addEventListener('scroll', tick, {passive:true});
   window.addEventListener('resize', remeasure, {passive:true});
   window.addEventListener('orientationchange', remeasure, {passive:true});
-  /* re-measure once the artwork and fonts have settled, since both change where
-     the cookie and the figure actually sit */
   window.addEventListener('load', remeasure);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
   measure();
