@@ -135,6 +135,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .hero h1 .con{font-weight:inherit}
 }
 
+
+
 /* the practice sentence IS the navigation: bigger, editorial, with an
    unmistakable hairline underline at rest and the inverted ink-highlight on
    hover / press. Monochrome ink on paper; the lane-color flood fires on click. */
@@ -281,7 +283,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     /* the scroll script writes --ty (downward travel) and --dsc (dock scale);
        scaled from the TOP so the frame's top stays the anchor as it settles */
     transform-origin:50% 0;
-    transform:translateY(var(--ty,0px)) scale(var(--dsc,1))}
+    transform:translate(calc(-1 * var(--sp,0) * var(--drift,0px)), var(--ty,0px))
+              scale(var(--dsc,1))}
   /* a taller framed headshot so the whole face fills the first screen above the
      fold; the source is centred so a slightly-high object-position keeps the face */
   .pframe{aspect-ratio:5/7}
@@ -506,6 +509,19 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (prefers-reduced-motion:no-preference){
   .flood{transition:transform .35s cubic-bezier(.5,0,.8,.4)}
   .flood.go{transform:translate(-50%,-50%) scale(1)}
+}
+/* CLOSING COMPOSITION (desktop only). Three things were competing on the last
+   screen: the practice nav carried more ink than the call to action even though
+   it was set smaller, the cookie was a bigger object than the ask, and the
+   figure sat pinned to the far edge with nothing tying it to the words. So:
+   the ask gets bigger, the nav and the cookie step back, and the figure drifts
+   inward as it forms so it lands beside the words rather than in the corner. */
+@media (min-width:900px){
+  .practice{font-size:clamp(24px,2.3vw,33px)}
+  .talk h2{font-size:clamp(44px,6vw,86px);font-weight:700}
+  .cookiestage{width:clamp(150px,15vw,190px)}
+  /* the figure walks in from the rail as it forms, closing the gap to the ask */
+  .portrait{--drift:clamp(0px,11vw,210px)}
 }
 </style>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "faa52c1304e644d7a972cf62bce222eb"}'></script><!-- End Cloudflare Web Analytics -->
