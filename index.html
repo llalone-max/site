@@ -106,18 +106,33 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 }
 @keyframes penstroke{to{stroke-dashoffset:0}}
 @keyframes inksettle{0%,74%{transform:none}86%{transform:scaleY(1.018)}100%{transform:none}}
-/* DESKTOP THESIS: three beats at three sizes, each starting in a different
-   place. The uniform block was both boring and too tall to clear the fold on a
-   13in laptop; setting the quiet parts smaller buys the height back and gives
-   the line somewhere to breathe. Mobile keeps the single flowing sentence. */
+/* DESKTOP THESIS: the F2 "spaced beats" treatment. Two lines, each a quiet
+   connector at regular weight followed by heavy beats, with the gap between the
+   beats WIDENING as the line runs. The rhythm is in the spacing, not in the
+   sizes. Sized so each line holds on one line beside the portrait, and so the
+   whole thesis clears the fold on a laptop. Mobile is untouched below. */
 @media (min-width:900px){
-  .hero h1{max-width:none;font-size:clamp(44px,5.2vw,78px);line-height:1.0;
-    letter-spacing:-.036em}
-  .hero h1 .t1,.hero h1 .t2,.hero h1 .t3{display:block}
-  .hero h1 .t1{font-size:.56em;letter-spacing:-.02em}
-  .hero h1 .t2{font-size:1em;margin-top:.06em}
-  .hero h1 .t3{font-size:.46em;letter-spacing:-.012em;color:var(--soft);
-    margin-top:.30em;margin-left:9vw;max-width:none;white-space:nowrap}
+  /* the thesis reaches across the empty middle toward the portrait instead of
+     stopping at the copy column. That width is what lets each line hold on ONE
+     line at a size worth reading, and it closes the dead gap between the two
+     halves of the screen. It stops growing below ~1200px, where the portrait is
+     already close. */
+  .hero h1{max-width:none;font-weight:800;letter-spacing:-.028em;line-height:1.1;
+    width:calc(100% + clamp(0px, 60vw - 660px, 700px));
+    font-size:clamp(30px,2.9vw,58px)}
+  .hero h1 .line{display:flex;flex-wrap:wrap;align-items:baseline}
+  .hero h1 .line + .line{margin-top:.28em}
+  .hero h1 .con{font-weight:400}
+  .hero h1 .b{display:inline-block}
+  .hero h1 .gs{margin-left:clamp(.28em,1vw,.55em)}
+  .hero h1 .gm{margin-left:clamp(.6em,2vw,1.05em)}
+  .hero h1 .gl{margin-left:clamp(1em,3.4vw,1.9em)}
+}
+/* MOBILE: the beats run together as one flowing sentence at the old size, so the
+   phone reads exactly as it does now. The gaps become ordinary word spaces. */
+@media (max-width:899px){
+  .hero h1 .line,.hero h1 .b{display:inline;margin-left:0}
+  .hero h1 .con{font-weight:inherit}
 }
 
 /* the practice sentence IS the navigation: bigger, editorial, with an
@@ -516,7 +531,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     <div class="herocopy">
       <!-- 3 · hero: the thesis -->
       <section class="hero">
-        <h1><span class="t1"><span class="dcap" aria-hidden="true"><svg viewBox="0 0 28 72" focusable="false"><path d="M14 0 V72"/></svg></span><span class="sr">I</span> build</span> <span class="t2">products, brands, and pipelines</span> <span class="t3">with AI, an opinion, and an eye.</span></h1>
+        <h1><span class="line"><span class="con"><span class="dcap" aria-hidden="true"><svg viewBox="0 0 28 72" focusable="false"><path d="M14 0 V72"/></svg></span><span class="sr">I</span>&nbsp;build</span> <span class="b gs">products,</span> <span class="b gm">brands,</span> <span class="b gl">and&nbsp;pipelines</span></span> <span class="line"><span class="con">with</span> <span class="b gs">AI,</span> <span class="b gm">an&nbsp;opinion,</span> <span class="b gl">and&nbsp;an&nbsp;eye.</span></span></h1>
       </section>
     </div>
 
