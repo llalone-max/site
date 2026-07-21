@@ -158,6 +158,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 .lane:focus-visible{outline:none}
 .lq{font-family:var(--mono);font-size:.5em;font-weight:400;letter-spacing:.05em;
   color:var(--dim)}
+/* a lane and its market travel together, so "brands (B2C)" never splits across
+   two lines with the lane stranded on the line above */
+.practice .pair{white-space:nowrap}
 
 /* touch devices have no real hover: cancel the hover state so a tapped lane
    does not stick as inverted ink after you navigate back to it. The hairline
@@ -198,7 +201,11 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      so a clean line of cream shows above it. */
   --ptop:clamp(18px,2.2vw,40px);
   --railH:clamp(340px,52vh,540px);
-  --railstop:clamp(210px,28vh,280px);
+  /* how far above the page bottom the portrait column ends. It has to clear the
+     figure's own overhang AND its caption AND the cookie block below, because
+     both the caption and the cookie are anchored to the page bottom: raising the
+     cookie alone can never catch the caption, they just move together. */
+  --railstop:clamp(210px,28vh,300px);
   --slide:clamp(24px,4vh,52px)}
 
 .herocopy{position:relative;z-index:2;
@@ -220,13 +227,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      bottom edge is well off screen once you reach the end of the page. Tied to
      the portrait rather than to viewport height, so it stays put when the window
      changes. A gradient fade was tried instead and read as a grey smear. */
-  height:calc(var(--ptop) + var(--pw) * 1.30);
-  background:var(--ink);z-index:1;
-  /* and it retires as you scroll. Its bottom edge landed inside the viewport at
-     the end of the page on some window shapes and read as a stray black bar;
-     where it landed depended on page height against viewport height, so no fixed
-     height fixed it everywhere. Tying it to scroll progress does, at any size. */
-  opacity:calc(1 - var(--sp,0) * 1.7)}
+  /* it runs the FULL height of the portrait column rather than stopping partway.
+     A stroke that ends mid-page reads as a stray black bar wherever that end
+     happens to land, and fading it out meant the black disappeared as you
+     scrolled. Running the whole way it just reads as the L's stroke, and only
+     the portrait moves against it. */
+  height:calc(100% + var(--railstop));background:var(--ink);z-index:1}
 
 .portrait{--sp:0;z-index:3}
 /* PERF: --sp is rewritten every scroll frame, so everything that reads it has to
@@ -235,6 +241,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
    alpha, so these are plain rgba: identical pixels, far less style work. */
 .pframe{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;
   background:rgba(255,255,255,calc(1 - var(--sp)));
+  /* the border belongs to the HEADSHOT and fades with it. Keeping it drawn around
+     the formed figure leaves an empty rectangle above the head, because the frame
+     is a 5:7 box while the figure is nearly twice as tall and sits lower in it. */
   border:1px solid rgba(25,24,20,calc(1 - var(--sp)));
   box-shadow:0 18px 40px -22px rgba(25,24,20,calc(.5 * (1 - var(--sp))))}
 .pframe .p0{display:block;position:absolute;inset:0;width:100%;height:100%;
@@ -254,9 +263,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* the frame overlaps the black rail by --overlap on purpose; the caption must
    NOT, or its last few letters end up dark-on-black and unreadable */
 .pcap{position:absolute;left:0;top:calc(100% + 14px);
-  /* it is meant to be READ once the figure has formed, so it stays fully opaque
-     and travels down with the figure to sit clear of its feet. The multiplier is
-     tuned so it lands below the feet and above the footer rule, on cream. */
+  /* it belongs to the FIGURE, not to the headshot, so it is absent at the top and
+     arrives as the figure forms. It travels down to sit clear of the feet. */
+  opacity:calc((var(--sp,0) - .55) * 2.6);
   /* just past the figure's feet. The figure runs 1.85x the frame height and is
      nudged down by --slide, and the caption is anchored to the frame box, so it
      has to clear 0.85 of the frame height plus that nudge. */
@@ -518,7 +527,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .slipcta{transition:opacity .35s ease .28s,translate .35s cubic-bezier(.2,.7,.3,1) .28s}
 }
 .cookiemod.open .slipcta{opacity:1;visibility:visible;translate:0 0}
-.cookienote{flex-basis:100%;margin:0 0 6px;font-family:var(--mono);font-size:10.5px;
+.cookienote{flex-basis:100%;max-width:clamp(150px,15.5vw,300px);margin:0 0 6px;
+  font-family:var(--mono);font-size:10.5px;
   letter-spacing:.08em;color:var(--dim)}
 .rainbow{font-weight:600;
   background:linear-gradient(90deg,#e4572e,#f3a712,#3a9d6f,#4361ee,#8a2be2);
@@ -577,13 +587,17 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .talk{margin-left:calc((min(100vw,1180px) - 100vw) / 2);text-align:left;padding-right:0}
   /* cancel the trigger inset so the text edge lines up with the nav */
   .talk h2{font-size:clamp(48px,6.6vw,96px);margin-left:.1em}
-  /* centred, but centred in the space LEFT of the figure, or the note runs under
-     it. The figure owns the right of this screen. */
-  .cookiemod{margin-left:0;align-items:center;
-    margin-top:clamp(64px,10vh,132px);
-    padding-right:clamp(120px, 40vw - 180px, 520px)}
+  /* dead centre of the page, lined up with the O of the wordmark above. It sits
+     low enough to read as a footnote, and low enough to clear the figure's
+     caption over on the right. */
+  .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2 - clamp(22px,6vw,76px));
+    align-items:center;width:100vw;
+    padding-right:clamp(0px, 1400px - 100vw, 300px);
+    /* low enough that it sits BELOW the figure's caption, so the two never share
+       a line and the cookie can be centred without running into the portrait */
+    margin-top:clamp(96px,13vh,170px)}
   .cookienote{text-align:center}
-  .cookiestage{width:clamp(104px,9.6vw,128px)}
+  .cookiestage{width:clamp(99px,9.1vw,122px)}
 }
 </style>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "faa52c1304e644d7a972cf62bce222eb"}'></script><!-- End Cloudflare Web Analytics -->
@@ -630,8 +644,8 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     <!-- the practice nav: the way in, held below the fold and revealed on scroll -->
     <nav class="practicewrap" aria-label="Practice areas">
       <p class="practice">The practice:
-        <a class="lane" href="healthcare.html" data-lane="hc">healthcare</a> <span class="lq">(B2B)</span>,
-        <a class="lane" href="brands.html" data-lane="br">brands</a> <span class="lq">(B2C)</span>,
+        <span class="pair"><a class="lane" href="healthcare.html" data-lane="hc">healthcare</a> <span class="lq">(B2B)</span>,</span>
+        <span class="pair"><a class="lane" href="brands.html" data-lane="br">brands</a> <span class="lq">(B2C)</span>,</span>
         <a class="lane" href="ai.html" data-lane="ai">ai operations</a>.</p>
     </nav>
 
