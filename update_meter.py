@@ -227,18 +227,26 @@ def build_title():
 
 
 def build_stat(days, vals, rows, today):
-    month = today.strftime("%Y-%m")
-    shown_total = sum(v for d, v in zip(days, vals) if d.strftime("%Y-%m") == month)
-    month_tokens = 0
+    """The stat line describes the DISPLAYED window, not the calendar month.
+
+    It used to sum only current-month days out of the trailing 30-day series,
+    which meant every month rollover opened on "$0 metered this month" beside a
+    chart full of last month's bars, and healed only as the new month filled in.
+    Summing what the chart shows keeps the module self-consistent on every day
+    of the year with no special-casing.
+    """
+    shown_total = sum(vals)
+    window_days = {d.strftime("%Y-%m-%d") for d in days}
+    window_tokens = 0
     for f in rows:
         d = (f.get("Date") or "")[:10]
-        if d.startswith(month) and (f.get("Unit_Type") or "tokens") == "tokens":
-            month_tokens += PUBLIC_MULT_TOKENS * int(f.get("Units") or 0)
+        if d in window_days and (f.get("Unit_Type") or "tokens") == "tokens":
+            window_tokens += PUBLIC_MULT_TOKENS * int(f.get("Units") or 0)
     since = f'{days[0].strftime("%b")} {days[0].day}'
     # the headline number reads first; the meta line is dimmer context
     return ('          <span class="opsstat"><span class="live"></span>'
-            f'<span class="ostot"><em>{money(shown_total)}</em> metered this month</span>'
-            f'<span class="osmeta">since {since} &#183; {tokens_fmt(month_tokens)} tokens</span></span>')
+            f'<span class="ostot"><em>{money(shown_total)}</em> metered in the last 30 days</span>'
+            f'<span class="osmeta">since {since} &#183; {tokens_fmt(window_tokens)} tokens</span></span>')
 
 
 def build_split(rows):

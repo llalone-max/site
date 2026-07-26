@@ -4,11 +4,12 @@
 <meta charset="utf-8">
 <title>AI Operations &#183; Lazar LaLone</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="The AI operations practice of Lazar LaLone.">
+<meta name="description" content="The AI operations of Lazar LaLone: content pipelines that meter their own cost, with a live daily snapshot of metered AI spend.">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
 <link rel="icon" href="/favicon-16.png" sizes="16x16">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="canonical" href="https://lazarlalone.com/ai.html">
 <link rel="prefetch" href="index.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lazar LaLone">
@@ -209,6 +210,9 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
    within the viewport, so a vertical swipe advances the walk instead of scrolling. */
 @media (max-width:600px){
   .panel{padding-top:calc(40px + clamp(14px,3vh,26px))}
+  /* the SVG scales down ~46% on a phone; 9.5px axis text rendered ~5px. 15px
+     in the viewBox renders ~8px on a 390 screen, which is legible. */
+  .chart text{font-size:15px}
 }
 </style>
 <script>
