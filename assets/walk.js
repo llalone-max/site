@@ -281,15 +281,19 @@
     [].forEach.call(sheet.querySelectorAll('a[href^="sms:"]'), function(a){
       a.addEventListener('click', function(e){
         e.preventDefault();
+        /* keep the number exactly as it is written, spaces and all: the raw href
+           form is for the dialler, not for a human to read off a screen. */
         var num = a.getAttribute('href').replace('sms:', '');
         var lab = a.querySelector('.lab');
-        if(lab) lab.textContent = 'Copy it';
-        a.firstChild.textContent = num + ' ';
+        var shown = a.firstChild;
+        if(shown && shown.nodeType === 3) shown.textContent = shown.textContent.replace(/^\s*Text\s*/, '');
+        if(navigator.clipboard){
+          navigator.clipboard.writeText(num).then(function(){
+            if(lab) lab.textContent = 'Copied';
+          }, function(){ if(lab) lab.textContent = 'Select and copy'; });
+        } else if(lab){ lab.textContent = 'Select and copy'; }
         var r = document.createRange(); r.selectNodeContents(a);
         var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
-        if(navigator.clipboard) navigator.clipboard.writeText(num).then(function(){
-          if(lab) lab.textContent = 'Copied';
-        }, function(){});
       });
     });
   }
