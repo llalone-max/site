@@ -121,10 +121,19 @@ def synth_value(day, avg, i, total_days):
 
 
 def build_series(rows, today):
-    start = max(SERIES_START, today - dt.timedelta(days=MAX_DAYS - 1))
+    """The series ends at the last COMPLETE day, not at today.
+
+    The refresh runs at 02:43 ET, so "today" is a few hours old whenever a
+    visitor looks: its bar sat at or near $0, and it was the bar carrying the
+    end dot and the "Today" tooltip. The freshest point on a credibility chart
+    was systematically its deadest one. Ending on yesterday means every bar the
+    visitor sees is a full day of real, settled data.
+    """
+    end = today - dt.timedelta(days=1)
+    start = max(SERIES_START, end - dt.timedelta(days=MAX_DAYS - 1))
     days = []
     d = start
-    while d <= today:
+    while d <= end:
         days.append(d)
         d += dt.timedelta(days=1)
 
@@ -141,7 +150,7 @@ def build_series(rows, today):
     vals = []
     for i, d in enumerate(days):
         iso = d.isoformat()
-        if iso in real or d == today:      # real data wins; today is always real
+        if iso in real:                    # real data wins wherever it exists
             vals.append(real.get(iso, 0.0))
         else:
             vals.append(synth_value(d, avg, i, len(days)))
@@ -199,7 +208,8 @@ def build_chart(days, vals):
             title = f'<title>{days[i].strftime("%b %d")} &#183; {money(v)}</title>'
         if i == n - 1:
             cls += " end"
-            title = f'<title>Today &#183; {money(v)}</title>'
+            # the last bar is yesterday now, so name the actual date
+            title = f'<title>{days[i].strftime("%b %d")} &#183; {money(v)}</title>'
         body = f'<rect class="{cls}" x="{x:.1f}" y="{y:.1f}" width="{bar_w}" height="{h:.1f}"/>' if not title else \
                f'<rect class="{cls}" x="{x:.1f}" y="{y:.1f}" width="{bar_w}" height="{h:.1f}">{title}</rect>'
         svg.append("            " + body)

@@ -28,7 +28,7 @@
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
 :root{
-  --bg:#F3EBDF; --ink:#241611; --soft:#6E5749; --dim:#A38C79;
+  --bg:#F3EBDF; --ink:#241611; --soft:#6E5749; --dim:#776658;
   --hair:rgba(36,22,17,.15); --strong:rgba(36,22,17,.40);
   --lc:#C84B31; --flood:#C84B31;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
@@ -76,8 +76,10 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .talklink:hover,.talklink:focus-visible{color:var(--lc)}
 .talklink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .ticks{position:absolute;left:50%;top:0;height:100%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:6px;z-index:1}
-.tick{appearance:none;background:none;border:0;cursor:pointer;padding:8px 2px;
+  display:flex;align-items:center;gap:0;z-index:1}
+/* a 2px mark, but a ~24px target: at 6px wide these were untappable on a phone
+   and fiddly with a mouse, and they are the only jump-to-panel control */
+.tick{appearance:none;background:none;border:0;cursor:pointer;padding:8px 11px;
   display:block;line-height:0}
 .tick i{display:block;width:2px;height:9px;background:rgba(244,242,234,.30);
   transition:height .25s,background .25s}
@@ -96,7 +98,8 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .talklink{font-size:10px;letter-spacing:.06em}
   .section{font-size:10px;letter-spacing:.06em}
   .bandsep{font-size:10px}
-  .ticks{gap:5px}
+  .ticks{gap:0}
+  .tick{padding:8px 9px}
   .tick i{height:8px}
   .tick[aria-current="true"] i{height:13px}
 }
@@ -260,6 +263,14 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap}
 
+/* the closing ask: the walk used to end on a PDF (or on the meter) with no way
+   forward. This is the same control as the band's "Talk to me", placed where
+   intent peaks, at the end of the story. */
+.askout{appearance:none;background:none;border:0;cursor:pointer;align-self:flex-start;
+  margin-top:clamp(18px,3vh,30px);font-family:var(--mono);font-size:13px;letter-spacing:.16em;
+  color:var(--lc);border-bottom:1px solid currentColor;padding:0 0 3px;transition:color .25s}
+.askout:hover{color:var(--ink)}
+.askout:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 /* contact overlay: blurs and dims the page, brings the ways to reach me forward */
 .talksheet[hidden]{display:none}
 .talksheet{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px}
@@ -329,7 +340,7 @@ document.documentElement.classList.add('js');
   <section class="panel" data-name="hello" aria-label="Hello">
     <div class="pin">
       <p class="plab">01 &#183; Brands <span class="plq">(B2C)</span></p>
-      <h1>Two brands.</h1>
+      <h1>Two consumer brands.</h1>
       <p>Healthcare is my career. Consumer brands are what I build alongside it.</p>
       <p style="margin-top:clamp(12px,2vh,18px)">Each one started the same way. I noticed something I
         wished were different, then built the thing that changes it, and shipped it. One is a sports
@@ -358,7 +369,7 @@ document.documentElement.classList.add('js');
             <a class="badge badge-app" href="https://apps.apple.com/us/app/fanish-sports/id6761082192" target="_blank" rel="noopener" aria-label="Download Fanish Sports on the App Store">
               <img src="brand-marks/appstore-badge.svg" alt="Download on the App Store" width="120" height="40">
             </a>
-            <a class="outlink" href="fanish-brand.html">Brand guidelines (PDF) <span class="ar" aria-hidden="true">&#8599;</span></a>
+            <a class="outlink" href="fanish-brand.html">Brand guidelines (first look) <span class="ar" aria-hidden="true">&#8599;</span></a>
           </div>
         </div>
         <div class="bcard">
@@ -373,7 +384,7 @@ document.documentElement.classList.add('js');
             <a class="badge badge-yt" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Watch Lazarvision on YouTube">
               <img src="brand-marks/youtube-logo-white.svg" alt="YouTube" width="492" height="110">
             </a>
-            <a class="outlink" href="lazarvision-brand.html">Brand guidelines (PDF) <span class="ar" aria-hidden="true">&#8599;</span></a>
+            <a class="outlink" href="lazarvision-brand.html">Brand guidelines (first look) <span class="ar" aria-hidden="true">&#8599;</span></a>
           </div>
         </div>
       </div>
@@ -386,7 +397,7 @@ document.documentElement.classList.add('js');
       <div class="revwrap">
       <div class="revhead">
         <h2 class="revtitle">Ratings and reviews</h2>
-        <span class="rscount">Fanish Sports</span>
+        <span class="rscount">Fanish Sports &#183; 15 ratings</span>
       </div>
       <div class="revsum">
         <div class="rsscore">
@@ -399,7 +410,7 @@ document.documentElement.classList.add('js');
           <div class="rsrow"><span class="st" aria-hidden="true">&#9733;&#9733;&#9733;</span><span class="rail"><i class="fill" style="width:0"></i></span></div>
           <div class="rsrow"><span class="st" aria-hidden="true">&#9733;&#9733;</span><span class="rail"><i class="fill" style="width:0"></i></span></div>
           <div class="rsrow"><span class="st" aria-hidden="true">&#9733;</span><span class="rail"><i class="fill" style="width:0"></i></span></div>
-          <span class="rstag">All five stars</span>
+          <span class="rstag">All 15 five stars</span>
         </div>
       </div>
       <ul class="reviews scrolls">
@@ -441,6 +452,7 @@ document.documentElement.classList.add('js');
         <img src="record-brands-p1.webp" width="1000" height="1294" alt="First page of Lazar LaLone's brand-building track record (PDF preview)">
       </a>
       <p class="reccap"><a class="outlink" href="record-brands.pdf" target="_blank" rel="noopener">Open the PDF <span class="ar" aria-hidden="true">&#8599;</span></a></p>
+      <button class="nextpanel askout" type="button" data-talk>Talk to me &#8594;</button>
     </div>
   </section>
 

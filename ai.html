@@ -28,7 +28,7 @@
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
 :root{
-  --bg:#0F0D08; --ink:#F2B24C; --soft:#C08A3E; --dim:#7A5A2E;
+  --bg:#0F0D08; --ink:#F2B24C; --soft:#C08A3E; --dim:#927854;
   --hair:rgba(255,176,0,.16); --strong:rgba(255,176,0,.42);
   --lc:#FFB000; --flood:#FFB000;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
@@ -76,8 +76,9 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .talklink:hover,.talklink:focus-visible{color:var(--lc)}
 .talklink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .ticks{position:absolute;left:50%;top:0;height:100%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:6px;z-index:1}
-.tick{appearance:none;background:none;border:0;cursor:pointer;padding:8px 2px;
+  display:flex;align-items:center;gap:0;z-index:1}
+/* a 2px mark, but a ~24px target (see the other lanes) */
+.tick{appearance:none;background:none;border:0;cursor:pointer;padding:8px 11px;
   display:block;line-height:0}
 .tick i{display:block;width:2px;height:9px;background:rgba(244,242,234,.30);
   transition:height .25s,background .25s}
@@ -96,7 +97,10 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .talklink{font-size:10px;letter-spacing:.06em}
   .section{font-size:10px;letter-spacing:.06em}
   .bandsep{font-size:10px}
-  .ticks{gap:5px}
+  /* off dead-centre on a phone: centred, the last tick grazed the T of
+     "Talk to me", and the CTA should never look crowded */
+  .ticks{gap:0;left:42%}
+  .tick{padding:8px 9px}
   .tick i{height:8px}
   .tick[aria-current="true"] i{height:13px}
 }
@@ -176,6 +180,14 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .splitrow{font-size:10.5px;letter-spacing:.03em}
 }
 
+/* the closing ask: the walk used to end on a PDF (or on the meter) with no way
+   forward. This is the same control as the band's "Talk to me", placed where
+   intent peaks, at the end of the story. */
+.askout{appearance:none;background:none;border:0;cursor:pointer;align-self:flex-start;
+  margin-top:clamp(18px,3vh,30px);font-family:var(--mono);font-size:13px;letter-spacing:.16em;
+  color:var(--lc);border-bottom:1px solid currentColor;padding:0 0 3px;transition:color .25s}
+.askout:hover{color:var(--ink)}
+.askout:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 /* contact overlay: blurs and dims the page, brings the ways to reach me forward */
 .talksheet[hidden]{display:none}
 .talksheet{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px}
@@ -240,7 +252,8 @@ document.documentElement.classList.add('js');
       <p class="plab">01 &#183; ai operations</p>
       <h1>Everything runs on pipelines.</h1>
       <p>Everything I ship runs on AI pipelines, and every pipeline meters its own cost:
-        per brand, per process, per step, computed the moment each API call returns.</p>
+        per brand, per process, per step, computed the moment each API call returns.
+        That is what the chart on the next panel is drawn from.</p>
     </div>
   </section>
 
@@ -248,8 +261,8 @@ document.documentElement.classList.add('js');
     <div class="pin">
       <p class="plab">02 &#183; the work</p>
       <h2>The meter.</h2>
-      <p>Every call meters its own cost the moment it returns. This public chart is a
-        snapshot of that meter, refreshed once a day.</p>
+      <p>This is the same meter I run the business on. What you see is a snapshot of it,
+        refreshed once a day.</p>
       <div class="ops">
         <!--METER-->
           <span class="metertitle">Metered AI spend by day, in US dollars</span>
@@ -298,6 +311,7 @@ document.documentElement.classList.add('js');
           <span class="segbar" aria-hidden="true"><i class="s1" style="flex-grow:63"></i><i class="s2" style="flex-grow:32"></i><i class="s3" style="flex-grow:5"></i></span>
           <span class="splitrow"><span class="sl"><i class="sw s1"></i>Auditing <b>63%</b></span> <span class="sl"><i class="sw s2"></i>Net-new content <b>32%</b></span> <span class="sl"><i class="sw s3"></i>Data fetching <b>5%</b></span></span>
           <span class="depth">High-level for the purposes of this page. Full, per-process drill-down runs internally.</span></span>
+        <button class="nextpanel askout" type="button" data-talk>Seen enough? Talk to me &#8594;</button>
         <!--/METER-->
       </div>
     </div>

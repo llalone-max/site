@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Lazar LaLone</title>
+<title>Lazar LaLone: healthcare product, brands, and AI operations</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Lazar LaLone builds products, brands, and pipelines with AI, an opinion, and an eye.">
 <meta name="google-site-verification" content="bLp2S2DyYAtjobRO4L-S2hYUjFVJSSQ6AiASKdqaomM">
@@ -54,7 +54,7 @@
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
 :root{
-  --paper:#F2F1EA; --ink:#191814; --soft:#605C50; --dim:#98937F;
+  --paper:#F2F1EA; --ink:#191814; --soft:#605C50; --dim:#6F6B5D;
   --hair:rgba(25,24,20,.16); --strong:rgba(25,24,20,.42);
   --hc:#3E7CB1; --br:#C84B31;
   /* --sel is the site-wide selection green. It is NOT the ai lane's accent (that
@@ -548,6 +548,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (max-width:899px){
   .colophon{margin-top:clamp(24px,3.4vh,34px)}
 }
+/* the bio line: small, quiet, and the only prose on the page that names the
+   companies. It reads as a colophon note, not as body copy. */
+.bioline{margin:0 0 10px;max-width:62ch;font-family:var(--mono);font-size:11px;
+  line-height:1.75;letter-spacing:.04em;color:var(--dim)}
+.bioline a{color:var(--soft);text-decoration:underline;text-underline-offset:.18em;
+  text-decoration-color:var(--hair);transition:color .25s,text-decoration-color .25s}
+.bioline a:hover{color:var(--ink);text-decoration-color:currentColor}
 .credit{margin:14px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
   line-height:1.9;color:var(--dim)}
 .credit a{color:inherit;text-decoration:none;border-bottom:1px solid var(--hair);transition:color .25s}
@@ -694,6 +701,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 
   <!-- 8 · colophon: a quiet credit line -->
   <footer class="colophon">
+    <!-- one plain, quotable sentence. Nothing else on this page states in prose who
+         he is or where he has worked, so an answer engine asked "who is Lazar
+         LaLone" had only the abstract thesis line to work with. -->
+    <p class="bioline">Lazar LaLone is a healthcare product and go-to-market operator
+      (Epic, Ambience), founder of <a href="https://www.fractionalaesthetics.com"
+      target="_blank" rel="noopener">Fractional Aesthetics</a>, and the builder of the
+      consumer brands <a href="brands.html">Fanish Sports and Lazarvision</a>.</p>
     <p class="credit">&copy; 2026 Lazar LaLone</p>
   </footer>
 

@@ -31,7 +31,7 @@
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
 :root{
-  --bg:#F7F9FB; --ink:#17222B; --soft:#5A6B78; --dim:#93A3AE;
+  --bg:#F7F9FB; --ink:#17222B; --soft:#5A6B78; --dim:#67727A;
   --hair:rgba(23,34,43,.14); --strong:rgba(23,34,43,.4);
   --lc:#3E7CB1; --flood:#3E7CB1;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
@@ -79,8 +79,10 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .talklink:hover,.talklink:focus-visible{color:var(--lc)}
 .talklink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 .ticks{position:absolute;left:50%;top:0;height:100%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:6px;z-index:1}
-.tick{appearance:none;background:none;border:0;cursor:pointer;padding:8px 2px;
+  display:flex;align-items:center;gap:0;z-index:1}
+/* a 2px mark, but a ~24px target: at 6px wide these were untappable on a phone
+   and fiddly with a mouse, and they are the only jump-to-panel control */
+.tick{appearance:none;background:none;border:0;cursor:pointer;padding:8px 11px;
   display:block;line-height:0}
 .tick i{display:block;width:2px;height:9px;background:rgba(244,242,234,.30);
   transition:height .25s,background .25s}
@@ -99,7 +101,8 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .talklink{font-size:10px;letter-spacing:.06em}
   .section{font-size:10px;letter-spacing:.06em}
   .bandsep{font-size:10px}
-  .ticks{gap:5px}
+  .ticks{gap:0}
+  .tick{padding:8px 9px}
   .tick i{height:8px}
   .tick[aria-current="true"] i{height:13px}
 }
@@ -211,6 +214,14 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   color:var(--lc);border-bottom:1px solid currentColor;padding:0 0 3px;transition:color .25s}
 .nextpanel:hover{color:var(--ink)}
 .nextpanel:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
+/* the closing ask: same control as the band's "Talk to me", placed where intent
+   peaks, at the end of the story instead of a PDF dead end. */
+.askout{margin-top:clamp(18px,3vh,30px);font-size:13px}
+/* the closing ask: the walk used to end on a PDF with no way forward. This is the
+   same control as the band's "Talk to me", placed where intent peaks. */
+.askout{margin-top:clamp(18px,3vh,28px);font-size:13px;color:var(--lc)}
+.askout:hover{color:var(--ink)}
+
 
 /* the venture: one prominent doorway to fractionalaesthetics.com, centered in the
    panel. The image IS the link, framed on the headline (a zoom into the top-left of
@@ -349,17 +360,17 @@ document.documentElement.classList.add('js');
            as artifact rather than a heartbeat. -->
       <svg class="ekgrule" viewBox="0 0 340 16" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 9.5 H120 Q126 4.5 132 9.5 L146 9.5 L148.5 11.2 L152 1 L155.5 13.6 L158 9.5 L170 9.5 C176 5.5 186 5.2 192 9.5 H340"/></svg>
-      <h1>My Career.</h1>
+      <h1>My healthcare career.</h1>
       <p>It started early: an interest in medicine became med school, then dropping out, then
         health tech. I have been in it ever since.</p>
       <p>I got started at Epic, as many of us do, in patient flow and front-to-mid revenue
         cycle: registration, scheduling, authorizations, eligibility, and capacity across
         inpatient and outpatient. That work teaches you a health system the way almost nothing
         else does.</p>
-      <p>Most recently at Ambience, I worked in customer-facing operations, deploying at the
-        highest-priority clients and owning the release process. You cannot get the right
-        patient to the right place at the right time if what gets built never reaches the people
-        who need it. Knowing the system from the inside is what makes me effective.</p>
+      <p>Most recently at Ambience, I led ambient AI deployments at our highest-priority health
+        systems and owned the release process. You cannot get the right patient to the right place
+        at the right time if what gets built never reaches the people who need it. Knowing the
+        system from the inside is what makes me effective.</p>
     </div>
   </section>
 
@@ -419,6 +430,7 @@ document.documentElement.classList.add('js');
         <img src="record-healthcare-p1.webp" width="1000" height="1294" alt="First page of Lazar LaLone's healthcare track record (PDF preview)">
       </a>
       <p class="reccap"><a class="outlink" href="record-healthcare.pdf" target="_blank" rel="noopener">Open the PDF <span class="ar" aria-hidden="true">&#8599;</span></a></p>
+      <button class="nextpanel askout" type="button" data-talk>Talk to me &#8594;</button>
     </div>
   </section>
 

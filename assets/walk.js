@@ -14,7 +14,9 @@
      forward. Esc, the close control, or the scrim closes it and unblurs. Focus is
      moved in on open and restored on close, and Tab is trapped inside. */
   var sheet = document.getElementById('talksheet');
-  var talkBtn = document.querySelector('[data-talk]');
+  /* every [data-talk] opens the sheet, not just the band link: the lanes now end
+     on an in-panel ask too, and querySelector would have bound only the first */
+  var talkBtns = document.querySelectorAll('[data-talk]');
   var lastFocus = null;
   function openTalk(){
     if(!sheet) return;
@@ -28,7 +30,9 @@
     sheet.hidden = true;
     if(lastFocus && lastFocus.focus) lastFocus.focus();
   }
-  if(talkBtn) talkBtn.addEventListener('click', function(e){ e.preventDefault(); openTalk(); });
+  [].forEach.call(talkBtns, function(btn){
+    btn.addEventListener('click', function(e){ e.preventDefault(); openTalk(); });
+  });
   if(sheet){
     [].forEach.call(sheet.querySelectorAll('[data-talkclose]'), function(el){
       el.addEventListener('click', closeTalk);
@@ -49,11 +53,15 @@
 
   /* tick pagination: one mark per panel, the current one emphasized. Marks jump. */
   var ticksWrap = document.getElementById('ticks');
+  /* plain buttons, not tabs. role="tab" sets expectations this pattern does not
+     meet (no tabpanels, no roving focus) and ignores aria-current, so a screen
+     reader announced every tick as "tab, not selected" including the active one.
+     A nav of buttons carrying aria-current is the honest description. */
+  if(ticksWrap){ ticksWrap.setAttribute('role', 'group'); ticksWrap.setAttribute('aria-label', 'Panels'); }
   var ticks = panels.map(function(p, i){
     var b = document.createElement('button');
     b.className = 'tick'; b.type = 'button';
-    b.setAttribute('role', 'tab');
-    b.setAttribute('aria-label', p.getAttribute('data-name'));
+    b.setAttribute('aria-label', 'Go to ' + p.getAttribute('data-name'));
     b.innerHTML = '<i></i>';
     b.addEventListener('click', function(){ toIndex(i); });
     if(ticksWrap) ticksWrap.appendChild(b);
@@ -266,6 +274,26 @@
     b.addEventListener('click', function(){ next(); });
   });
 
+  /* the Text row in the sheet: sms: goes nowhere on a desktop browser, so rather
+     than a dead click it turns into the number itself, selected and ready to copy.
+     Phones keep the real sms: behaviour. */
+  if(!window.matchMedia('(hover:none), (pointer:coarse)').matches && sheet){
+    [].forEach.call(sheet.querySelectorAll('a[href^="sms:"]'), function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        var num = a.getAttribute('href').replace('sms:', '');
+        var lab = a.querySelector('.lab');
+        if(lab) lab.textContent = 'Copy it';
+        a.firstChild.textContent = num + ' ';
+        var r = document.createRange(); r.selectNodeContents(a);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        if(navigator.clipboard) navigator.clipboard.writeText(num).then(function(){
+          if(lab) lab.textContent = 'Copied';
+        }, function(){});
+      });
+    });
+  }
+
   /* going home: the same colour flood that brought you into this lane, run again
      on the way out, so leaving matches arriving. Swiping back already felt right
      because the browser handles it; clicking the wordmark used to be a plain
@@ -306,6 +334,18 @@
       if(e.key === ' ' || e.key === 'Enter') return;
     }
     var k = e.key;
+    /* a scrolling box gets the vertical keys first, exactly as it gets the wheel:
+       without this a keyboard visitor could never reach the reviews or the résumé
+       below their fold, because the walk swallowed every ArrowDown. */
+    if(k === 'ArrowDown' || k === 'ArrowUp'){
+      var kbox = scrollBox(document.activeElement);
+      var kdir = k === 'ArrowDown' ? 1 : -1;
+      if(hasRoom(kbox, kdir)){
+        e.preventDefault();
+        kbox.scrollTop += kdir * Math.max(48, kbox.clientHeight * 0.4);
+        return;
+      }
+    }
     if(k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown'){ e.preventDefault(); next(); }
     else if(k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp'){ e.preventDefault(); prev(); }
     else if(k === 'Home'){ e.preventDefault(); toIndex(0); }
