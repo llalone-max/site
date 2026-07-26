@@ -126,7 +126,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     font-size:clamp(30px,2.9vw,58px)}
   .hero h1 .line{display:flex;flex-wrap:wrap;align-items:baseline}
   .hero h1 .line + .line{margin-top:.28em}
-  .hero h1 .con{font-weight:400}
+  /* everything bold, everything the same size: the mixed weights broke the line
+     up without earning it. The connectives keep only a whisper less ink, which
+     reads as texture up close and as one solid mass at arm's length. */
+  .hero h1 .con{font-weight:800;color:rgba(25,24,20,.86)}
   .hero h1 .b{display:inline-block}
   .hero h1 .gs{margin-left:clamp(.28em,1vw,.55em)}
   .hero h1 .gm{margin-left:clamp(.6em,2vw,1.05em)}
@@ -590,11 +593,15 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   /* dead centre of the page, lined up with the O of the wordmark above. It sits
      low enough to read as a footnote, and low enough to clear the figure's
      caption over on the right. */
+  /* the credit reads centred on desktop; left-oriented it looked like it had
+     simply been forgotten at the edge */
+  .colophon{text-align:center}
+  .colophon .credit{display:inline-block}
   /* left, on the same line as the practice nav and the ask. Everything that
      matters on this screen is left-oriented; the cookie is the same. */
   .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2);
     align-items:flex-start;width:auto;padding-right:0;
-    margin-top:clamp(96px,13vh,170px)}
+    margin-top:clamp(150px,20vh,250px)}
   .cookiestage{width:clamp(99px,9.1vw,122px)}
 }
 </style>
