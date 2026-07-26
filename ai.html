@@ -312,6 +312,10 @@ document.documentElement.classList.add('js');
           <span class="depth">High-level for the purposes of this page. Full, per-process drill-down runs internally.</span></span>
         <!--/METER-->
       </div>
+      <!-- NOTE: this sits OUTSIDE the METER markers on purpose. update_meter.py
+           replaces everything between them every day, so anything placed inside
+           is deleted by the next refresh. -->
+      <button class="nextpanel askout" type="button" data-talk>Seen enough? Talk to me &#8594;</button>
     </div>
   </section>
 
