@@ -153,7 +153,12 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bwm-mark{display:block;height:auto;width:auto}
 /* sized by WIDTH, since the two lockups have different proportions: matched so
    the FANISH and LAZARVISION wordmarks read at the same weight side by side. */
-.bwm-fan{width:clamp(166px,17vw,216px)}
+/* the Fanish wordmark runs LARGER than the Lazarvision lockup on purpose. Same
+   box width made them badly unequal: measured, the Lazarvision mark covers 38%
+   of its box in ink against Fanish's 7%, because one is a heavy condensed bold
+   with a starburst and the other is a light serif. Matching boxes made Fanish
+   read as the smaller brand. Sized so the two carry the same visual weight. */
+.bwm-fan{width:clamp(200px,22vw,285px)}
 .bwm-lv{width:clamp(168px,17.5vw,220px)}
 .bwm .ar{color:var(--lc);font-family:var(--mono);font-size:13px;display:inline-block;
   vertical-align:top;margin-left:.14em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
