@@ -130,7 +130,7 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 @media (prefers-reduced-motion:reduce){.pin{transform:none!important;opacity:1!important}}
 
 /* the brands: two co-equal cards, equal size and weight. App Store cues on
-   Fanish, YouTube on Lazarvision. Side by side on desktop, stacked on phones. */
+   Fanish, Instagram on Lazarvision. Side by side on desktop, stacked on phones. */
 .brandgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(13px,1.8vw,20px);
   max-width:720px;margin-top:clamp(8px,1.8vh,16px);align-items:stretch}
 .bcard{display:flex;flex-direction:column;min-width:0;
@@ -164,18 +164,22 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   margin-top:auto;padding-top:clamp(14px,2.2vh,20px)}
 /* the store buttons: the OFFICIAL assets, the ones people recognise. Apple's
    "Download on the App Store" badge is used whole and unaltered, as its terms
-   require. YouTube has no equivalent badge, so its official white logo sits on a
-   black button built to Apple's proportions, which keeps the two cards co-equal.
-   Both share one height so neither brand looks like the bigger one. */
+   require. Instagram publishes no equivalent badge, so its glyph sits solid
+   white on a black button built to Apple's proportions (Instagram's guidelines
+   allow the solid one-colour glyph where full colour is not feasible, which a
+   black pill beside a black Apple badge is not). Both share one height so
+   neither brand looks like the bigger one. */
 .badge{--badge-h:clamp(38px,4.8vh,46px);
   display:inline-flex;align-items:center;height:var(--badge-h);
   text-decoration:none;transition:transform .2s,filter .25s}
 .badge:hover{transform:translateY(-1px)}
 .badge img{display:block;height:100%;width:auto}
-.badge-yt{background:#000;border-radius:calc(var(--badge-h) * .213);
-  padding:0 calc(var(--badge-h) * .30)}
-.badge-yt img{height:calc(var(--badge-h) * .46)}
-.badge-yt:hover{filter:brightness(1.18)}
+.badge-ig{background:#000;border-radius:calc(var(--badge-h) * .213);
+  padding:0 calc(var(--badge-h) * .34);gap:calc(var(--badge-h) * .22)}
+.badge-ig img{height:calc(var(--badge-h) * .50)}
+.badge-ig .iglbl{color:#fff;font-family:var(--grot);font-weight:600;
+  font-size:calc(var(--badge-h) * .38);letter-spacing:-.01em;line-height:1}
+.badge-ig:hover{filter:brightness(1.35)}
 .badge-app:hover{filter:brightness(1.12)}
 .badge:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 
@@ -397,7 +401,7 @@ document.documentElement.classList.add('js');
           </div>
         </div>
         <div class="bcard">
-          <a class="bwm" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Lazarvision on YouTube">
+          <a class="bwm" href="https://www.instagram.com/lazar.vision/reels/" target="_blank" rel="noopener" aria-label="Lazarvision on Instagram">
             <span class="bwm-lvrow">
               <img class="bwm-mark bwm-lv" src="brand-marks/lazarvision-horizontal.svg" alt="Lazarvision" width="934" height="330">
               <span class="ar" aria-hidden="true">&#8599;</span>
@@ -405,8 +409,9 @@ document.documentElement.classList.add('js');
           </a>
           <p class="bdesc">Cultural commentary.</p>
           <div class="blinks">
-            <a class="badge badge-yt" href="https://www.youtube.com/@lazarvision" target="_blank" rel="noopener" aria-label="Watch Lazarvision on YouTube">
-              <img src="brand-marks/youtube-logo-white.svg" alt="YouTube" width="492" height="110">
+            <a class="badge badge-ig" href="https://www.instagram.com/lazar.vision/reels/" target="_blank" rel="noopener" aria-label="Watch Lazarvision on Instagram">
+              <img src="brand-marks/instagram-glyph-white.svg" alt="" width="24" height="24">
+              <span class="iglbl">Instagram</span>
             </a>
             <a class="outlink" href="lazarvision-brand.html">Brand guidelines (first look) <span class="ar" aria-hidden="true">&#8599;</span></a>
           </div>
