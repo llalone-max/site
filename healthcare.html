@@ -333,7 +333,31 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 <script>
 document.documentElement.classList.add('js');
 </script>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "faa52c1304e644d7a972cf62bce222eb"}'></script><!-- End Cloudflare Web Analytics -->
+<!-- Cloudflare Web Analytics, with a way to leave MYSELF out of the numbers.
+     Visiting /?notrack=1 once in a browser sets a flag and the beacon never loads
+     there again; /?track=1 undoes it. This has to exist because I open the site
+     constantly to edit and audit it, and on a site this size my own visits would
+     be most of the "direct" traffic, which is the very bucket that tells me
+     whether LinkedIn is working.
+     The flag is localStorage, NOT a cookie: the page says this site uses no
+     cookies and that stays literally true (the fortune already uses
+     sessionStorage the same way). Nothing is sent anywhere; it only decides
+     whether to load Cloudflare's cookieless beacon. -->
+<script>
+(function(){
+  try{
+    var q = location.search;
+    if(q.indexOf('notrack') > -1){ localStorage.setItem('llnotrack','1'); }
+    if(q.indexOf('track=0') > -1 || q.indexOf('untrack') > -1){ localStorage.removeItem('llnotrack'); }
+    if(localStorage.getItem('llnotrack')) return;
+  }catch(e){ /* storage blocked: fall through and count the visit */ }
+  var s = document.createElement('script');
+  s.defer = true;
+  s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  s.setAttribute('data-cf-beacon', '{"token": "faa52c1304e644d7a972cf62bce222eb"}');
+  document.head.appendChild(s);
+})();
+</script>
 </head>
 <body>
 
