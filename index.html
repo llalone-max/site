@@ -206,8 +206,16 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   --rail:clamp(84px,12vw,150px);
   --overlap:clamp(18px,2.4vw,34px);
   /* width-driven, but capped by viewport height too: on a short window the
-     figure and its caption still have to land above the footer */
-  --pw:min(clamp(168px,16vw,248px), 28vh);
+     figure and its caption still have to land above the footer.
+     THE HEIGHT CAP IS DERIVED, NOT PICKED (2026-08-16). What has to fit above
+     the footer at the bottom of the page is the whole stack: the sticky top
+     offset (8vh), the figure at 2.59x the frame width, its downward nudge
+     (4vh), the 14px to the caption, and two lines of caption. Solving that for
+     the frame width gives 0.34vh - 68px. The old 28vh was a guess and it was
+     too generous: at 1512x860 and 1680x900, both ordinary laptop sizes, the
+     caption dropped into the footer band and read as a fourth line of footer
+     type beside the bio. */
+  --pw:min(clamp(168px,16vw,248px), max(150px, calc(34vh - 68px)));
   /* the portrait STARTS HIGH but must NOT cover the header name: its top only
      LIGHTLY kisses the bottom edge of the header band, so the giant "lalone"
      wordmark stays fully readable. --ptop drops the frame BELOW the header band
@@ -292,7 +300,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* reduced motion: no scrub, just the fully-formed figure with the caption below.
    the figure sits formed and still. */
 @media (prefers-reduced-motion:reduce){
-  .portrait{--sp:1}
+  /* --cp:1 as well, so reduced motion gets the FINISHED composition (figure
+     landed beside the ask) rather than the figure parked out on the rail. The
+     script returns early here, so nothing else would ever set it. */
+  .portrait{--sp:1;--ip:1;--cp:1}
   .rail{opacity:1}
 }
 
@@ -340,7 +351,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .portrait{position:sticky;top:clamp(56px,8vh,110px);
     width:var(--pw);margin:var(--ptop) calc(var(--rail) - var(--overlap)) 0 auto;
     transform-origin:50% 0;
-    transform:translateX(calc(-1 * var(--sp,0) * var(--drift,0px)))}
+    /* two movements, and they must stay separate. --inset is the small step in
+       that happens AS THE ART APPEARS, because the figure is wider than its
+       frame and its cream background would otherwise print over the black rail.
+       --cp then carries it the rest of the way in at the close. Both distances
+       are measured by script. */
+    transform:translateX(calc(-1 * (var(--ip,0) * var(--inset,0px) +
+      var(--cp,0) * (var(--drift,0px) - var(--inset,0px)))))}
   /* a taller framed headshot so the whole face fills the first screen above the
      fold; the source is centred so a slightly-high object-position keeps the face */
   .pframe{aspect-ratio:5/7}
@@ -549,15 +566,17 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .colophon{margin-top:clamp(24px,3.4vh,34px)}
 }
 /* the bio line: small, quiet, and the only prose on the page that names the
-   companies. It reads as a colophon note, not as body copy. */
+   ventures. It reads as a colophon note, not as body copy. */
 /* the block itself must be CENTRED, not just its text: with margin:0 it hugged
    the left edge and the centred text ragged inside a narrow column while the
    credit below it centred properly. Wide enough to land in two lines. */
+/* IT CARRIES NO LINKS, on purpose (2026-08-16). It sits after the ask, so an
+   out-link here is an exit door at the exact point the page is meant to hand
+   someone to contact. The Person JSON-LD already lists every one of those
+   destinations under sameAs, so search and answer engines lose nothing: the
+   SENTENCE is the asset, the anchors were not. */
 .bioline{margin:0 auto 10px;max-width:92ch;font-family:var(--mono);font-size:11px;
   line-height:1.75;letter-spacing:.04em;color:var(--dim);text-wrap:balance}
-.bioline a{color:var(--soft);text-decoration:underline;text-underline-offset:.18em;
-  text-decoration-color:var(--hair);transition:color .25s,text-decoration-color .25s}
-.bioline a:hover{color:var(--ink);text-decoration-color:currentColor}
 .credit{margin:14px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
   line-height:1.9;color:var(--dim)}
 .credit a{color:inherit;text-decoration:none;border-bottom:1px solid var(--hair);transition:color .25s}
@@ -580,8 +599,21 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .practice{font-size:clamp(24px,2.3vw,33px)}
   .talk h2{font-size:clamp(44px,6vw,86px);font-weight:700}
   .cookiestage{width:clamp(150px,15vw,190px)}
-  /* the figure walks in from the rail as it forms, closing the gap to the ask */
-  .portrait{--drift:clamp(0px,11vw,210px)}
+  /* THE FIGURE WALKS IN AT THE CLOSE, NOT AS IT FORMS (changed 2026-08-16).
+     It used to travel on --sp, the morph progress, which finishes about 250px
+     into the scroll while the thesis is still on screen: the thesis ink reaches
+     x=880 at 1400 and the figure's cream art box already started at 822, so it
+     was grazing the last letter of "pipelines" and could not come in any
+     further. The X travel now runs on --cp, which only starts once the thesis
+     has left the top of the viewport, so the figure can cross the whole empty
+     middle and land beside the ask. --drift is the landing distance in px and is
+     MEASURED BY SCRIPT (see the hero script): it depends on where the practice
+     nav's text actually wraps, which CSS cannot see. It is a one-off measurement
+     on load and resize, never in the scroll path.
+     There is deliberately NO `--cp:0` default here. This block sits after the
+     reduced-motion block, so a default here would win the cascade and undo it,
+     which parked the reduced-motion figure out on the rail. The transform reads
+     var(--cp,0), so zero is already the fallback. */
 
   /* The closing screen is three things at three positions. The practice nav sits
      in a full-width section, while the ask and the cookie sit in the centred
@@ -729,12 +761,12 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   <!-- 8 · colophon: a quiet credit line -->
   <footer class="colophon">
     <!-- one plain, quotable sentence. Nothing else on this page states in prose who
-         he is or where he has worked, so an answer engine asked "who is Lazar
-         LaLone" had only the abstract thesis line to work with. -->
-    <p class="bioline">Lazar LaLone is a healthcare product and go-to-market operator
-      (Epic, Ambience), founder of <a href="https://www.fractionalaesthetics.com"
-      target="_blank" rel="noopener">Fractional Aesthetics</a>, and the builder of the
-      consumer brands <a href="brands.html">Fanish Sports and Lazarvision</a>.</p>
+         he is, so an answer engine asked "who is Lazar LaLone" had only the
+         abstract thesis line to work with. Kept to two lines and to no links:
+         see the .bioline note in the stylesheet above. Epic and Ambience are
+         named on healthcare.html, in the panel copy and the meta description. -->
+    <p class="bioline">Lazar LaLone: healthcare product and go-to-market operator,
+      founder of Fractional Aesthetics, builder of Fanish Sports and Lazarvision.</p>
     <p class="credit">&copy; 2026 Lazar LaLone</p>
   </footer>
 
@@ -774,43 +806,118 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   });
 })();
 
-/* the portrait FORMS as you scroll. It no longer TRAVELS by script: the browser
-   holds it with position:sticky, which is why it is now perfectly steady. All
-   this does is write --sp (0..1), the progress of the morph from clean headshot
-   into the six-armed figure. That is a slow, purely visual change, so it is
-   harmless if it lands a frame late. Reduced motion opts out (CSS shows the
-   formed figure at rest). */
+/* the portrait FORMS as you scroll, then WALKS IN at the close. It still does
+   not travel by script in the sense that broke it before: the browser holds its
+   position with position:sticky, and nothing here writes top or left. This
+   writes two progress numbers onto the element and CSS does the rest.
+     --sp (0..1) the morph from clean headshot into the six-armed figure.
+     --cp (0..1) the inward walk, which starts only once the thesis has left the
+          top of the window and finishes on the closing screen. Keeping it off
+          --sp is the whole point: the morph ends while the thesis is still on
+          screen, and the figure cannot cross the middle until those words are
+          gone (it was already grazing the last letter of "pipelines").
+   Both are slow, purely visual changes, so they are harmless a frame late.
+   Reduced motion opts out of the SCRUBBING only. It still measures, because the
+   landing distance is a measurement and CSS cannot do it: skipping that left the
+   reduced-motion figure parked out on the rail with an empty --drift. */
 (function(){
   var portrait = document.querySelector('.portrait');
   if(!portrait) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var FORM_START = 0.02;   /* scroll progress where the figure begins forming  */
   var FORM_END   = 0.34;   /* fully the figure, well before the page runs out  */
+  var WALK = 260;          /* px of scroll the inward walk takes               */
+  var LAND = 100;          /* it lands this far RIGHT of page centre           */
+  var CLEAR = 48;          /* smallest gap from the copy's last letter to it   */
+  /* the gap the art keeps from the black rail. 24, not 8: the frame overlaps the
+     rail by --overlap and only sheds that overlap as the figure finishes forming,
+     so a smaller number leaves the cream background printing on the black through
+     the middle of the morph, which is where the art is most visible. */
+  var RAILGAP = 24;
+  var INSET_IN = 0.18;     /* the rail step is done by the time the art is this
+                              far into forming: it must lead the fade, or the
+                              cream background is over the black while it is
+                              still becoming visible                            */
 
-  var raf = 0, max = 1;
+  var thesis = document.querySelector('.herocopy .hero');
+  var practice = document.querySelector('.practice');
+  var ask = document.querySelector('.talk h2');
+  var rail = document.querySelector('.rail');
+  var fig = document.querySelector('.p1');
+  var desktop = window.matchMedia('(min-width:900px)');
+
+  var raf = 0, max = 1, walkFrom = Infinity, walkRun = 1;
   function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-  /* the only layout read left, and it is not in the scroll path */
+
+  /* the rightmost letter, not the right edge of the box. The copy column is a
+     760px box that its two short lines never fill, so measuring the box would
+     hold the figure 200px further out than it needs to be. */
+  function inkRight(el){
+    if(!el) return 0;
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var rects = range.getClientRects(), x = 0, i;
+    for(i = 0; i < rects.length; i++) if(rects[i].right > x) x = rects[i].right;
+    return x;
+  }
+
+  /* ALL layout reads live here, and this runs on load, resize and font ready
+     only. Nothing in the scroll path measures anything. */
   function measure(){
     max = Math.max(1, document.documentElement.scrollHeight -
       (window.innerHeight || document.documentElement.clientHeight));
+
+    /* the walk begins where the thesis clears the top of the window, and is
+       given room to finish before the page runs out */
+    var y = window.scrollY || window.pageYOffset || 0;
+    walkFrom = thesis ? Math.max(0, thesis.getBoundingClientRect().bottom + y) : max;
+    walkFrom = Math.min(walkFrom, Math.max(0, max - 40));
+    walkRun = Math.max(1, Math.min(WALK, max - walkFrom));
+
+    /* how far it walks. offsetWidth is used on purpose: it is the untransformed
+       layout width, so this stays correct no matter where the walk currently
+       sits. The figure's centre with no walk is (viewport - rail - half the
+       frame), because the frame's overlap of the rail and the art's own inset
+       cancel exactly. */
+    var drift = 0, inset = 0;
+    if(desktop.matches && fig){
+      var vw = document.documentElement.clientWidth;
+      var centre = vw - (rail ? rail.offsetWidth : 0) - portrait.offsetWidth / 2;
+      /* the art is wider than its frame, and the frame deliberately overlaps the
+         rail, so the cream art background would print over the black. This is
+         how far in it has to step as it forms, just to stay off the rail. */
+      inset = (fig.offsetWidth - portrait.offsetWidth) / 2 + RAILGAP;
+      var want = centre - (vw / 2 + LAND);
+      var room = (centre - fig.offsetWidth / 2) -
+                 (Math.max(inkRight(practice), inkRight(ask)) + CLEAR);
+      drift = Math.max(inset, Math.min(want, room));
+    }
+    portrait.style.setProperty('--inset', inset.toFixed(1) + 'px');
+    portrait.style.setProperty('--drift', drift.toFixed(1) + 'px');
   }
   function update(){
     raf = 0;
-    var prog = clamp01((window.scrollY || window.pageYOffset || 0) / max);
+    var y = window.scrollY || window.pageYOffset || 0;
+    var prog = clamp01(y / max);
     var sp = clamp01((prog - FORM_START) / (FORM_END - FORM_START)).toFixed(3);
+    /* smoothstep, so the figure eases into its landing instead of stopping dead */
+    var t = clamp01((y - walkFrom) / walkRun);
+    var cp = (t * t * (3 - 2 * t)).toFixed(3);
     portrait.style.setProperty('--sp', sp);
     document.documentElement.style.setProperty('--sp', sp);
+    portrait.style.setProperty('--ip', clamp01(sp / INSET_IN).toFixed(3));
+    portrait.style.setProperty('--cp', cp);
   }
-  function tick(){ if(!raf) raf = requestAnimationFrame(update); }
+  function tick(){ if(still) return; if(!raf) raf = requestAnimationFrame(update); }
   function remeasure(){ measure(); tick(); }
-  window.addEventListener('scroll', tick, {passive:true});
+  if(!still) window.addEventListener('scroll', tick, {passive:true});
   window.addEventListener('resize', remeasure, {passive:true});
   window.addEventListener('orientationchange', remeasure, {passive:true});
   window.addEventListener('load', remeasure);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
   measure();
-  update();
+  if(!still) update();
 })();
 
 /* let's talk: a single trigger expands to the three ways to reach me */
