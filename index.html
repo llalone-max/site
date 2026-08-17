@@ -303,10 +303,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* reduced motion: no scrub, just the fully-formed figure with the caption below.
    the figure sits formed and still. */
 @media (prefers-reduced-motion:reduce){
-  /* --cp:1 as well, so reduced motion gets the FINISHED composition (figure
-     landed beside the ask) rather than the figure parked out on the rail. The
-     script returns early here, so nothing else would ever set it. */
-  .portrait{--sp:1;--ip:1;--cp:1}
+  .portrait{--sp:1}
   .rail{opacity:1}
 }
 
@@ -354,13 +351,17 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .portrait{position:sticky;top:clamp(56px,8vh,110px);
     width:var(--pw);margin:var(--ptop) calc(var(--rail) - var(--overlap)) 0 auto;
     transform-origin:50% 0;
-    /* two movements, and they must stay separate. --inset is the small step in
-       that happens AS THE ART APPEARS, because the figure is wider than its
-       frame and its cream background would otherwise print over the black rail.
-       --cp then carries it the rest of the way in at the close. Both distances
-       are measured by script. */
-    transform:translateX(calc(-1 * (var(--ip,0) * var(--inset,0px) +
-      var(--cp,0) * (var(--drift,0px) - var(--inset,0px)))))}
+    /* ONE motion, tied to the morph, and it has to stay that way. Splitting it
+       into a rail step plus a late walk (tried 2026-08-16, reverted the same
+       day) put 78px of sideways travel into 25px of scroll and then 300px more
+       into the last 40px of the page: 3 to 9 pixels sideways for every pixel
+       scrolled. That is a lurch and then a slam, and it is what made the scroll
+       read as jagged. This is 1.2 pixels per pixel and always has been.
+       WHY IT CANNOT SIMPLY GO FURTHER: the page only scrolls about 430px on a
+       laptop, and the thesis holds the middle of the screen until 361px of that.
+       The figure's art is opaque, so anywhere it crosses those words it hides
+       them. See MANDATE 3.9. */
+    transform:translateX(calc(-1 * var(--sp,0) * var(--drift,0px)))}
   /* a taller framed headshot so the whole face fills the first screen above the
      fold; the source is centred so a slightly-high object-position keeps the face */
   .pframe{aspect-ratio:5/7}
@@ -595,21 +596,10 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .practice{font-size:clamp(24px,2.3vw,33px)}
   .talk h2{font-size:clamp(44px,6vw,86px);font-weight:700}
   .cookiestage{width:clamp(150px,15vw,190px)}
-  /* THE FIGURE WALKS IN AT THE CLOSE, NOT AS IT FORMS (changed 2026-08-16).
-     It used to travel on --sp, the morph progress, which finishes about 250px
-     into the scroll while the thesis is still on screen: the thesis ink reaches
-     x=880 at 1400 and the figure's cream art box already started at 822, so it
-     was grazing the last letter of "pipelines" and could not come in any
-     further. The X travel now runs on --cp, which only starts once the thesis
-     has left the top of the viewport, so the figure can cross the whole empty
-     middle and land beside the ask. --drift is the landing distance in px and is
-     MEASURED BY SCRIPT (see the hero script): it depends on where the practice
-     nav's text actually wraps, which CSS cannot see. It is a one-off measurement
-     on load and resize, never in the scroll path.
-     There is deliberately NO `--cp:0` default here. This block sits after the
-     reduced-motion block, so a default here would win the cascade and undo it,
-     which parked the reduced-motion figure out on the rail. The transform reads
-     var(--cp,0), so zero is already the fallback. */
+  /* the figure walks in from the rail as it forms, closing the gap to the ask.
+     ONE eased motion over the morph. Do not split it into a late walk: see the
+     note on .portrait's transform above, and MANDATE 3.9. */
+  .portrait{--drift:clamp(0px,11vw,210px)}
 
   /* The closing screen is three things at three positions. The practice nav sits
      in a full-width section, while the ask and the cookie sit in the centred
@@ -626,9 +616,14 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   /* dead centre of the page, lined up with the O of the wordmark above. It sits
      low enough to read as a footnote, and low enough to clear the figure's
      caption over on the right. */
-  /* the line reads centred on desktop; left-oriented it looked like it had
-     simply been forgotten at the edge */
-  .colophon{text-align:center}
+  /* LEFT, under the cookie (2026-08-16, Lazar's call): everything on this page
+     except the portrait is hard left, and the mark centred was the one thing
+     breaking that line. The footer steps OUT of the centred 1180 wrap the same
+     way the cookie does, so the mark and the hairline both start on the cookie
+     note's edge and the rule still ends where the wrap ends. */
+  .colophon{text-align:left;
+    margin-left:calc((min(100vw,1180px) - 100vw) / 2);
+    width:calc(100% + (100vw - min(100vw,1180px)) / 2)}
   /* left, on the same line as the practice nav and the ask. Everything that
      matters on this screen is left-oriented; the cookie is the same. */
   .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2);
@@ -794,118 +789,50 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   });
 })();
 
-/* the portrait FORMS as you scroll, then WALKS IN at the close. It still does
-   not travel by script in the sense that broke it before: the browser holds its
-   position with position:sticky, and nothing here writes top or left. This
-   writes two progress numbers onto the element and CSS does the rest.
-     --sp (0..1) the morph from clean headshot into the six-armed figure.
-     --cp (0..1) the inward walk, which starts only once the thesis has left the
-          top of the window and finishes on the closing screen. Keeping it off
-          --sp is the whole point: the morph ends while the thesis is still on
-          screen, and the figure cannot cross the middle until those words are
-          gone (it was already grazing the last letter of "pipelines").
-   Both are slow, purely visual changes, so they are harmless a frame late.
-   Reduced motion opts out of the SCRUBBING only. It still measures, because the
-   landing distance is a measurement and CSS cannot do it: skipping that left the
-   reduced-motion figure parked out on the rail with an empty --drift. */
+/* the portrait FORMS as you scroll. It does not TRAVEL by script: the browser
+   holds its position with position:sticky, which is why it is perfectly steady,
+   and nothing here writes top or left. All this writes is --sp (0..1), the
+   progress of the morph from clean headshot into the six-armed figure, which
+   CSS uses for the fade, the scale and the one sideways drift. That is a slow,
+   purely visual change and is harmless a frame late.
+   ONE progress number, on purpose. A second one was added on 2026-08-16 to walk
+   the figure further in at the close and was reverted the same day: the page
+   only scrolls about 430px on a laptop, so the walk landed 300px of sideways
+   travel inside the last 40px and the scroll read as jagged. If the figure is
+   ever to reach the middle of the page, the page needs more scroll to do it in,
+   not a second curve. See MANDATE 3.9.
+   Reduced motion opts out; CSS shows the formed figure at rest. */
 (function(){
   var portrait = document.querySelector('.portrait');
   if(!portrait) return;
-  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   var FORM_START = 0.02;   /* scroll progress where the figure begins forming  */
   var FORM_END   = 0.34;   /* fully the figure, well before the page runs out  */
-  var WALK = 260;          /* px of scroll the inward walk takes               */
-  var LAND = 100;          /* it lands this far RIGHT of page centre           */
-  var CLEAR = 48;          /* smallest gap from the copy's last letter to it   */
-  /* the gap the art keeps from the black rail. 24, not 8: the frame overlaps the
-     rail by --overlap and only sheds that overlap as the figure finishes forming,
-     so a smaller number leaves the cream background printing on the black through
-     the middle of the morph, which is where the art is most visible. */
-  var RAILGAP = 24;
-  var INSET_IN = 0.18;     /* the rail step is done by the time the art is this
-                              far into forming: it must lead the fade, or the
-                              cream background is over the black while it is
-                              still becoming visible                            */
 
-  var thesis = document.querySelector('.herocopy .hero');
-  var practice = document.querySelector('.practice');
-  var ask = document.querySelector('.talk h2');
-  var rail = document.querySelector('.rail');
-  var fig = document.querySelector('.p1');
-  var desktop = window.matchMedia('(min-width:900px)');
-
-  var raf = 0, max = 1, walkFrom = Infinity, walkRun = 1;
+  var raf = 0, max = 1;
   function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-
-  /* the rightmost letter, not the right edge of the box. The copy column is a
-     760px box that its two short lines never fill, so measuring the box would
-     hold the figure 200px further out than it needs to be. */
-  function inkRight(el){
-    if(!el) return 0;
-    var range = document.createRange();
-    range.selectNodeContents(el);
-    var rects = range.getClientRects(), x = 0, i;
-    for(i = 0; i < rects.length; i++) if(rects[i].right > x) x = rects[i].right;
-    return x;
-  }
-
-  /* ALL layout reads live here, and this runs on load, resize and font ready
-     only. Nothing in the scroll path measures anything. */
+  /* the only layout read left, and it is not in the scroll path */
   function measure(){
     max = Math.max(1, document.documentElement.scrollHeight -
       (window.innerHeight || document.documentElement.clientHeight));
-
-    /* the walk begins where the thesis clears the top of the window, and is
-       given room to finish before the page runs out */
-    var y = window.scrollY || window.pageYOffset || 0;
-    walkFrom = thesis ? Math.max(0, thesis.getBoundingClientRect().bottom + y) : max;
-    walkFrom = Math.min(walkFrom, Math.max(0, max - 40));
-    walkRun = Math.max(1, Math.min(WALK, max - walkFrom));
-
-    /* how far it walks. offsetWidth is used on purpose: it is the untransformed
-       layout width, so this stays correct no matter where the walk currently
-       sits. The figure's centre with no walk is (viewport - rail - half the
-       frame), because the frame's overlap of the rail and the art's own inset
-       cancel exactly. */
-    var drift = 0, inset = 0;
-    if(desktop.matches && fig){
-      var vw = document.documentElement.clientWidth;
-      var centre = vw - (rail ? rail.offsetWidth : 0) - portrait.offsetWidth / 2;
-      /* the art is wider than its frame, and the frame deliberately overlaps the
-         rail, so the cream art background would print over the black. This is
-         how far in it has to step as it forms, just to stay off the rail. */
-      inset = (fig.offsetWidth - portrait.offsetWidth) / 2 + RAILGAP;
-      var want = centre - (vw / 2 + LAND);
-      var room = (centre - fig.offsetWidth / 2) -
-                 (Math.max(inkRight(practice), inkRight(ask)) + CLEAR);
-      drift = Math.max(inset, Math.min(want, room));
-    }
-    portrait.style.setProperty('--inset', inset.toFixed(1) + 'px');
-    portrait.style.setProperty('--drift', drift.toFixed(1) + 'px');
   }
   function update(){
     raf = 0;
-    var y = window.scrollY || window.pageYOffset || 0;
-    var prog = clamp01(y / max);
+    var prog = clamp01((window.scrollY || window.pageYOffset || 0) / max);
     var sp = clamp01((prog - FORM_START) / (FORM_END - FORM_START)).toFixed(3);
-    /* smoothstep, so the figure eases into its landing instead of stopping dead */
-    var t = clamp01((y - walkFrom) / walkRun);
-    var cp = (t * t * (3 - 2 * t)).toFixed(3);
     portrait.style.setProperty('--sp', sp);
     document.documentElement.style.setProperty('--sp', sp);
-    portrait.style.setProperty('--ip', clamp01(sp / INSET_IN).toFixed(3));
-    portrait.style.setProperty('--cp', cp);
   }
-  function tick(){ if(still) return; if(!raf) raf = requestAnimationFrame(update); }
+  function tick(){ if(!raf) raf = requestAnimationFrame(update); }
   function remeasure(){ measure(); tick(); }
-  if(!still) window.addEventListener('scroll', tick, {passive:true});
+  window.addEventListener('scroll', tick, {passive:true});
   window.addEventListener('resize', remeasure, {passive:true});
   window.addEventListener('orientationchange', remeasure, {passive:true});
   window.addEventListener('load', remeasure);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
   measure();
-  if(!still) update();
+  update();
 })();
 
 /* let's talk: a single trigger expands to the three ways to reach me */
