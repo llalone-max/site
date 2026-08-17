@@ -211,11 +211,13 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
      the footer at the bottom of the page is the whole stack: the sticky top
      offset (8vh), the figure at 2.59x the frame width, its downward nudge
      (4vh), the 14px to the caption, and two lines of caption. Solving that for
-     the frame width gives 0.34vh - 68px. The old 28vh was a guess and it was
-     too generous: at 1512x860 and 1680x900, both ordinary laptop sizes, the
-     caption dropped into the footer band and read as a fourth line of footer
-     type beside the bio. */
-  --pw:min(clamp(168px,16vw,248px), max(150px, calc(34vh - 68px)));
+     the frame width gives 0.34vh minus the footer's own height. The old 28vh
+     was a guess and it was too generous: at 1512x860 and 1680x900, both
+     ordinary laptop sizes, the caption dropped into the footer band and read as
+     a fourth line of footer type beside the bio.
+     THE 52px ASSUMES A ONE-LINE FOOTER. If the colophon ever grows back to two
+     lines, this has to grow with it or the caption lands in it again. */
+  --pw:min(clamp(168px,16vw,248px), max(150px, calc(34vh - 52px)));
   /* the portrait STARTS HIGH but must NOT cover the header name: its top only
      LIGHTLY kisses the bottom edge of the header band, so the giant "lalone"
      wordmark stays fully readable. --ptop drops the frame BELOW the header band
@@ -552,10 +554,15 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .rainbow{-webkit-text-fill-color:transparent;color:transparent}
 }
 
-/* 8 · colophon: a quiet credit line. A hairline rule and a clear spacing shift
-   set the small credits off from the cookie zone above, so the page reads as a
-   deliberate end, not content that just runs out. Kept compact so the footer
-   sits close under the last content instead of floating low on a phone. */
+/* 8 · colophon: ONE quiet line. A hairline rule and a clear spacing shift set it
+   off from the cookie zone above, so the page reads as a deliberate end, not
+   content that just runs out. Kept compact so the footer sits close under the
+   last content instead of floating low on a phone.
+   IT IS ONE LINE, not a block (2026-08-16). The bottom of this page already
+   carries the cookie note and the figure's caption; a wrapped bio plus a
+   copyright line made seven lines of small type down there and it read as
+   clutter. The copyright line is gone: it carried no information the sentence
+   above it does not, and the page is better for the silence. */
 /* the desktop top margin is kept tall enough that the docked figure's feet clear
    the footer rule (the figure bottom is glued to the cookie, just above here) */
 .colophon{margin-top:clamp(40px,6vh,58px);padding:0 0 clamp(18px,2.4vh,28px);
@@ -568,19 +575,18 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 /* the bio line: small, quiet, and the only prose on the page that names the
    ventures. It reads as a colophon note, not as body copy. */
 /* the block itself must be CENTRED, not just its text: with margin:0 it hugged
-   the left edge and the centred text ragged inside a narrow column while the
-   credit below it centred properly. Wide enough to land in two lines. */
+   the left edge and the centred text ragged inside a narrow column.
+   NO max-width. A 92ch cap forced the sentence to wrap in the middle of a
+   phrase ("...operator, founder / of Fractional Aesthetics..."), which is what
+   made it read as a paragraph. Given the full column it lands on ONE line from
+   about 1300px up, and wraps gracefully below that. */
 /* IT CARRIES NO LINKS, on purpose (2026-08-16). It sits after the ask, so an
    out-link here is an exit door at the exact point the page is meant to hand
    someone to contact. The Person JSON-LD already lists every one of those
    destinations under sameAs, so search and answer engines lose nothing: the
    SENTENCE is the asset, the anchors were not. */
-.bioline{margin:0 auto 10px;max-width:92ch;font-family:var(--mono);font-size:11px;
+.bioline{margin:0 auto;font-family:var(--mono);font-size:11px;
   line-height:1.75;letter-spacing:.04em;color:var(--dim);text-wrap:balance}
-.credit{margin:14px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.07em;
-  line-height:1.9;color:var(--dim)}
-.credit a{color:inherit;text-decoration:none;border-bottom:1px solid var(--hair);transition:color .25s}
-.credit a:hover{color:var(--ink)}
 
 /* lane-color flood on choose */
 .flood{position:fixed;left:0;top:0;z-index:99;border-radius:50%;pointer-events:none;
@@ -630,10 +636,9 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   /* dead centre of the page, lined up with the O of the wordmark above. It sits
      low enough to read as a footnote, and low enough to clear the figure's
      caption over on the right. */
-  /* the credit reads centred on desktop; left-oriented it looked like it had
+  /* the line reads centred on desktop; left-oriented it looked like it had
      simply been forgotten at the edge */
   .colophon{text-align:center}
-  .colophon .credit{display:inline-block}
   /* left, on the same line as the practice nav and the ask. Everything that
      matters on this screen is left-oriented; the cookie is the same. */
   .cookiemod{margin-left:calc((min(100vw,1180px) - 100vw) / 2);
@@ -758,7 +763,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     <p class="cookienote">This site uses no cookies.<br><span class="rainbow">Have one anyway.</span></p>
   </section>
 
-  <!-- 8 · colophon: a quiet credit line -->
+  <!-- 8 · colophon: one quiet line -->
   <footer class="colophon">
     <!-- one plain, quotable sentence. Nothing else on this page states in prose who
          he is, so an answer engine asked "who is Lazar LaLone" had only the
@@ -767,7 +772,6 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
          named on healthcare.html, in the panel copy and the meta description. -->
     <p class="bioline">Lazar LaLone: healthcare product and go-to-market operator,
       founder of Fractional Aesthetics, builder of Fanish Sports and Lazarvision.</p>
-    <p class="credit">&copy; 2026 Lazar LaLone</p>
   </footer>
 
   </div><!-- /.wrap -->
