@@ -573,6 +573,17 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
 @media (max-width:899px){
   .colophon{margin-top:clamp(24px,3.4vh,34px)}
 }
+/* MOBILE SIDE MARGIN. 6vw put every left edge at 23px on a 390 phone, which is
+   inside the normal band (iOS uses 16pt, Material 16dp) but at the tight end of
+   it, and small mono type sitting that close to a rounded screen edge reads as
+   if it is falling off. 28px at 390 is where editorial sites with this much air
+   tend to land. Floored at 26 so a 360 phone does not get worse, capped at 32 so
+   a big phone does not get a gutter. Desktop is untouched: this block only runs
+   below 900. */
+@media (max-width:899px){
+  .wrap,.herocopy,.practicewrap{
+    padding-left:clamp(26px,7.2vw,32px);padding-right:clamp(26px,7.2vw,32px)}
+}
 /* the mark itself: as quiet as type gets and still legible. No link on it: the
    footer sits after the ask, and anything clickable down here is a door out of
    the conversion path. */

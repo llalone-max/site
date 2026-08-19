@@ -91,6 +91,15 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .bandright{display:inline-flex;align-items:center;gap:10px;flex:none;margin-left:auto}
 .bandsep{flex:none;color:rgba(244,242,234,.30);font-family:var(--mono);font-size:11px;
   line-height:1;user-select:none;-webkit-user-select:none}
+/* MOBILE SIDE MARGIN (2026-08-19). The panel copy sat at 23px on a 390 phone,
+   which is inside the normal band but at the tight end, and it read as falling
+   off the screen. It is 28px now, floored at 26 for a 360 phone and capped at 32
+   so a big phone does not get a gutter. Desktop is untouched.
+   THE BAND STAYS AT 12px AND THAT IS NOT AN OVERSIGHT. It holds three things,
+   the wordmark, the ticks and "Talk to me | Lane", and it is already at its
+   limit: pushing its padding to 20 put the last tick on top of the T at 390 and
+   made an existing collision at 360 worse. Freeing room means shortening what is
+   in the band, which is a copy decision, not a padding one. */
 @media (max-width:600px){
   .tracker{height:40px;gap:12px;padding:0 12px}
   .bandlink .wm{font-size:21px}
@@ -324,6 +333,22 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   .revsum{margin-bottom:11px;padding-bottom:10px}
   .rsnum{font-size:30px}
   .revfoot{margin-top:12px;gap:16px}
+}
+
+/* MOBILE SIDE MARGIN (2026-08-19). 6vw put the panel copy at 23px on a 390
+   phone, which is inside the normal band but at the tight end, and it read as
+   falling off the screen edge. 28px now, floored at 26 for a 360 phone and
+   capped at 32 so a big phone does not get a gutter. Desktop is untouched.
+   IT LIVES AT THE END OF THE STYLESHEET ON PURPOSE. Two earlier attempts failed
+   silently: one sat above the .panel rule it overrides and lost the cascade, and
+   one landed INSIDE the reduced-motion media query, where a nested media query
+   is simply ignored. Last and top-level is the only placement that cannot be
+   quietly undone.
+   THE BAND KEEPS ITS 12px. It holds the wordmark, the ticks and
+   "Talk to me | Lane" and is already at its limit: at 20px the last tick lands
+   on the T at 390. Freeing room there is a copy decision, not a padding one. */
+@media (max-width:600px){
+  .panel{padding-left:clamp(26px,7.2vw,32px);padding-right:clamp(26px,7.2vw,32px)}
 }
 </style>
 <script>
