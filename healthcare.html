@@ -126,12 +126,12 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
   user-select:none;-webkit-user-select:none}
 /* MOBILE SIDE MARGIN (2026-08-19). 6vw put the copy at 23px on a 390 phone,
    which is inside the normal band but at the tight end, and it read as falling
-   off the screen edge. 28px now, floored at 26 for a 360 phone, capped at 32.
+   off the screen edge. 27px now, floored at 25 for a 360 phone, capped at 32.
    THIS BLOCK MUST STAY BELOW .panel. The first attempt sat in the max-width:600
    block higher up the file, which has the same specificity and loses to a later
    rule, so it silently did nothing. */
 @media (max-width:600px){
-  .panel{padding-left:clamp(26px,7.2vw,32px);padding-right:clamp(26px,7.2vw,32px)}
+  .panel{padding-left:clamp(25px,7vw,32px);padding-right:clamp(25px,7vw,32px)}
 }
 /* NOTE the `.panel p` selector below: one class plus one element beats a bare
    class, so it was silently winning font-size and max-width over every mono

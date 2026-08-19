@@ -337,7 +337,7 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 
 /* MOBILE SIDE MARGIN (2026-08-19). 6vw put the panel copy at 23px on a 390
    phone, which is inside the normal band but at the tight end, and it read as
-   falling off the screen edge. 28px now, floored at 26 for a 360 phone and
+   falling off the screen edge. 27px now, floored at 25 for a 360 phone and
    capped at 32 so a big phone does not get a gutter. Desktop is untouched.
    IT LIVES AT THE END OF THE STYLESHEET ON PURPOSE. Two earlier attempts failed
    silently: one sat above the .panel rule it overrides and lost the cascade, and
@@ -348,7 +348,7 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
    "Talk to me | Lane" and is already at its limit: at 20px the last tick lands
    on the T at 390. Freeing room there is a copy decision, not a padding one. */
 @media (max-width:600px){
-  .panel{padding-left:clamp(26px,7.2vw,32px);padding-right:clamp(26px,7.2vw,32px)}
+  .panel{padding-left:clamp(25px,7vw,32px);padding-right:clamp(25px,7vw,32px)}
 }
 </style>
 <script>
