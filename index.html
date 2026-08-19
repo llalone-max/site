@@ -642,6 +642,21 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
     margin-top:clamp(150px,20vh,250px)}
   .cookiestage{width:clamp(99px,9.1vw,122px)}
 }
+
+/* GROUPING THE COOKIE WITH ITS NOTE (2026-08-19). On a phone the three gaps in
+   the closing screen were 25, 30 and 29px, so the cookie floated equidistant
+   between the ask above it and its own caption below it and read as belonging to
+   neither. Spacing is the only thing that says "these two are one object", so
+   the gap above the cookie roughly quadruples and the gap under it halves: the
+   ask gets room, and the note tucks under the cookie as its caption.
+   Mobile only. Desktop already reads correctly, where the same three gaps are
+   172, 38 and 51.
+   Placed at the end of the stylesheet on purpose, below the rules it overrides.
+   See the note on .panel in the lane files for what happens otherwise. */
+@media (max-width:899px){
+  .cookiemod{margin-top:clamp(48px,6.5vh,72px);gap:clamp(10px,1.4vh,14px)}
+  .cookienote{margin-top:0}
+}
 </style>
 <!-- Cloudflare Web Analytics, with a way to leave MYSELF out of the numbers.
      Visiting /?notrack=1 once in a browser sets a flag and the beacon never loads
