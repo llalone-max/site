@@ -331,6 +331,25 @@
     [].forEach.call(document.querySelectorAll('.flood'), function(f){ f.remove(); });
   });
 
+  /* The record PDFs save under a name that tells the person who now has the file
+     what it is and when they took it: Lazar_LaLone_Healthcare_2026-08-31.pdf.
+     Only the caption link downloads; the big preview above it still opens the PDF
+     in a tab, which is the only way to READ it on a phone. The markup carries a
+     dateless download attribute as the no-JS fallback, so the name is never the
+     raw record-*.pdf either way. Stamped again on pointerdown so a lane left open
+     overnight still saves today's date, and the attribute is read by the browser
+     after this listener runs, which is what makes the late stamp take. */
+  var stampDl = function(a){
+    var d = new Date(), p2 = function(n){ return (n < 10 ? '0' : '') + n; };
+    a.setAttribute('download', a.getAttribute('data-dlname') + '_' + d.getFullYear() +
+      '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()) + '.pdf');
+  };
+  [].forEach.call(document.querySelectorAll('a[data-dlname]'), function(a){
+    stampDl(a);
+    a.addEventListener('pointerdown', function(){ stampDl(a); });
+    a.addEventListener('click', function(){ stampDl(a); });
+  });
+
   addEventListener('keydown', function(e){
     if(sheet && !sheet.hidden) return;
     if(e.altKey || e.metaKey || e.ctrlKey) return;

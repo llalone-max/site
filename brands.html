@@ -277,6 +277,9 @@ a:focus-visible{outline:1.5px solid var(--lc);outline-offset:4px}
 .outlink:hover,.outlink:focus-visible{color:var(--ink)}
 .outlink .ar{font-size:.92em;transition:transform .3s cubic-bezier(.22,.8,.2,1)}
 .outlink:hover .ar{transform:translate(2px,-2px)}
+/* the record link saves a dated PDF instead of opening a tab, so its
+   arrow points down and nudges down. See walk.js, which stamps the date. */
+.outlink.dl:hover .ar,.outlink.dl:focus-visible .ar{transform:translate(0,2px)}
 .outlink:focus-visible{outline:1.5px solid var(--lc);outline-offset:3px}
 
 .tlinks{display:flex;gap:clamp(20px,4vw,40px);flex-wrap:wrap}
@@ -510,7 +513,7 @@ document.documentElement.classList.add('js');
       <a class="recviewer scrolls" href="record-brands.pdf" target="_blank" rel="noopener" aria-label="The full history. Tap to open the full-size PDF in a new tab; scroll to preview it here.">
         <img src="record-brands-p1.webp" width="1000" height="1294" alt="First page of Lazar LaLone's brand-building track record (PDF preview)">
       </a>
-      <p class="reccap"><a class="outlink" href="record-brands.pdf" target="_blank" rel="noopener">Open the PDF <span class="ar" aria-hidden="true">&#8599;</span></a></p>
+      <p class="reccap"><a class="outlink dl" href="record-brands.pdf" download="Lazar_LaLone_Marketing.pdf" data-dlname="Lazar_LaLone_Marketing">Download the PDF <span class="ar" aria-hidden="true">&#8595;</span></a></p>
       <button class="nextpanel askout" type="button" data-talk>Talk to me &#8594;</button>
     </div>
   </section>
