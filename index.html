@@ -658,16 +658,7 @@ a:focus-visible{outline:1.5px solid var(--ink);outline-offset:4px}
   .cookienote{margin-top:0}
 }
 </style>
-<!-- Cloudflare Web Analytics, with a way to leave MYSELF out of the numbers.
-     Visiting /?notrack=1 once in a browser sets a flag and the beacon never loads
-     there again; /?track=1 undoes it. This has to exist because I open the site
-     constantly to edit and audit it, and on a site this size my own visits would
-     be most of the "direct" traffic, which is the very bucket that tells me
-     whether LinkedIn is working.
-     The flag is localStorage, NOT a cookie: the page says this site uses no
-     cookies and that stays literally true (the fortune already uses
-     sessionStorage the same way). Nothing is sent anywhere; it only decides
-     whether to load Cloudflare's cookieless beacon. -->
+<!-- Cloudflare Web Analytics -->
 <script>
 (function(){
   try{

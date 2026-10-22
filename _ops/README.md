@@ -63,3 +63,21 @@ served a July resume until a human copied the current one across by hand on 2026
 **And the general lesson, which is bigger than this job:** it failed silently for a month because
 it exited 0 and wrote to a log nothing read. A scheduled job that cannot fail loudly is not
 finished. The auto-memory note is `scheduled-jobs-cannot-read-desktop`.
+
+---
+
+## The analytics opt-out on index.html (moved here 2026-10-21)
+
+This note sat as a comment in the public page source until 2026-10-21; it lives here now so visitors cannot read it.
+The code checks for `notrack` to set the flag and for `track=0` or `untrack` to clear it (the old comment said `/?track=1`, which the code does not check).
+
+Cloudflare Web Analytics, with a way to leave MYSELF out of the numbers.
+Visiting /?notrack=1 once in a browser sets a flag and the beacon never loads
+there again; /?track=1 undoes it. This has to exist because I open the site
+constantly to edit and audit it, and on a site this size my own visits would
+be most of the "direct" traffic, which is the very bucket that tells me
+whether LinkedIn is working.
+The flag is localStorage, NOT a cookie: the page says this site uses no
+cookies and that stays literally true (the fortune already uses
+sessionStorage the same way). Nothing is sent anywhere; it only decides
+whether to load Cloudflare's cookieless beacon.

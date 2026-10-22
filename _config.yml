@@ -1,0 +1,6 @@
+# GitHub Pages (Jekyll) publishes every file in this repo that is not in an
+# underscore folder. These are repo files, not site files, so they stay off
+# lazarlalone.com. Added 2026-10-21 after /resume_sync.py was found public.
+exclude:
+  - README.md
+  - resume_sync.py
